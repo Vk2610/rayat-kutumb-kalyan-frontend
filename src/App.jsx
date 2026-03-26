@@ -3,30 +3,28 @@ import {
   Routes,
   Route,
   Navigate,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-
-import Login from "./pages/common/Login.jsx";
-import ResetPassword from "./pages/common/ResetPassword.jsx";
-import HomePage from "./pages/common/HomePage.jsx";
-import ManageFunds from "./pages/admin/ManageFunds";
-import UserProfile from "./pages/user/UserProfile.jsx";
-import AdminProfile from "./pages/admin/AdminProfile.jsx";
-import DataEntry from "./pages/admin/DataEntry.jsx";
-import History from "./pages/admin/History.jsx";
-import FormApproval from "./pages/admin/FormApproval.jsx";
-import FormDetails from "./pages/admin/FormDetails.jsx";
-import FormHistory from "./pages/admin/FormHistory.jsx";
-import SevakWelfareForm from "./pages/user/WelfareForm.jsx";
-import LandingPage from "./pages/common/LandingPage.jsx";
-import NewUser from "./pages/admin/NewUser.jsx";
-import { jwtDecode } from "jwt-decode";
-import UpdateUser from "./pages/admin/UpdateUser.jsx";
-import ViewProfile from "./pages/admin/ViewProfile.jsx";
-
+import Login from './pages/common/Login.jsx';
+import ResetPassword from './pages/common/ResetPassword.jsx';
+import HomePage from './pages/common/HomePage.jsx';
+import ManageFunds from './pages/admin/ManageFunds';
+import UserProfile from './pages/user/UserProfile.jsx';
+import AdminProfile from './pages/admin/AdminProfile.jsx';
+import DataEntry from './pages/admin/DataEntry.jsx';
+import History from './pages/admin/History.jsx';
+import FormApproval from './pages/admin/FormApproval.jsx';
+import FormDetails from './pages/admin/FormDetails.jsx';
+import FormHistory from './pages/admin/FormHistory.jsx';
+import SevakWelfareForm from './pages/user/WelfareForm.jsx';
+import LandingPage from './pages/common/LandingPage.jsx';
+import NewUser from './pages/admin/NewUser.jsx';
+import { jwtDecode } from 'jwt-decode';
+import UpdateUser from './pages/admin/UpdateUser.jsx';
+import ViewProfile from './pages/admin/ViewProfile.jsx';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
 
   // No token → allow only public pages
   if (!token) {
@@ -37,14 +35,14 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   try {
     decoded = jwtDecode(token);
   } catch (err) {
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
     return <Navigate to="/" replace />;
   }
 
   const role = decoded.role;
 
   // Get URL role (after first slash)
-  const urlRole = window.location.pathname.split("/")[1]; // "user" or "admin"
+  const urlRole = window.location.pathname.split('/')[1]; // "user" or "admin"
 
   // If URL role mismatches → redirect to correct role root
   if (urlRole && urlRole !== role) {
@@ -72,7 +70,7 @@ const App = () => {
         <Route
           path="/user/*"
           element={
-            <ProtectedRoute allowedRoles={["user"]}>
+            <ProtectedRoute allowedRoles={['user']}>
               <HomePage />
             </ProtectedRoute>
           }
@@ -85,7 +83,7 @@ const App = () => {
         <Route
           path="/admin/*"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute allowedRoles={['admin']}>
               <HomePage />
             </ProtectedRoute>
           }

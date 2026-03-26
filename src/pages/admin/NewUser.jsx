@@ -1,5 +1,8 @@
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Save } from "lucide-react";
+import { toast } from "react-toastify";
+import { BRANCHES, REGION, BRANCH_TYPE, DESIGNATIONS } from "../../utils/branches";
 
 // Form Section Wrapper
 const FormSection = ({ title, children }) => (
@@ -27,39 +30,79 @@ const InputField = ({ name, label, type = "text", placeholder = "" }) => (
   </div>
 );
 
-// Select Field
-const SelectField = ({ name, label, options }) => (
-  <div className="space-y-2">
-    <label className="text-sm font-medium text-slate-600">{label}</label>
-    <div className="relative">
-      <select
-        required
-        name={name}
-        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none 
-        focus:border-green-600 focus:ring-1 focus:ring-green-500/30 transition-all 
-        text-sm text-slate-800 appearance-none cursor-pointer"
-      >
-        <option value="">Select {label}</option>
-        {options.map((opt) => (
-          <option key={opt} value={opt}>
-            {opt}
-          </option>
-        ))}
-      </select>
+// Searchable Select Field (Tailwind Dropdown)
+const SelectField = ({ name, label, options }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState("");
+  const wrapperRef = useRef(null);
 
-      <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-        <svg
-          className="w-4 h-4 text-slate-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-        </svg>
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filtered = options.filter(opt => opt.toLowerCase().includes(search.toLowerCase()));
+
+  const handleSelect = (opt) => {
+    setSearch(opt);
+    setSelected(opt);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="space-y-2" ref={wrapperRef}>
+      <label className="text-sm font-medium text-slate-600">{label}</label>
+      <div className="relative leading-none">
+        <input
+          type="text"
+          placeholder={`Select or type ${label}...`}
+          value={search}
+          onClick={() => setIsOpen(true)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setSelected(e.target.value);
+            setIsOpen(true);
+          }}
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none 
+          focus:border-green-600 focus:ring-1 focus:ring-green-500/30 transition-all 
+          text-sm text-slate-800"
+          autoComplete="off"
+        />
+        <input type="hidden" name={name} value={selected} />
+
+        {isOpen && (
+          <div className="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+            {filtered.length > 0 ? (
+              filtered.map((opt) => (
+                <div
+                  key={opt}
+                  onClick={() => handleSelect(opt)}
+                  className="px-4 py-3 text-sm text-slate-700 hover:bg-green-50 cursor-pointer border-b border-slate-50 last:border-0"
+                >
+                  {opt}
+                </div>
+              ))
+            ) : (
+              <div className="px-4 py-3 text-sm text-slate-400">No match found</div>
+            )}
+          </div>
+        )}
+
+        <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+          <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Textarea Field
 const TextAreaField = ({ name, label, rows = 3 }) => (
@@ -89,12 +132,12 @@ const NewUser = () => {
 
     try {
       const res = await axios.post("http://localhost:3000/employees/create", payload);
-      alert("User added successfully!");
+      toast.success("User added successfully!");
       console.log(res.data);
       form.reset();
     } catch (error) {
       console.error(error);
-      alert("Error adding user!");
+      toast.error("Error adding user!");
     }
   };
 
@@ -110,7 +153,7 @@ const NewUser = () => {
         <FormSection title="Basic Information">
           <InputField name="employeeName" label="Employee Name" placeholder="Full Name" />
           <InputField name="hrmsNo" label="HRMS Number" placeholder="EMP12345" />
-          <SelectField name="profileType" label="Profile Type" options={["Permanent", "Probation", "Contract"]} />
+          <SelectField name="profileType" label="Profile Type" options={["Teaching", "Non-teaching"]} />
           <SelectField name="gender" label="Gender" options={["Male", "Female", "Other"]} />
           <SelectField name="maritalStatus" label="Marital Status" options={["Single", "Married", "Divorced", "Widowed"]} />
         </FormSection>
@@ -125,12 +168,12 @@ const NewUser = () => {
         {/* Appointment */}
         <FormSection title="Appointment Details">
           <InputField name="currentAppointmentDate" label="Current Appointment Date" type="date" />
-          <SelectField name="currentAppointmentType" label="Current Appointment Type" options={["Regular", "Promotion", "Transfer"]} />
+          <SelectField name="currentAppointmentType" label="Current Appointment Type" options={["Permanent", "Probation"]} />
           <InputField name="firstAppointmentDate" label="First Appointment Date" type="date" />
           <InputField name="firstJoiningDate" label="First Joining Date" type="date" />
-          <SelectField name="firstAppointmentType" label="First Appointment Type" options={["Direct", "Quota"]} />
-          <SelectField name="employeeType" label="Employee Type" options={["Class I", "Class II", "Class III", "Class IV"]} />
-          <SelectField name="appointmentNature" label="Appointment Nature" options={["Permanent", "Temporary"]} />
+          <SelectField name="firstAppointmentType" label="First Appointment Type" options={["Permanent", "Probation"]} />
+          <SelectField name="employeeType" label="Employee Type" options={["Granted", "Non-Granted"]} />
+          <SelectField name="appointmentNature" label="Appointment Nature" options={["Full time", "Part time"]} />
         </FormSection>
 
         {/* Administrative */}
@@ -139,7 +182,7 @@ const NewUser = () => {
           <InputField name="approvalLetterDate" label="Approval Letter Date" type="date" />
           <InputField name="retirementDate" label="Retirement Date" type="date" />
           <InputField name="qualifications" label="Qualifications" placeholder="BSc, MSc, etc." />
-          <SelectField name="role" label="Role" options={["Employee", "Manager", "Admin"]} />
+          <SelectField name="role" label="Role" options={["user", "Manager", "Admin"]} />
         </FormSection>
 
         {/* Address */}
@@ -150,19 +193,19 @@ const NewUser = () => {
 
         {/* Branch */}
         <FormSection title="Branch Details">
-          <InputField name="branchName" label="Branch Name" />
-          <InputField name="branchRegionName" label="Branch Region Name" />
+          <SelectField name="branchName" label="Branch Name" options={BRANCHES} />
+          <SelectField name="branchRegionName" label="Branch Region Name" options={REGION} />
           <SelectField
             name="branchType"
             label="Branch Type"
-            options={["Head Office", "Regional Office", "Field Office"]}
+            options={BRANCH_TYPE}
           />
           <InputField name="branchJoiningDate" label="Branch Joining Date" type="date" />
         </FormSection>
 
         {/* Designation */}
         <FormSection title="Designation">
-          <InputField name="designation" label="Designation" />
+          <SelectField name="designation" label="Designation" options={DESIGNATIONS} />
         </FormSection>
 
         {/* Hidden Field */}
