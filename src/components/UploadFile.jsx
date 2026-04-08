@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from "react-toastify";
 
 export default function UploadComponent({
   maxFileSizeMB = 10,
@@ -29,10 +30,10 @@ export default function UploadComponent({
 }) {
 
   const [documents, setDocuments] = useState([
-    { id: 1, name: "dischargeCertificate", file: null, isMandatory: true },
-    { id: 2, name: "doctorPrescription", file: null, isMandatory: true },
-    { id: 3, name: "medicineBills", file: null, isMandatory: true },
-    { id: 4, name: "diagnosticReports", file: null, isMandatory: true },
+    { id: 1, name: "dischargeCertificate", file: null, previewUrl: null, isMandatory: true },
+    { id: 2, name: "doctorPrescription", file: null, previewUrl: null, isMandatory: true },
+    { id: 3, name: "medicineBills", file: null, previewUrl: null, isMandatory: true },
+    { id: 4, name: "diagnosticReports", file: null, previewUrl: null, isMandatory: true },
   ]);
 
   const [dynamicRows, setDynamicRows] = useState([]);
@@ -60,14 +61,33 @@ export default function UploadComponent({
       return;
     }
 
+    const docRecord = documents.find(d => d.id === docId) || dynamicRows.find(d => d.id === docId);
+
+    const previewUrl = URL.createObjectURL(file);
+
     // update state
     setDocuments(prev =>
-      prev.map(doc => (doc.id === docId ? { ...doc, file } : doc))
+      prev.map(doc => (doc.id === docId ? { ...doc, file, previewUrl } : doc))
     );
 
     setDynamicRows(prev =>
-      prev.map(row => (row.id === docId ? { ...row, file } : row))
+      prev.map(row => (row.id === docId ? { ...row, file, previewUrl } : row))
     );
+
+    if (docRecord) {
+      const formattedName = docRecord.name.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+      toast.success(`${formattedName} uploaded successfully.`);
+    }
+  };
+
+  const handleRemoveFile = (docId) => {
+    setDocuments(prev =>
+      prev.map(doc => (doc.id === docId ? { ...doc, file: null, previewUrl: null } : doc))
+    );
+    setDynamicRows(prev =>
+      prev.map(row => (row.id === docId ? { ...row, file: null, previewUrl: null } : row))
+    );
+    toast.info("Document removed successfully.");
   };
 
   // ------------------------ ADD/REMOVE ROWS --------------------------
@@ -81,7 +101,7 @@ export default function UploadComponent({
 
     setDynamicRows(prev => [
       ...prev,
-      { id: newId, name: `Document ${dynamicRows.length + 1}`, file: null, isMandatory: false }
+      { id: newId, name: `Document ${dynamicRows.length + 1}`, file: null, previewUrl: null, isMandatory: false }
     ]);
   };
 
@@ -143,7 +163,7 @@ export default function UploadComponent({
         urls[doc.name] = url;
       }
 
-      showAlert("Uploaded Successfully!", "success");
+      toast.success("All documents uploaded successfully! They are now ready for printing or final form submission.");
 
       const tempUpload = {...{
         id,
@@ -152,23 +172,6 @@ export default function UploadComponent({
         urls,
         length: allDocs.length
       }};
-
-      // onUpload({
-      //   id,
-      //   isUploaded: true,
-      //   applicantSignature: applicantSignatureUrl,
-      //   urls,
-      //   length: allDocs.length
-      // });
-
-      setDocuments([
-        { id: 1, name: "dischargeCertificate", file: null, isMandatory: true },
-        { id: 2, name: "doctorPrescription", file: null, isMandatory: true },
-        { id: 3, name: "medicineBills", file: null, isMandatory: true },
-        { id: 4, name: "diagnosticReports", file: null, isMandatory: true },
-      ]);
-
-      setDynamicRows([]);
 
       onUpload(tempUpload);
 
@@ -179,20 +182,17 @@ export default function UploadComponent({
   };
 
   // ------------------------ UI COMPONENT --------------------------
-  const DocumentCard = ({ doc, onFileUpload, onRemove }) => (
-    <Card sx={{ mb: 2, boxShadow: 2, borderRadius: 2 }}>
-      <CardContent>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
+  const DocumentCard = ({ doc, onFileUpload, onRemove, onFileRemove }) => (
+    <Card sx={{ mb: 2, boxShadow: 'none', border: '1px solid #e2e8f0', borderRadius: 2, backgroundColor: doc.file ? '#f0fdf4' : '#f8fafc' }}>
+      <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+        <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap={{ xs: 'wrap', sm: 'nowrap' }} gap={2}>
           <Box display="flex" alignItems="center" gap={2}>
-            <DescriptionIcon color="primary" />
+            <DescriptionIcon sx={{ color: doc.file ? '#22c55e' : '#94a3b8' }} />
             <Box>
-              <Typography variant="h6">{doc.name}</Typography>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#334155', lineHeight: 1.2 }}>{doc.name}</Typography>
               {doc.isMandatory && (
-                <Chip label="Required" color="error" size="small" sx={{ ml: 1 }} />
+                <Chip label="Required" size="small" sx={{ ml: 1, height: 20, fontSize: '0.65rem', backgroundColor: '#fee2e2', color: '#ef4444' }} />
               )}
-              <Typography variant="body2" color="text.secondary">
-                Allowed: JPG, JPEG, PNG
-              </Typography>
             </Box>
           </Box>
 
@@ -203,6 +203,7 @@ export default function UploadComponent({
                 label={doc.file.name}
                 color="success"
                 variant="outlined"
+                onDelete={() => onFileRemove(doc.id)}
               />
             ) : (
               <Button variant="contained" component="label" startIcon={<UploadIcon />}>
@@ -229,53 +230,68 @@ export default function UploadComponent({
 
   // ------------------------ RENDER --------------------------
   return (
-    <Box sx={{ maxWidth: 800, margin: "0 auto", p: 3 }}>
-      <Typography variant="h4" align="center">Document Upload</Typography>
+    <Box sx={{ width: '100%', mt: 4, pt: 4, borderTop: '2px dashed #e2e8f0', '@media print': { borderTop: 'none', mt: 0, pt: 0 } }}>
+      <Box sx={{ '@media print': { display: 'none' } }}>
+        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#1e293b' }}>
+          आवश्यक कागदपत्रे अपलोड करा (Upload Documents)
+        </Typography>
 
-      {alert.show && (
-        <Alert severity={alert.severity} sx={{ mb: 2 }}>
-          {alert.message}
-        </Alert>
-      )}
-
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-        <Typography variant="h6" color="primary">Required Documents</Typography>
-
-        {documents.map(doc => (
-          <DocumentCard
-            key={doc.id}
-            doc={doc}
-            onFileUpload={handleFileUpload}
-          />
-        ))}
-
-        {dynamicRows.length > 0 && (
-          <>
-            <Typography variant="h6" color="primary" sx={{ mt: 3 }}>
-              Additional Documents
-            </Typography>
-
-            {dynamicRows.map(doc => (
-              <DocumentCard
-                key={doc.id}
-                doc={doc}
-                onFileUpload={handleFileUpload}
-                onRemove={() => removeDynamicRow(doc.id)}
-              />
-            ))}
-          </>
+        {alert.show && (
+          <Alert severity={alert.severity} sx={{ mb: 2 }}>
+            {alert.message}
+          </Alert>
         )}
 
-        <Box display="flex" justifyContent="center" gap={2} mt={3}>
-          <Button variant="outlined" startIcon={<AddIcon />} onClick={addDynamicRow}>
-            Add Document ({dynamicRows.length}/5)
-          </Button>
+        <Paper elevation={0} sx={{ p: 0, pt: 1, backgroundColor: 'transparent' }}>
+          {documents.map(doc => (
+            <DocumentCard
+              key={doc.id}
+              doc={doc}
+              onFileUpload={handleFileUpload}
+              onFileRemove={handleRemoveFile}
+            />
+          ))}
 
-          <Button variant="contained" color="success" onClick={handleSubmit}>
-            Submit Documents
-          </Button>
-        </Box>
-      </Paper>
+          {dynamicRows.length > 0 && (
+            <>
+              <Typography variant="subtitle1" sx={{ mt: 3, mb: 1, fontWeight: 'bold', color: '#475569' }}>
+                Additional Documents
+              </Typography>
+
+              {dynamicRows.map(doc => (
+                <DocumentCard
+                  key={doc.id}
+                  doc={doc}
+                  onFileUpload={handleFileUpload}
+                  onRemove={() => removeDynamicRow(doc.id)}
+                  onFileRemove={handleRemoveFile}
+                />
+              ))}
+            </>
+          )}
+
+          <Box display="flex" justifyContent="flex-start" gap={2} mt={3}>
+            <Button variant="outlined" startIcon={<AddIcon />} onClick={addDynamicRow} sx={{ textTransform: 'none', borderColor: '#cbd5e1', color: '#475569' }}>
+              Add Extra Document ({dynamicRows.length}/5)
+            </Button>
+
+            <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ textTransform: 'none', backgroundColor: '#3b82f6', boxShadow: 'none' }}>
+              Submit All Documents
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
+
+      {/* Print rendering container mapping preview URLs to physical page ends */}
+      <Box sx={{ display: 'none', '@media print': { display: 'block', mt: 4 } }}>
+         {[...documents, ...dynamicRows].filter(d => d.previewUrl).map((doc, idx) => (
+             <div key={idx} style={{ pageBreakBefore: 'always', width: '100%', textAlign: 'center', paddingTop: '20px' }}>
+                <h2 style={{ marginBottom: '10px', fontSize: '1.5rem', fontWeight: 'bold' }}>{doc.name} Attachment</h2>
+                <img src={doc.previewUrl} alt={doc.name} style={{ maxWidth: '100%', maxHeight: '900px', objectFit: 'contain' }} />
+             </div>
+         ))}
+      </Box>
+
     </Box>
   );
 }

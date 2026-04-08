@@ -12,19 +12,19 @@ import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-// Create a green theme
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#16a34a", // green-600
-      light: "#4ade80", // green-400
-      dark: "#15803d", // green-700
-    },
-  },
-});
+import { getSchemeTheme } from "../../utils/schemeTheme";
 
 const UserProfile = () => {
+  const formType = localStorage.getItem("formType") || "welfare";
+  const schemeTheme = getSchemeTheme(formType);
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: schemeTheme.primary,
+      },
+    },
+  });
+
   const [user, setUser] = useState({});
   const [editFields, setEditFields] = useState({});
   const [snackbar, setSnackbar] = useState({
@@ -172,21 +172,21 @@ const UserProfile = () => {
         alignItems: "center",
         mb: 2,
         pb: 2,
-        borderBottom: "1px solid #dcfce7",
+        borderBottom: `1px solid ${schemeTheme.softBorder}`,
         transition: "all 0.3s",
         borderRadius: 1,
         px: 2,
         "&:hover": {
-          backgroundColor: "#f0fdf4",
+          backgroundColor: schemeTheme.softBackground,
         },
       }}
     >
       <Typography
-        sx={{
-          color: "#15803d",
-          fontWeight: 600,
-          width: "35%",
-          fontSize: "0.95rem",
+          sx={{
+            color: schemeTheme.primary,
+            fontWeight: 600,
+            width: "35%",
+            fontSize: "0.95rem",
         }}
       >
         {label}:
@@ -205,10 +205,10 @@ const UserProfile = () => {
             sx={{
               "& .MuiOutlinedInput-root": {
                 "&:hover fieldset": {
-                  borderColor: "#16a34a",
+                  borderColor: schemeTheme.primary,
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: "#16a34a",
+                  borderColor: schemeTheme.primary,
                 },
               },
             }}
@@ -223,9 +223,10 @@ const UserProfile = () => {
         onClick={() => toggleEdit(field)}
         sx={{
           color: "white",
-          backgroundColor: "#16a34a",
+          backgroundColor: schemeTheme.primary,
           "&:hover": {
-            backgroundColor: "#15803d",
+            filter: "brightness(0.92)",
+            backgroundColor: schemeTheme.primary,
           },
           transition: "all 0.2s",
           width: 36,
@@ -246,7 +247,7 @@ const UserProfile = () => {
           sx={{
             p: 4,
             borderRadius: 4,
-            border: "1px solid #bbf7d0",
+            border: `1px solid ${schemeTheme.panelBorder}`,
           }}
         >
           {/* Header Section */}
@@ -259,6 +260,7 @@ const UserProfile = () => {
               borderRadius: 3,
               mb: 4,
               boxShadow: 1,
+              background: schemeTheme.topbarBackground,
             }}
           >
             <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -275,11 +277,11 @@ const UserProfile = () => {
             <Typography
               variant="h6"
               sx={{
-                color: "#16a34a",
+                color: schemeTheme.primary,
                 fontWeight: 700,
                 mb: 3,
                 pb: 1,
-                borderBottom: "2px solid #16a34a",
+                borderBottom: `2px solid ${schemeTheme.primary}`,
               }}
             >
               Personal Information
@@ -300,11 +302,11 @@ const UserProfile = () => {
             <Typography
               variant="h6"
               sx={{
-                color: "#16a34a",
+                color: schemeTheme.primary,
                 fontWeight: 700,
                 mb: 3,
                 pb: 1,
-                borderBottom: "2px solid #16a34a",
+                borderBottom: `2px solid ${schemeTheme.primary}`,
               }}
             >
               Professional Information
@@ -325,11 +327,11 @@ const UserProfile = () => {
             <Typography
               variant="h6"
               sx={{
-                color: "#16a34a",
+                color: schemeTheme.primary,
                 fontWeight: 700,
                 mb: 3,
                 pb: 1,
-                borderBottom: "2px solid #16a34a",
+                borderBottom: `2px solid ${schemeTheme.primary}`,
               }}
             >
               Appointment & Important Dates

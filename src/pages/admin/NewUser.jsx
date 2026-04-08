@@ -3,6 +3,7 @@ import axios from "axios";
 import { Save } from "lucide-react";
 import { toast } from "react-toastify";
 import { BRANCHES, REGION, BRANCH_TYPE, DESIGNATIONS } from "../../utils/branches";
+import { getSchemeTheme } from "../../utils/schemeTheme";
 
 // Form Section Wrapper
 const FormSection = ({ title, children }) => (
@@ -120,6 +121,9 @@ const TextAreaField = ({ name, label, rows = 3 }) => (
 );
 
 const NewUser = () => {
+  const formType = localStorage.getItem("formType") || "welfare";
+  const schemeTheme = getSchemeTheme(formType);
+
   // API Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -215,8 +219,17 @@ const NewUser = () => {
         <div className="fixed bottom-6 right-8 z-40">
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full shadow-lg 
-            shadow-green-500/40 flex items-center gap-3 font-bold transition-all hover:scale-105"
+            className="text-white px-8 py-4 rounded-full shadow-lg flex items-center gap-3 font-bold transition-all hover:scale-105"
+            style={{
+              backgroundColor: schemeTheme.primary,
+              boxShadow: `0 18px 36px ${schemeTheme.primaryMuted}`,
+            }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.filter = "brightness(0.92)";
+            }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.filter = "brightness(1)";
+            }}
           >
             <Save size={20} />
             Submit Record

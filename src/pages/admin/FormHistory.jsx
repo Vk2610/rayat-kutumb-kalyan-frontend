@@ -4,20 +4,57 @@ import {
     Card,
     Grid,
     CircularProgress,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Divider,
+    Stack
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import FormHistoryCard from "../../components/FormHistoryCard";
+import FormDialog from "../../components/FormDialog";
+import { deleteFormEntry } from "../../services/form_services";
 
 export default function FormHistory() {
 
     const [isLoading, setLoading] = useState(true);
     const [forms, setForms] = useState([]);
     const [update, setUpdate] = useState(false);
+    const [selectedForm, setSelectedForm] = useState(null);
+    const [selectedDoc, setSelectedDoc] = useState(null);
     const location = useLocation();
     const { username, hrmsNo } = location.state;
+
+    const DetailRow = ({ label, value, isBold, isDoc, onDocClick }) => (
+        <Box sx={{ display: 'flex', py: 1.5, borderBottom: '1px solid #f0f0f0', alignItems: 'center' }}>
+            <Typography sx={{ width: '40%', color: 'text.secondary', fontWeight: 600 }}>{label}</Typography>
+            {isDoc ? (
+                 <Button variant="contained" size="small" onClick={onDocClick} sx={{ textTransform: 'none', backgroundColor: '#e2e8f0', color: '#1e293b', boxShadow: 'none', '&:hover': { backgroundColor: '#cbd5e1', boxShadow: 'none' }}}>
+                     View Document 📄
+                 </Button>
+            ) : (
+                <Typography sx={{ width: '60%', fontWeight: isBold ? 'bold' : 'normal', color: isBold ? 'primary.main' : 'text.primary' }}>
+                    {value || "-"}
+                </Typography>
+            )}
+        </Box>
+    );
+    
+    const SectionHeader = ({ title }) => (
+        <Typography variant="h6" sx={{ mt: 3, mb: 1, fontSize: '1.15rem', fontWeight: "bold", color: '#1e293b', backgroundColor: '#f8fafc', padding: '8px 12px', borderLeft: '4px solid #3b82f6', borderRadius: '4px' }}>
+            {title}
+        </Typography>
+    );
 
     const [stats, setStats] = useState({
         approved: 0,
@@ -48,6 +85,30 @@ export default function FormHistory() {
 
     const handleUpdate = () => {
         setUpdate(!update);
+    }
+
+    const handleDelete = async (requestId) => {
+        const shouldDelete = window.confirm(
+            "Are you sure you want to delete this application entry?"
+        );
+
+        if (!shouldDelete) {
+            return;
+        }
+
+        try {
+            await deleteFormEntry(requestId);
+            const updatedForms = forms.filter((form) => form.requestId !== requestId);
+            setForms(updatedForms);
+            getStats(updatedForms);
+
+            if (selectedForm?.requestId === requestId) {
+                setSelectedForm(null);
+            }
+        } catch (error) {
+            console.error("Error deleting form entry:", error);
+            alert("Failed to delete form entry");
+        }
     }
 
     const getStats = (data) => {
@@ -162,17 +223,171 @@ export default function FormHistory() {
                             ))}
                         </Grid>
 
-                        {/* Timeline Section */}
-                        <Box sx={{ width: "100%", mt: 1 }}>
-                            {forms.map((form) => (
-                                <FormHistoryCard 
-                                    key={form.requestId} 
-                                    data={form} 
-                                    statusColor={getStatusColor(form.formStatus)} 
-                                    handleUpdate={handleUpdate}
-                                />
-                            ))}
-                        </Box>
+                        {/* Table Section */}
+                        <TableContainer component={Paper} sx={{ mt: 1, boxShadow: "0 2px 6px rgba(0,0,0,0.1)", borderRadius: 2 }}>
+                            <Table>
+                                <TableHead sx={{ backgroundColor: "#f3f4f6" }}>
+                                    <TableRow>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Patient Name</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Relation</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Disease</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Req Amt</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Appr Amt</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold', minWidth: '350px' }}>Actions</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {forms.map((form) => (
+                                        <TableRow key={form.requestId}>
+                                            <TableCell>{form.patientName}</TableCell>
+                                            <TableCell>{form.relation}</TableCell>
+                                            <TableCell>{form.formDate}</TableCell>
+                                            <TableCell>{form.illnessNature}</TableCell>
+                                            <TableCell>{form.requestedAmountNumbers}</TableCell>
+                                            <TableCell>{form.approvedAmount}</TableCell>
+                                            <TableCell sx={{ color: getStatusColor(form.formStatus), fontWeight: 600 }}>
+                                                {form.formStatus}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Stack direction="row" spacing={1}>
+                                                    <Button variant="outlined" size="small" onClick={() => setSelectedForm(form)}>
+                                                        View Details
+                                                    </Button>
+                                                    <FormDialog
+                                                        handleUpdate={handleUpdate}
+                                                        data={{ requestId: form.requestId, title: "Status", type: "dropdown", options: ["Approved", "Rejected", "Pending"] }}
+                                                        isDisabled={form.formStatus !== 'Pending'}
+                                                    />
+                                                    <FormDialog
+                                                        data={{ requestId: form.requestId, title: "Approved Amount", type: "number" }}
+                                                        handleUpdate={handleUpdate}
+                                                        isDisabled={form.formStatus !== 'Pending'}
+                                                    />
+                                                    <Button
+                                                        variant="outlined"
+                                                        color="error"
+                                                        size="small"
+                                                        onClick={() => handleDelete(form.requestId)}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </Stack>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+
+                        {/* View Details Dialog */}
+                        <Dialog open={!!selectedForm} onClose={() => setSelectedForm(null)} maxWidth="md" fullWidth>
+                            {selectedForm && (
+                                <>
+                                    <DialogTitle sx={{ backgroundColor: "#1e293b", color: "#fff", fontWeight: "bold", fontSize: "1.3rem" }}>
+                                        Application Details <span style={{fontSize: "1rem", float: "right", backgroundColor: getStatusColor(selectedForm.formStatus), padding: "4px 12px", borderRadius: "20px"}}>{selectedForm.formStatus}</span>
+                                    </DialogTitle>
+                                    <DialogContent sx={{ mt: 1, backgroundColor: '#ffffff' }}>
+                                        
+                                        <SectionHeader title="Applicant Details" />
+                                        <DetailRow label="HRMS No" value={selectedForm.hrmsNo} />
+                                        <DetailRow label="Name" value={selectedForm.applicantName} />
+                                        <DetailRow label="Branch" value={selectedForm.branchName} />
+                                        <DetailRow label="Joining Date" value={selectedForm.joiningDate} />
+                                        <DetailRow label="Designation" value={selectedForm.designation} />
+                                        <DetailRow label="Total Service" value={selectedForm.totalService} />
+                                        <DetailRow label="Monthly Salary" value={selectedForm.monthlySalary} />
+                                        <DetailRow label="Mobile No" value={selectedForm.mobile} />
+
+                                        <SectionHeader title="Patient Details" />
+                                        <DetailRow label="Patient Name" value={selectedForm.patientName} />
+                                        <DetailRow label="Relation" value={selectedForm.relation} />
+                                        <DetailRow label="Illness Nature" value={selectedForm.illnessNature} />
+                                        <DetailRow label="Illness Duration" value={selectedForm.illnessDuration} />
+
+                                        <SectionHeader title="Expenses Details" />
+                                        <DetailRow label="Medicine Bill" value={`₹${selectedForm.medicineBill}`} />
+                                        <DetailRow label="Doctor Bill" value={`₹${selectedForm.doctorBill}`} />
+                                        <DetailRow label="Other Expenses" value={`₹${selectedForm.otherExpenses}`} />
+                                        <DetailRow label="Total Expenses" value={`₹${selectedForm.totalExpenses}`} isBold={true} />
+                                        <DetailRow label="Certificates Attached" value={selectedForm.certificatesAttached} />
+
+                                        <SectionHeader title="Previous Funds & Deductions" />
+                                        <DetailRow label="Previous Help Recv." value={selectedForm.previousHelp} />
+                                        {selectedForm.previousHelp === 'होय' && (
+                                            <DetailRow label="Previous Help Details" value={selectedForm.previousHelpDetails} />
+                                        )}
+                                        <DetailRow label="Annual Deductions Agreement" value={selectedForm.annualDeductions} />
+
+                                        <SectionHeader title="Bank & Request Details" />
+                                        <DetailRow label="Deposit Branch" value={selectedForm.branchNameForDeposit} />
+                                        <DetailRow label="Savings Account No" value={selectedForm.savingsAccountNo} />
+                                        <DetailRow label="Officer Recommendation" value={selectedForm.officerRecommendation} />
+                                        <DetailRow label="Requested Amount (Num)" value={`₹${selectedForm.requestedAmountNumbers}`} isBold={true} />
+                                        <DetailRow label="Requested Amount (Words)" value={selectedForm.requestedAmountWords} />
+                                        <DetailRow label="Approved Amount" value={`₹${selectedForm.approvedAmount}`} isBold={true} />
+
+                                        <SectionHeader title="Uploaded Documents" />
+                                        {[
+                                            { key: 'dischargeCertificate', label: 'Discharge Certificate' },
+                                            { key: 'doctorPrescription', label: 'Doctor Prescription' },
+                                            { key: 'docsMedicineBills', label: 'Medicine Bills' },
+                                            { key: 'diagnosticReports', label: 'Diagnostic Reports' },
+                                            { key: 'otherDoc1', label: 'Other Document 1' },
+                                            { key: 'otherDoc2', label: 'Other Document 2' },
+                                            { key: 'otherDoc3', label: 'Other Document 3' },
+                                            { key: 'otherDoc4', label: 'Other Document 4' },
+                                            { key: 'otherDoc5', label: 'Other Document 5' },
+                                        ].map((doc) => {
+                                            if (!selectedForm[doc.key]) return null;
+                                            return (
+                                                <DetailRow 
+                                                    key={doc.key} 
+                                                    label={doc.label} 
+                                                    isDoc={true} 
+                                                    onDocClick={() => setSelectedDoc(selectedForm[doc.key])} 
+                                                />
+                                            )
+                                        })}
+
+                                        <SectionHeader title="Applicant Signature" />
+                                        <Box sx={{ p: 2, display: 'flex', justifyContent: 'center' }}>
+                                            {selectedForm.applicantSignature ? (
+                                                <img src={selectedForm.applicantSignature} alt="Applicant Signature" style={{ maxHeight: '150px', maxWidth: '100%', objectFit: 'contain', border: '1px dashed #ccc', padding: '10px' }} />
+                                            ) : (
+                                                <Typography variant="body2" color="textSecondary">No signature provided.</Typography>
+                                            )}
+                                        </Box>
+
+                                    </DialogContent>
+                                    <DialogActions sx={{ p: 2, backgroundColor: "#f1f5f9" }}>
+                                        <Button onClick={() => setSelectedForm(null)} variant="outlined" sx={{ color: "#0f172a", borderColor: "#cbd5e1", '&:hover': { backgroundColor: "#e2e8f0" } }}>
+                                            Close Form
+                                        </Button>
+                                    </DialogActions>
+                                </>
+                            )}
+                        </Dialog>
+
+                        {/* Document Viewer Dialog */}
+                        <Dialog open={!!selectedDoc} onClose={() => setSelectedDoc(null)} maxWidth="lg" fullWidth sx={{ zIndex: 1400 }}>
+                            <DialogTitle sx={{ backgroundColor: "#0f172a", color: "#fff", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                Document Viewer
+                                <Button onClick={() => setSelectedDoc(null)} sx={{ color: "#fff", minWidth: 'auto', p: 1 }}>Close Modal ✕</Button>
+                            </DialogTitle>
+                            <DialogContent sx={{ p: 0, height: '85vh', backgroundColor: '#e2e8f0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                {selectedDoc && (
+                                    <iframe 
+                                        src={selectedDoc} 
+                                        width="100%" 
+                                        height="100%" 
+                                        style={{ border: 'none' }} 
+                                        title="Document Detail"
+                                    />
+                                )}
+                            </DialogContent>
+                        </Dialog>
                     </>
             }
         </Box>

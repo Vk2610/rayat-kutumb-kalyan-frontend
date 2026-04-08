@@ -34,7 +34,14 @@
   gap: 40px;
   max-width: 1000px;
   width: 100%;
+  align-items: start;
   animation: slideUp 0.8s ease-out;
+}
+
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .card {
@@ -102,6 +109,82 @@
   transform: scale(0.98);
 }
 
+.scheme-info-box {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.scheme-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.scheme-info-header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.language-toggle {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #14532d 0%, #15803d 100%);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 16px rgba(21, 128, 61, 0.2);
+}
+
+.language-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.scheme-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scheme-info-text p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  min-height: auto;
+  text-align: left;
+}
+
+.scheme-pdf-link {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 16px;
+  border-radius: 12px;
+  background: #eef2ff;
+  color: #3730a3;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.scheme-pdf-link:hover {
+  background: #e0e7ff;
+  transform: translateY(-1px);
+}
+
 /* Animations */
 @keyframes slideDown {
   from {
@@ -147,6 +230,16 @@
 
   .card h2 {
     font-size: 1.3rem;
+  }
+
+  .scheme-info-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .language-toggle,
+  .scheme-pdf-link {
+    width: 100%;
   }
 }
 

@@ -6,11 +6,14 @@ import Sidebar from "../../components/Sidebar";
 import { Outlet } from 'react-router-dom';
 import { ADMIN_LINKS, USER_LINKS } from "../../utils/Links";
 import { jwtDecode } from "jwt-decode";
+import { getSchemeTheme } from "../../utils/schemeTheme";
 
 const HomePage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [links, setLinks] = useState(ADMIN_LINKS);
   const navigate = useNavigate();
+  const formType = localStorage.getItem("formType") || "welfare";
+  const schemeTheme = getSchemeTheme(formType);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -51,7 +54,14 @@ const HomePage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        background: schemeTheme.shellBackground,
+      }}
+    >
       <Topbar toggleDrawer={toggleDrawer} onLogout={handleLogout} />
       <Box sx={{ display: "flex", flexGrow: 1, pt: "64px" }}>
         <Sidebar 
@@ -64,6 +74,7 @@ const HomePage = () => {
           sx={{
             flexGrow: 1,
             p: 3,
+            minHeight: "calc(100vh - 64px)",
             transition: "margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
             marginLeft: sidebarOpen ? "250px" : 0,
           }}

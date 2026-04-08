@@ -14,7 +14,7 @@ import LandingPage from "./pages/common/LandingPage.jsx";
 
 import UserProfile from "./pages/user/UserProfile.jsx";
 import SevakWelfareForm from "./pages/user/WelfareForm.jsx";
-import UserApplicationHistory from "./pages/user/UserApplicationHistory.jsx";
+import MyApplications from "./pages/user/MyApplications.jsx";
 
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
 import ManageFunds from "./pages/admin/ManageFunds";
@@ -26,7 +26,7 @@ import FormHistory from "./pages/admin/FormHistory.jsx";
 import NewUser from "./pages/admin/NewUser.jsx";
 import UpdateUser from "./pages/admin/UpdateUser.jsx";
 import ViewProfile from "./pages/admin/ViewProfile.jsx";
-import ApprovedApplications from "./pages/admin/ApprovedApplications.jsx";
+import ApprovedApplications from "./pages/admin/ApprovedApplicationsPage.jsx";
 
 import { jwtDecode } from "jwt-decode";
 
@@ -82,7 +82,7 @@ const App = () => {
             <Route index element={<Navigate to="profile" replace />} />
             <Route path="wf-form" element={<SevakWelfareForm />} />
             <Route path="profile" element={<UserProfile />} />
-            <Route path="my-applications" element={<UserApplicationHistory />} />
+            <Route path="my-applications" element={<MyApplications />} />
           </Route>
 
           {/* Admin Routes */}
@@ -99,7 +99,7 @@ const App = () => {
             <Route path="update-user" element={<UpdateUser />} />
             <Route path="view-profile" element={<ViewProfile />} />
             <Route path="rkky-profile" element={<AdminProfile />} />
-            <Route path="welfare-profile" element={<UserProfile />} />
+            <Route path="welfare-profile" element={<AdminProfile />} />
             <Route path="manage-funds" element={<ManageFunds />} />
             <Route path="data-entry" element={<DataEntry />} />
             <Route path="wf-form" element={<SevakWelfareForm />} />

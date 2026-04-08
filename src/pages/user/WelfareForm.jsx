@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import UploadFile from "../../components/UploadFile";
 import { v4 as uuidv4 } from 'uuid';
@@ -56,6 +56,17 @@ export default function SevakWelfareForm() {
     const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
   };
+
+  useEffect(() => {
+    const med = Number(form.medicineBill) || 0;
+    const doc = Number(form.doctorBill) || 0;
+    const oth = Number(form.otherExpenses) || 0;
+    const total = med + doc + oth;
+    
+    if (form.totalExpenses !== total) {
+      setForm((prev) => ({ ...prev, totalExpenses: total }));
+    }
+  }, [form.medicineBill, form.doctorBill, form.otherExpenses]);
 
   const handleSignatureUpload = (e) => {
     const file = e.target.files[0];
@@ -473,8 +484,8 @@ export default function SevakWelfareForm() {
                   name="totalExpenses"
                   type="number"
                   value={form.totalExpenses}
-                  onChange={handleChange}
-                  className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
+                  readOnly
+                  className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent text-gray-500 cursor-not-allowed"
                   placeholder="___________________"
                 />
               </div>
@@ -623,36 +634,43 @@ export default function SevakWelfareForm() {
 
           {/* applicant signature at right side */}
           <div
-            className="mb-6 text-base flex justify-end"
+            className="mb-6 mt-8 flex justify-end"
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
-            <div className="text-right">
-              <p className="mb-2">अर्जदाराची सही :</p>
-              <div className="mb-3">
+            <div className="w-64">
+              <p className="mb-2 text-right font-medium text-lg text-gray-800">अर्जदाराची सही :</p>
+              
+              <label className="flex flex-col items-center justify-center border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 rounded-lg p-4 cursor-pointer transition w-full h-full text-center">
+                {!signaturePreview ? (
+                  <>
+                    <span className="text-gray-600 block mb-1">Click to Upload Signature</span>
+                    <span className="text-sm text-gray-500">(Image or PDF max 5MB)</span>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <img
+                      src={signaturePreview}
+                      alt="Signature Preview"
+                      className="max-h-24 object-contain mb-2"
+                    />
+                    <span className="text-sm text-blue-600 font-semibold truncate w-full px-2">
+                       Change Signature
+                    </span>
+                  </div>
+                )}
                 <input
                   type="file"
                   accept="image/*,.pdf"
                   onChange={handleSignatureUpload}
-                  className="text-base"
+                  className="hidden"
                 />
-              </div>
-              {signaturePreview && (
-                <div className="mb-2 border border-gray-300 p-2 rounded">
-                  <img
-                    src={signaturePreview}
-                    alt="Signature Preview"
-                    className="max-h-20 max-w-32"
-                  />
-                </div>
-              )}
-              {form.applicantSignature && (
-                <p className="text-base text-gray-600">
+              </label>
+
+              {form.applicantSignature && !signaturePreview && (
+                <p className="text-sm text-gray-600 mt-2 text-center truncate">
                   📎 {form.applicantSignature.name}
                 </p>
               )}
-              <p className="text-base text-gray-500 mt-1">
-                (Image or PDF max 5MB)
-              </p>
             </div>
           </div>
 
@@ -669,7 +687,7 @@ export default function SevakWelfareForm() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="bg-green-700 text-white px-4 py-2 text-xl rounded-md hover:bg-green-800 focus:outline-none transition"
+              className="bg-green-600 text-white px-4 py-2 text-xl rounded-md hover:bg-green-700 focus:outline-none transition shadow-lg shadow-green-500/30"
             >
               ✓ Submit
             </button>

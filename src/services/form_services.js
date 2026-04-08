@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosInstance from "../pages/admin/axiosInstance";
 
 export const updateFormStatus = async (status, id) => {
     try {
@@ -29,3 +30,25 @@ export const updateApprovalAmount = async (amount, id) => {
         alert('Error updating apprroval amount');
     }
 }
+
+export const getApprovedApplications = async (params = {}) => {
+    const response = await axiosInstance.get("/api/applications", {
+        params,
+    });
+
+    return response.data;
+};
+
+export const deleteFormEntry = async (id) => {
+    await axios.delete(`http://localhost:3000/admin/delete-form/${id}`);
+    return true;
+};
+
+export const updateApprovedApplicationAmount = async (id, payload) => {
+    const response = await axiosInstance.patch(
+        `/api/applications/${id}/approve-amount`,
+        payload
+    );
+
+    return response.data;
+};

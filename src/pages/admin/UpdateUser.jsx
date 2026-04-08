@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Save, Search } from "lucide-react";
 import dayjs from "dayjs";
+import { getSchemeTheme } from "../../utils/schemeTheme";
 
 /* ----------------------- Helpers ----------------------- */
 
@@ -110,6 +111,8 @@ const TextAreaField = ({ name, label, value, onChange }) => (
 /* ----------------------- Main Page ----------------------- */
 
 export default function UpdateUser() {
+  const formType = localStorage.getItem("formType") || "welfare";
+  const schemeTheme = getSchemeTheme(formType);
   const [searchInput, setSearchInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -196,7 +199,17 @@ export default function UpdateUser() {
           <button
             type="button"
             onClick={handleSearch}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl shadow-md flex items-center gap-2"
+            className="text-white px-6 py-3 rounded-xl shadow-md flex items-center gap-2 transition-all"
+            style={{
+              backgroundColor: schemeTheme.primary,
+              boxShadow: `0 12px 24px ${schemeTheme.primaryMuted}`,
+            }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.filter = "brightness(0.92)";
+            }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.filter = "brightness(1)";
+            }}
           >
             <Search size={18} /> Search
           </button>
@@ -459,8 +472,17 @@ export default function UpdateUser() {
         <div className="flex justify-end mt-6">
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl 
-            shadow-lg shadow-green-500/40 flex items-center gap-3 font-bold transition-all hover:scale-105"
+            className="text-white px-8 py-4 rounded-xl shadow-lg flex items-center gap-3 font-bold transition-all hover:scale-105"
+            style={{
+              backgroundColor: schemeTheme.primary,
+              boxShadow: `0 18px 36px ${schemeTheme.primaryMuted}`,
+            }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.filter = "brightness(0.92)";
+            }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.filter = "brightness(1)";
+            }}
           >
             <Save size={20} />
             Update User

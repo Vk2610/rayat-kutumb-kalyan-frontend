@@ -11,7 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { updateFormStatus } from "../services/form_services";
 
-export default function FormApprovalCard({ requestId, username, formDate, disease, patientName, relation, requestedAmount }) {
+export default function FormApprovalCard({ form, requestId, username, formDate, disease, patientName, relation, requestedAmount }) {
 
     const navigate = useNavigate();
 
@@ -135,12 +135,7 @@ export default function FormApprovalCard({ requestId, username, formDate, diseas
                         onClick={() => navigate("/admin/form-approval-details", {
                             state: {
                                 requestId,
-                                username,
-                                formDate,
-                                disease,
-                                patientName,
-                                relation,
-                                requestedAmount
+                                form: form || {}
                             }
                         })}
                         sx={{ minWidth: 120, fontWeight: 700 }}
@@ -152,3 +147,4 @@ export default function FormApprovalCard({ requestId, username, formDate, diseas
         </Card>
     );
 }
+

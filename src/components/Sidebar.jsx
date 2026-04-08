@@ -9,19 +9,21 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { handleLogout } from "../utils/Links";
+import { getSchemeTheme } from "../utils/schemeTheme";
 
 export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const formType = localStorage.getItem('formType');
+  const formType = localStorage.getItem('formType') || "welfare";
+  const schemeTheme = getSchemeTheme(formType);
 
   const DrawerList = (
     <Box
       sx={{
         width: 250,
         height: "100%",
-        backgroundColor: "#fff",
-        borderRight: "1px solid rgba(0, 0, 0, 0.12)",
+        background: schemeTheme.sidebarBackground,
+        borderRight: `1px solid ${schemeTheme.sidebarBorder}`,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -42,15 +44,15 @@ export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
                   selected={location.pathname === item.Path}
                   sx={{
                     "&:hover": {
-                      backgroundColor: "rgba(7, 170, 23, 0.08)",
+                      backgroundColor: schemeTheme.hoverBackground,
                     },
                     "&.Mui-selected": {
-                      backgroundColor: "rgba(7, 170, 23, 0.12)",
+                      backgroundColor: schemeTheme.selectedBackground,
                       "&:hover": {
-                        backgroundColor: "rgba(7, 170, 23, 0.16)",
+                        backgroundColor: schemeTheme.selectedHoverBackground,
                       },
                     },
-                    borderRadius: 1,
+                    borderRadius: 2,
                     mx: 1,
                     width: "calc(100% - 16px)",
                   }}
@@ -60,8 +62,8 @@ export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
                       style={{
                         color:
                           location.pathname === item.Path
-                            ? "rgb(7, 170, 23)"
-                            : "rgba(7, 170, 23, 0.7)",
+                            ? schemeTheme.primary
+                            : schemeTheme.primaryMuted,
                       }}
                     />
                   </ListItemIcon>
@@ -72,7 +74,7 @@ export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
                         fontWeight: location.pathname === item.Path ? 600 : 500,
                         color:
                           location.pathname === item.Path
-                            ? "rgb(7, 170, 23)"
+                            ? schemeTheme.primary
                             : "rgb(51, 51, 51)",
                       },
                     }}
@@ -86,7 +88,7 @@ export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
 
       {/* Logout Button at Bottom */}
       <List
-        sx={{ mt: "auto", borderTop: 1, borderColor: "rgba(0, 0, 0, 0.12)" }}
+        sx={{ mt: "auto", borderTop: 1, borderColor: schemeTheme.sidebarBorder }}
       >
         <ListItem disablePadding>
           <ListItemButton
@@ -134,4 +136,3 @@ export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
     </Drawer>
   );
 }
-

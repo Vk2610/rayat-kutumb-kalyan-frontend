@@ -20,6 +20,13 @@ export const USER_LINKS = [
         icon: FaWpforms,
         formType: "common",
     },
+    {
+        key: "MyApplications",
+        label: "My Applications",
+        Path: "/user/my-applications",
+        icon: MdHistory,
+        formType: "welfare",
+    },
 ];
 
 // ---------------- SUB-ADMIN LINKS ----------------
@@ -82,6 +89,13 @@ export const ADMIN_LINKS = [
         label: "Form Approval",
         Path: "/admin/form-approval",
         icon: GiReceiveMoney,
+        formType: "welfare",
+    },
+    {
+        key: "ApprovedApplications",
+        label: "Approved Applications",
+        Path: "/admin/approved-applications",
+        icon: FaSearchLocation,
         formType: "welfare",
     },
     // {

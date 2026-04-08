@@ -10,6 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { handleLogout } from "../utils/Links";
 import { useNavigate } from "react-router-dom";
+import { getSchemeTheme } from "../utils/schemeTheme";
 export default function Topbar({ toggleDrawer }) {
   const navigate = useNavigate();
   const [auth, setAuth] = React.useState(true);
@@ -31,13 +32,16 @@ export default function Topbar({ toggleDrawer }) {
     setAnchorEl(null);
   };
 
+  const formType = localStorage.getItem("formType") || "welfare";
+  const schemeTheme = getSchemeTheme(formType);
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
         style={{
-          backgroundColor: "rgb(7, 170, 23)",
+          background: schemeTheme.topbarBackground,
         }}
       >
         <Toolbar>
@@ -52,7 +56,7 @@ export default function Topbar({ toggleDrawer }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Rayat Kutumb Kalyan Yojana
+            {schemeTheme.title}
           </Typography>
           {auth && (
             <div>
@@ -85,7 +89,7 @@ export default function Topbar({ toggleDrawer }) {
                   onClick={handleProfile}
                   sx={{
                     "&:hover": {
-                      backgroundColor: "rgba(7, 170, 23, 0.08)",
+                      backgroundColor: schemeTheme.menuHoverBackground,
                     },
                   }}
                 >
