@@ -27,6 +27,7 @@ import NewUser from "./pages/admin/NewUser.jsx";
 import UpdateUser from "./pages/admin/UpdateUser.jsx";
 import ViewProfile from "./pages/admin/ViewProfile.jsx";
 import ApprovedApplications from "./pages/admin/ApprovedApplicationsPage.jsx";
+import ReportGenerationPage from "./pages/admin/ReportGenerationPage.jsx";
 
 import { jwtDecode } from "jwt-decode";
 
@@ -110,6 +111,10 @@ const App = () => {
             <Route
               path="approved-applications"
               element={<ApprovedApplications />}
+            />
+            <Route
+              path="report-generation"
+              element={<ReportGenerationPage />}
             />
           </Route>
 

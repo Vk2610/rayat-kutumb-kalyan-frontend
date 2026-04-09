@@ -39,6 +39,22 @@ export const getApprovedApplications = async (params = {}) => {
     return response.data;
 };
 
+export const getReportApplications = async (params = {}) => {
+    const response = await axiosInstance.get("/api/applications/reports", {
+        params,
+    });
+
+    return response.data;
+};
+
+export const getFormDetailByRequestId = async (requestId) => {
+    const response = await axiosInstance.get("/admin/get-form-detail", {
+        params: { requestId },
+    });
+
+    return response.data;
+};
+
 export const deleteFormEntry = async (id) => {
     await axios.delete(`http://localhost:3000/admin/delete-form/${id}`);
     return true;

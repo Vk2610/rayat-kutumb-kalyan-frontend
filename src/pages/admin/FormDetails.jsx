@@ -52,7 +52,7 @@ export default function FormDetails() {
     const [previewUrl, setPreviewUrl] = useState(null);
     const [approving, setApproving] = useState(false);
 
-    const { requestId, form } = location.state || {};
+    const { requestId, form, returnTo = "/admin/form-approval" } = location.state || {};
 
     if (!requestId || !form) {
         return (
@@ -67,12 +67,12 @@ export default function FormDetails() {
         setApproving(true);
         const res = await updateFormStatus("Approved", requestId);
         setApproving(false);
-        if (res) navigate("/admin/form-approval", { replace: true });
+        if (res) navigate(returnTo, { replace: true });
     };
 
     const handleReject = async () => {
         await updateFormStatus("Rejected", requestId);
-        navigate("/admin/form-approval", { replace: true });
+        navigate(returnTo, { replace: true });
     };
 
     const docFields = [
@@ -92,7 +92,7 @@ export default function FormDetails() {
 
             {/* Header bar */}
             <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-                <Button variant="text" onClick={() => navigate("/admin/form-approval")} sx={{ color: "#64748b" }}>
+                <Button variant="text" onClick={() => navigate(returnTo)} sx={{ color: "#64748b" }}>
                     ← Back
                 </Button>
                 <Typography variant="h5" sx={{ fontWeight: 700, color: "#0f172a" }}>

@@ -50,7 +50,10 @@ const ManageFunds = () => {
         retirementDateFormatted: u.retirementDate
           ? retirement.format('DD/MM/YYYY')
           : '—',
-        status: retirement.isValid() && retirement.isAfter(today) ? 'Active' : 'Retired',
+        status:
+          retirement.isValid() && retirement.isAfter(today)
+            ? 'Active'
+            : 'Retired',
       };
     });
 
@@ -162,18 +165,31 @@ const ManageFunds = () => {
   // -------------------------------
   // 🔹 Search + Filter Logic
   // -------------------------------
+
   const sourceUsers =
-    filterType === 'claimed' || filterType === 'lowInstallment' ? users : allUsers;
+    filterType === 'claimed' ||
+    filterType === 'lowInstallment' ||
+    filterType === 'retiredUsers'
+      ? users
+      : allUsers;
 
   const filteredUsers = sourceUsers.filter((u) => {
     const matchesSearch =
       (u.employeeName || '').toLowerCase().includes(search.toLowerCase()) ||
       u.hrmsNo.includes(search);
 
-    if (filterType === 'all' || filterType === 'claimed' || filterType === 'lowInstallment') return matchesSearch;
+    if (
+      filterType === 'all' ||
+      filterType === 'claimed' ||
+      filterType === 'lowInstallment'
+    )
+      return matchesSearch;
 
     if (filterType === 'retiring')
       return matchesSearch && retiringIn60(u.retirementDate);
+
+    if (filterType === 'retiredUsers')
+      return matchesSearch && u.status === 'Retired';
 
     return matchesSearch;
   });
@@ -224,9 +240,7 @@ const ManageFunds = () => {
               if (v === 'claimed') {
                 try {
                   setLoading(true);
-
                   const token = localStorage.getItem('token');
-
                   const res = await axios.get(
                     'http://localhost:3000/admin/funds-users?type=claimed',
                     {
@@ -235,7 +249,6 @@ const ManageFunds = () => {
                       },
                     },
                   );
-
                   const data = res.data?.users || [];
                   setUsers(processUsers(data));
                 } catch (err) {
@@ -249,9 +262,7 @@ const ManageFunds = () => {
               if (v === 'lowInstallment') {
                 try {
                   setLoading(true);
-
                   const token = localStorage.getItem('token');
-
                   const res = await axios.get(
                     'http://localhost:3000/admin/funds-users?type=lowPaid',
                     {
@@ -260,7 +271,6 @@ const ManageFunds = () => {
                       },
                     },
                   );
-
                   const data = res.data?.users || [];
                   setUsers(processUsers(data));
                 } catch (err) {
@@ -268,6 +278,12 @@ const ManageFunds = () => {
                 } finally {
                   setLoading(false);
                 }
+              }
+
+              // ✅ Retired Users (local filter)
+              if (v === 'retiredUsers') {
+                // No API call needed, just filter locally
+                setUsers(processUsers(allUsers));
               }
 
               // ✅ When switching back to ALL users
@@ -288,11 +304,22 @@ const ManageFunds = () => {
             <ToggleButton value="retiring">Retiring in 60 Days</ToggleButton>
             <ToggleButton value="claimed">Fully Paid</ToggleButton>
             <ToggleButton value="lowInstallment">Paid &lt; ₹5000</ToggleButton>
+            <ToggleButton value="retiredUsers">Retired Users</ToggleButton>
           </ToggleButtonGroup>
 
           {/* 🔹 SEARCH BAR */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              mb: 3,
+              flexWrap: 'wrap',
+            }}
+          >
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}
+            >
               <TextField
                 fullWidth
                 label="Search by Name or HRMS No"
@@ -312,14 +339,17 @@ const ManageFunds = () => {
                 <FaSearch />
               </IconButton>
             </Box>
-            
+
             {filterType === 'retiring' && (
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button
                   variant="contained"
                   startIcon={<FaFilePdf />}
                   onClick={handleExportPDF}
-                  sx={{ background: '#dc2626', '&:hover': { background: '#b91c1c' } }}
+                  sx={{
+                    background: '#dc2626',
+                    '&:hover': { background: '#b91c1c' },
+                  }}
                 >
                   Export PDF
                 </Button>
@@ -327,7 +357,10 @@ const ManageFunds = () => {
                   variant="contained"
                   startIcon={<FaFileExcel />}
                   onClick={handleExportExcel}
-                  sx={{ background: '#16a34a', '&:hover': { background: '#15803d' } }}
+                  sx={{
+                    background: '#16a34a',
+                    '&:hover': { background: '#15803d' },
+                  }}
                 >
                   Export Excel
                 </Button>

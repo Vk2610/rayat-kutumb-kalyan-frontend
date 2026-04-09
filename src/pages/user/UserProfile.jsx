@@ -253,14 +253,13 @@ const UserProfile = () => {
           {/* Header Section */}
           <Box
             sx={{
-              background: "linear-gradient(to right, #16a34a, #4ade80)",
+              background: schemeTheme.topbarBackground,
               color: "white",
               textAlign: "center",
               py: 3,
               borderRadius: 3,
               mb: 4,
               boxShadow: 1,
-              background: schemeTheme.topbarBackground,
             }}
           >
             <Typography variant="h4" fontWeight="bold" gutterBottom>

@@ -1,12 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import { useEffect, useMemo, useState } from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   InputAdornment,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -16,36 +18,37 @@ import {
   TableRow,
   TextField,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import {
   FaDownload,
   FaPrint,
   FaSearch,
   FaSortAmountDown,
   FaSortAmountUp,
-} from "react-icons/fa";
+} from 'react-icons/fa';
+import { REGION } from '../../utils/branches';
 import {
   getApprovedApplications,
   updateApprovedApplicationAmount,
-} from "../../services/form_services";
+} from '../../services/form_services';
 
 const DEFAULT_SORT = {
-  sortBy: "formDate",
-  sortOrder: "desc",
+  sortBy: 'formDate',
+  sortOrder: 'desc',
 };
 
 const formatCurrency = (value) => {
   const numericValue = Number(value || 0);
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
     maximumFractionDigits: 2,
   }).format(numericValue);
 };
 
 const formatPdfCurrency = (value) => {
   const numericValue = Number(value || 0);
-  return `Rs. ${numericValue.toLocaleString("en-IN", {
+  return `Rs. ${numericValue.toLocaleString('en-IN', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
@@ -53,7 +56,7 @@ const formatPdfCurrency = (value) => {
 
 const formatDate = (value) => {
   if (!value) {
-    return "-";
+    return '-';
   }
 
   const parsedDate = new Date(value);
@@ -61,48 +64,54 @@ const formatDate = (value) => {
     return value;
   }
 
-  return parsedDate.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+  return parsedDate.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
   });
 };
 
 export default function ApprovedApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [draftAmounts, setDraftAmounts] = useState({});
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState(DEFAULT_SORT);
   const [isLoading, setIsLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const [isPrinting, setIsPrinting] = useState(false);
-  const [error, setError] = useState("");
-  const [savingId, setSavingId] = useState("");
+  const [error, setError] = useState('');
+  const [savingId, setSavingId] = useState('');
+  const [zone, setZone] = useState('');
+  const [isMoreThan50KRequired, setIsMoreThan50KRequired] = useState(false);
 
   const fetchApprovedApplications = async () => {
     setIsLoading(true);
-    setError("");
+    setError('');
 
     try {
       const response = await getApprovedApplications({
-        status: "approved",
+        status: 'approved',
         approvedAmountMax: 0,
         search: searchTerm.trim(),
         sortBy: sortConfig.sortBy,
         sortOrder: sortConfig.sortOrder,
+        minRequestedAmount: isMoreThan50KRequired ? 50000 : '',
+        zone,
       });
 
       const records = response.applications || [];
       setApplications(records);
       setDraftAmounts(
         records.reduce((accumulator, application) => {
-          accumulator[application.id] = String(application.approvedAmount ?? "");
+          accumulator[application.id] = String(
+            application.approvedAmount ?? '',
+          );
           return accumulator;
-        }, {})
+        }, {}),
       );
     } catch (fetchError) {
-      console.error("Error fetching approved applications:", fetchError);
-      setError("Failed to load approved applications. Please try again.");
+      console.error('Error fetching approved applications:', fetchError);
+      setError('Failed to load approved applications. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -110,12 +119,12 @@ export default function ApprovedApplicationsPage() {
 
   useEffect(() => {
     fetchApprovedApplications();
-  }, [searchTerm, sortConfig.sortBy, sortConfig.sortOrder]);
+  }, [searchTerm, sortConfig.sortBy, sortConfig.sortOrder, isMoreThan50KRequired, zone]);
 
-  const totalExpenditure = useMemo(() => {
+  const totalRequestedAmount = useMemo(() => {
     return applications.reduce(
-      (sum, application) => sum + Number(application.totalExpenditure || 0),
-      0
+      (sum, application) => sum + Number(application.requestedAmount || 0),
+      0,
     );
   }, [applications]);
 
@@ -124,41 +133,41 @@ export default function ApprovedApplicationsPage() {
       if (previous.sortBy === column) {
         return {
           sortBy: column,
-          sortOrder: previous.sortOrder === "asc" ? "desc" : "asc",
+          sortOrder: previous.sortOrder === 'asc' ? 'desc' : 'asc',
         };
       }
 
       return {
         sortBy: column,
-        sortOrder: "asc",
+        sortOrder: 'asc',
       };
     });
   };
 
   const validateApprovedAmount = (value, requestedAmount) => {
-    if (value === "") {
-      return "Approved amount is required.";
+    if (value === '') {
+      return 'Approved amount is required.';
     }
 
     const numericValue = Number(value);
 
     if (Number.isNaN(numericValue)) {
-      return "Approved amount must be numeric.";
+      return 'Approved amount must be numeric.';
     }
 
     if (numericValue < 0) {
-      return "Approved amount cannot be negative.";
+      return 'Approved amount cannot be negative.';
     }
 
     if (numericValue > Number(requestedAmount || 0)) {
-      return "Approved amount cannot exceed requested amount.";
+      return 'Approved amount cannot exceed requested amount.';
     }
 
-    return "";
+    return '';
   };
 
   const handleApprovedAmountChange = (id, value) => {
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
       setDraftAmounts((previous) => ({
         ...previous,
         [id]: value,
@@ -167,10 +176,10 @@ export default function ApprovedApplicationsPage() {
   };
 
   const handleApprovedAmountSave = async (application) => {
-    const nextValue = draftAmounts[application.id] ?? "";
+    const nextValue = draftAmounts[application.id] ?? '';
     const validationMessage = validateApprovedAmount(
       nextValue,
-      application.requestedAmount
+      application.requestedAmount,
     );
 
     if (validationMessage) {
@@ -179,7 +188,7 @@ export default function ApprovedApplicationsPage() {
     }
 
     setSavingId(application.id);
-    setError("");
+    setError('');
 
     try {
       const updated = await updateApprovedApplicationAmount(application.id, {
@@ -197,9 +206,9 @@ export default function ApprovedApplicationsPage() {
                   ...item,
                   approvedAmount: updatedApprovedAmount,
                 }
-              : item
+              : item,
           )
-          .filter((item) => Number(item.approvedAmount || 0) <= 0)
+          .filter((item) => Number(item.approvedAmount || 0) <= 0),
       );
 
       setDraftAmounts((previous) => {
@@ -214,20 +223,20 @@ export default function ApprovedApplicationsPage() {
         return nextDrafts;
       });
     } catch (saveError) {
-      console.error("Error updating approved amount:", saveError);
+      console.error('Error updating approved amount:', saveError);
       setError(
         saveError?.response?.data?.message ||
-          "Failed to update approved amount. Please try again."
+          'Failed to update approved amount. Please try again.',
       );
     } finally {
-      setSavingId("");
+      setSavingId('');
     }
   };
 
   const handleAmountBlur = async (application) => {
     if (
-      String(application.approvedAmount ?? "") ===
-      String(draftAmounts[application.id] ?? "")
+      String(application.approvedAmount ?? '') ===
+      String(draftAmounts[application.id] ?? '')
     ) {
       return;
     }
@@ -236,52 +245,54 @@ export default function ApprovedApplicationsPage() {
   };
 
   const buildPdfDocument = () => {
-    const document = new jsPDF("landscape");
+    const document = new jsPDF('landscape');
     const pageHeight = document.internal.pageSize.height;
     const pageWidth = document.internal.pageSize.width;
-    const reportDate = new Date().toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
+    const reportDate = new Date().toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
     });
 
     document.setFontSize(16);
-    document.text("Approved Applications Report", 14, 18);
+    document.text('Approved Applications Report', 14, 18);
     document.setFontSize(10);
     document.text(`Generated on: ${reportDate}`, 14, 26);
 
     autoTable(document, {
       startY: 32,
-      head: [[
-        "Sr. No",
-        "HRMS No",
-        "Username",
-        "Mobile No",
-        "Total Expenditure",
-        "Requested Amount",
-        "Approved Amount",
-        "Date",
-      ]],
+      head: [
+        [
+          'Sr. No',
+          'HRMS No',
+          'Username',
+          'Mobile No',
+          'Total Expenditure',
+          'Requested Amount',
+          'Approved Amount',
+          'Date',
+        ],
+      ],
       body: applications.map((application, index) => [
         index + 1,
         application.hrmsNo,
         application.username,
-        application.mobileNo || "-",
+        application.mobileNo || '-',
         formatPdfCurrency(application.totalExpenditure),
         formatPdfCurrency(application.requestedAmount),
         formatPdfCurrency(application.approvedAmount),
         formatDate(application.formDate),
       ]),
-      theme: "grid",
+      theme: 'grid',
       headStyles: {
         fillColor: [15, 23, 42],
         textColor: [255, 255, 255],
-        fontStyle: "bold",
+        fontStyle: 'bold',
       },
       styles: {
         fontSize: 9,
         cellPadding: 3,
-        overflow: "linebreak",
+        overflow: 'linebreak',
       },
       margin: { top: 32, left: 14, right: 14, bottom: 20 },
       didDrawPage: () => {
@@ -289,7 +300,7 @@ export default function ApprovedApplicationsPage() {
         document.setFontSize(9);
         document.setTextColor(100, 116, 139);
         document.text(`Page ${currentPage}`, pageWidth - 24, pageHeight - 8, {
-          align: "right",
+          align: 'right',
         });
       },
     });
@@ -306,13 +317,13 @@ export default function ApprovedApplicationsPage() {
     document.setDrawColor(203, 213, 225);
     document.line(14, summaryY - 5, pageWidth - 14, summaryY - 5);
     document.setFontSize(11);
-    document.setFont(undefined, "bold");
+    document.setFont(undefined, 'bold');
     document.text(
-      `Total Expenditure Sum: ${formatPdfCurrency(totalExpenditure)}`,
+      `Total Requested Amount Sum: ${formatPdfCurrency(totalRequestedAmount)}`,
       14,
-      summaryY
+      summaryY,
     );
-    document.setFont(undefined, "normal");
+    document.setFont(undefined, 'normal');
 
     return document;
   };
@@ -322,7 +333,7 @@ export default function ApprovedApplicationsPage() {
 
     try {
       const document = buildPdfDocument();
-      document.save("approved-applications-report.pdf");
+      document.save('approved-applications-report.pdf');
     } finally {
       setIsExporting(false);
     }
@@ -333,60 +344,79 @@ export default function ApprovedApplicationsPage() {
 
     try {
       const document = buildPdfDocument();
-      const pdfBlob = document.output("blob");
+      const pdfBlob = document.output('blob');
       const blobUrl = URL.createObjectURL(pdfBlob);
-      const printWindow = window.open(blobUrl, "_blank");
+      const printWindow = window.open(blobUrl, '_blank');
 
       if (!printWindow) {
-        setError("Unable to open print preview. Please allow pop-ups and try again.");
+        setError(
+          'Unable to open print preview. Please allow pop-ups and try again.',
+        );
         URL.revokeObjectURL(blobUrl);
         return;
       }
 
-      printWindow.addEventListener("load", () => {
+      printWindow.addEventListener('load', () => {
         printWindow.focus();
         printWindow.print();
       });
 
       const revokeUrl = () => URL.revokeObjectURL(blobUrl);
-      printWindow.addEventListener("afterprint", revokeUrl, { once: true });
-      printWindow.addEventListener("beforeunload", revokeUrl, { once: true });
+      printWindow.addEventListener('afterprint', revokeUrl, { once: true });
+      printWindow.addEventListener('beforeunload', revokeUrl, { once: true });
     } finally {
       setIsPrinting(false);
     }
   };
 
   const sortIcon =
-    sortConfig.sortOrder === "asc" ? (
+    sortConfig.sortOrder === 'asc' ? (
       <FaSortAmountUp size={12} />
     ) : (
       <FaSortAmountDown size={12} />
     );
 
+  const activeFilters = [
+    isMoreThan50KRequired
+      ? {
+          key: 'moreThan50K',
+          label: 'Requested Amount > 50K',
+          onDelete: () => setIsMoreThan50KRequired(false),
+        }
+      : null,
+    zone
+      ? {
+          key: 'zone',
+          label: `Zone: ${zone}`,
+          onDelete: () => setZone(''),
+        }
+      : null,
+  ].filter(Boolean);
+
   return (
-    <Box sx={{ width: "100%", p: { xs: 1, sm: 2 } }}>
+    <Box sx={{ width: '100%', p: { xs: 1, sm: 2 } }}>
       <Paper
         sx={{
           p: { xs: 2, sm: 3 },
           borderRadius: 3,
-          boxShadow: "0 10px 35px rgba(15, 23, 42, 0.08)",
-          background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
+          boxShadow: '0 10px 35px rgba(15, 23, 42, 0.08)',
+          background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: { xs: "column", lg: "row" },
-            justifyContent: "space-between",
+            display: 'flex',
+            flexDirection: { xs: 'column', lg: 'row' },
+            justifyContent: 'space-between',
             gap: 2,
             mb: 3,
           }}
         >
           <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, color: "#0f172a" }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#0f172a' }}>
               Approved Applications
             </Typography>
-            <Typography variant="body2" sx={{ mt: 0.5, color: "#64748b" }}>
+            <Typography variant="body2" sx={{ mt: 0.5, color: '#64748b' }}>
               Review approved requests, update approved amounts, and export the
               report as PDF.
             </Typography>
@@ -394,10 +424,11 @@ export default function ApprovedApplicationsPage() {
 
           <Box
             sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
               gap: 1.5,
-              alignItems: { xs: "stretch", sm: "center" },
+              alignItems: { xs: 'stretch', sm: 'center' },
+              flexWrap: 'wrap',
             }}
           >
             <TextField
@@ -405,11 +436,14 @@ export default function ApprovedApplicationsPage() {
               onChange={(event) => setSearchTerm(event.target.value)}
               placeholder="Search by username or HRMS no"
               size="small"
-              sx={{ minWidth: { xs: "100%", sm: 280 }, backgroundColor: "#fff" }}
+              sx={{
+                minWidth: { xs: '100%', sm: 280 },
+                backgroundColor: '#fff',
+              }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <FaSearch style={{ color: "#64748b" }} />
+                    <FaSearch style={{ color: '#64748b' }} />
                   </InputAdornment>
                 ),
               }}
@@ -425,10 +459,10 @@ export default function ApprovedApplicationsPage() {
                 width: 170,
                 height: 40,
                 fontWeight: 600,
-                fontSize: "0.82rem",
+                fontSize: '0.82rem',
               }}
             >
-              {isExporting ? "Preparing PDF..." : "Download PDF"}
+              {isExporting ? 'Preparing PDF...' : 'Download PDF'}
             </Button>
 
             <Button
@@ -443,26 +477,85 @@ export default function ApprovedApplicationsPage() {
                 fontWeight: 600,
               }}
             >
-              {isPrinting ? "Opening Print..." : "Print PDF"}
+              {isPrinting ? 'Opening Print...' : 'Print PDF'}
             </Button>
           </Box>
         </Box>
 
         <Box
           sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            justifyContent: "space-between",
-            alignItems: { xs: "flex-start", md: "center" },
+            display: 'flex',
+            flexDirection: { xs: 'column', lg: 'row' },
+            gap: 1.5,
+            alignItems: { xs: 'stretch', lg: 'center' },
+            mb: 2,
+            flexWrap: 'wrap',
+          }}
+        >
+          <TextField
+            select
+            label="Zone"
+            size="small"
+            value={zone}
+            onChange={(event) => setZone(event.target.value)}
+            sx={{ minWidth: { xs: '100%', sm: 240 }, backgroundColor: '#fff' }}
+          >
+            <MenuItem value="">All Zones</MenuItem>
+            {REGION.map((region) => (
+              <MenuItem key={region} value={region}>
+                {region}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <Button
+            variant={isMoreThan50KRequired ? 'contained' : 'outlined'}
+            onClick={() => setIsMoreThan50KRequired((previous) => !previous)}
+            sx={{ minWidth: 220, height: 40, fontWeight: 600 }}
+          >
+            More than 50K required
+          </Button>
+        </Box>
+
+        {activeFilters.length > 0 ? (
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 1,
+              flexWrap: 'wrap',
+              mb: 2,
+            }}
+          >
+            {activeFilters.map((filter) => (
+              <Chip
+                key={filter.key}
+                label={filter.label}
+                onDelete={filter.onDelete}
+                color="primary"
+                variant="outlined"
+              />
+            ))}
+          </Box>
+        ) : null}
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', md: 'center' },
             gap: 1,
             mb: 2,
           }}
         >
-          <Typography variant="body2" sx={{ color: "#475569" }}>
+          <Typography variant="body2" sx={{ color: '#475569' }}>
             Total approved records: {applications.length}
           </Typography>
-          <Typography variant="body2" sx={{ fontWeight: 600, color: "#0f766e" }}>
-            Total expenditure sum: {formatCurrency(totalExpenditure)}
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: 600, color: '#0f766e' }}
+          >
+            Total requested amount sum: {formatCurrency(totalRequestedAmount)}
           </Typography>
         </Box>
 
@@ -485,9 +578,9 @@ export default function ApprovedApplicationsPage() {
             component={Paper}
             sx={{
               borderRadius: 2,
-              maxHeight: "70vh",
-              overflow: "auto",
-              border: "1px solid #e2e8f0",
+              maxHeight: '70vh',
+              overflow: 'auto',
+              border: '1px solid #e2e8f0',
             }}
           >
             <Table stickyHeader>
@@ -495,28 +588,33 @@ export default function ApprovedApplicationsPage() {
                 <TableRow>
                   <TableCell sx={{ fontWeight: 700 }}>Sr. No</TableCell>
                   <TableCell
-                    sx={{ fontWeight: 700, cursor: "pointer" }}
-                    onClick={() => handleSort("hrmsNo")}
+                    sx={{ fontWeight: 700, cursor: 'pointer' }}
+                    onClick={() => handleSort('hrmsNo')}
                   >
-                    HRMS No {sortConfig.sortBy === "hrmsNo" ? sortIcon : null}
+                    HRMS No {sortConfig.sortBy === 'hrmsNo' ? sortIcon : null}
                   </TableCell>
                   <TableCell
-                    sx={{ fontWeight: 700, cursor: "pointer" }}
-                    onClick={() => handleSort("username")}
+                    sx={{ fontWeight: 700, cursor: 'pointer' }}
+                    onClick={() => handleSort('username')}
                   >
-                    Username {sortConfig.sortBy === "username" ? sortIcon : null}
+                    Username{' '}
+                    {sortConfig.sortBy === 'username' ? sortIcon : null}
                   </TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Mobile No</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Total Expenditure</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Requested Amount</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>
+                    Total Expenditure
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>
+                    Requested Amount
+                  </TableCell>
                   <TableCell sx={{ fontWeight: 700, minWidth: 180 }}>
                     Approved Amount
                   </TableCell>
                   <TableCell
-                    sx={{ fontWeight: 700, cursor: "pointer" }}
-                    onClick={() => handleSort("formDate")}
+                    sx={{ fontWeight: 700, cursor: 'pointer' }}
+                    onClick={() => handleSort('formDate')}
                   >
-                    Date {sortConfig.sortBy === "formDate" ? sortIcon : null}
+                    Date {sortConfig.sortBy === 'formDate' ? sortIcon : null}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -526,23 +624,25 @@ export default function ApprovedApplicationsPage() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{application.hrmsNo}</TableCell>
                     <TableCell>{application.username}</TableCell>
-                    <TableCell>{application.mobileNo || "-"}</TableCell>
+                    <TableCell>{application.mobileNo || '-'}</TableCell>
                     <TableCell>
                       {formatCurrency(application.totalExpenditure)}
                     </TableCell>
-                    <TableCell>{formatCurrency(application.requestedAmount)}</TableCell>
+                    <TableCell>
+                      {formatCurrency(application.requestedAmount)}
+                    </TableCell>
                     <TableCell>
                       <TextField
-                        value={draftAmounts[application.id] ?? ""}
+                        value={draftAmounts[application.id] ?? ''}
                         onChange={(event) =>
                           handleApprovedAmountChange(
                             application.id,
-                            event.target.value
+                            event.target.value,
                           )
                         }
                         onBlur={() => handleAmountBlur(application)}
                         onKeyDown={async (event) => {
-                          if (event.key === "Enter") {
+                          if (event.key === 'Enter') {
                             event.preventDefault();
                             await handleApprovedAmountSave(application);
                           }
@@ -551,29 +651,29 @@ export default function ApprovedApplicationsPage() {
                         disabled={savingId === application.id}
                         error={
                           !!validateApprovedAmount(
-                            draftAmounts[application.id] ?? "",
-                            application.requestedAmount
+                            draftAmounts[application.id] ?? '',
+                            application.requestedAmount,
                           ) &&
                           draftAmounts[application.id] !==
-                            String(application.approvedAmount ?? "")
+                            String(application.approvedAmount ?? '')
                         }
                         helperText={
                           savingId === application.id
-                            ? "Saving..."
+                            ? 'Saving...'
                             : validateApprovedAmount(
-                                draftAmounts[application.id] ?? "",
-                                application.requestedAmount
-                              ) &&
-                              draftAmounts[application.id] !==
-                                String(application.approvedAmount ?? "")
-                            ? validateApprovedAmount(
-                                draftAmounts[application.id] ?? "",
-                                application.requestedAmount
-                              )
-                            : "Press Enter or click outside to save"
+                                  draftAmounts[application.id] ?? '',
+                                  application.requestedAmount,
+                                ) &&
+                                draftAmounts[application.id] !==
+                                  String(application.approvedAmount ?? '')
+                              ? validateApprovedAmount(
+                                  draftAmounts[application.id] ?? '',
+                                  application.requestedAmount,
+                                )
+                              : 'Press Enter or click outside to save'
                         }
                         inputProps={{
-                          inputMode: "decimal",
+                          inputMode: 'decimal',
                           min: 0,
                         }}
                       />

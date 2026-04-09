@@ -98,6 +98,13 @@ export const ADMIN_LINKS = [
         icon: FaSearchLocation,
         formType: "welfare",
     },
+    {
+        key: "ReportGeneration",
+        label: "Report Generation",
+        Path: "/admin/report-generation",
+        icon: MdQueryStats,
+        formType: "welfare",
+    },
     // {
     //     key: "View Profile",
     //     label: "View Profile",

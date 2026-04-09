@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -14,31 +14,25 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
-import { useLocation, useParams } from "react-router-dom";
-import axios from "axios";
-import dayjs from "dayjs";
-import { jwtDecode } from "jwt-decode";
+} from '@mui/material';
+import { deepPurple } from '@mui/material/colors';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 
 /* --------------------------- Date Formatter --------------------------- */
 const formatDate = (date) => {
-  if (!date) return "—";
-  return dayjs(date).format("DD/MM/YYYY");
+  if (!date) return '—';
+  return dayjs(date).format('DD/MM/YYYY');
 };
 
 export default function ViewProfile() {
-  console.log('ViewProfile called');
-  // const { hrmsNo } = useParams();   // <-- read from URL
   const location = useLocation();
-  console.log(location)
-  const [user, setUser] = useState(location.state?.user || null);
-  const hrmsNo = user.hrmsNo;
-  console.log(user)
-  console.log(hrmsNo)
-  
-
-  // const [user, setUser] = useState(location.state?.user || null);
+  const navigate = useNavigate();
+  const initialUser = location.state?.user || null;
+  const hrmsNo = initialUser?.hrmsNo || location.state?.hrmsNo || '';
+  const [user, setUser] = useState(initialUser);
   const [installments, setInstallments] = useState([
     { date: null, amount: 0, paid: false },
     { date: null, amount: 0, paid: false },
@@ -47,15 +41,74 @@ export default function ViewProfile() {
     { date: null, amount: 0, paid: false },
   ]);
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/admin/manage-funds');
+  };
+
+  const syncInstallmentsFromFund = (fund) => {
+    if (!fund) return;
+
+    setInstallments([
+      {
+        amount: Number(fund.installment1 || 0),
+        date: fund.installment1Date,
+        paid: Number(fund.installment1 || 0) > 0,
+        amountInput: fund.installment1 ? String(fund.installment1) : '',
+      },
+      {
+        amount: Number(fund.installment2 || 0),
+        date: fund.installment2Date,
+        paid: Number(fund.installment2 || 0) > 0,
+        amountInput: fund.installment2 ? String(fund.installment2) : '',
+      },
+      {
+        amount: Number(fund.installment3 || 0),
+        date: fund.installment3Date,
+        paid: Number(fund.installment3 || 0) > 0,
+        amountInput: fund.installment3 ? String(fund.installment3) : '',
+      },
+      {
+        amount: Number(fund.installment4 || 0),
+        date: fund.installment4Date,
+        paid: Number(fund.installment4 || 0) > 0,
+        amountInput: fund.installment4 ? String(fund.installment4) : '',
+      },
+      {
+        amount: Number(fund.installment5 || 0),
+        date: fund.installment5Date,
+        paid: Number(fund.installment5 || 0) > 0,
+        amountInput: fund.installment5 ? String(fund.installment5) : '',
+      },
+    ]);
+
+    setUser((prevUser) =>
+      prevUser
+        ? {
+            ...prevUser,
+            claimedFullAmount:
+              Number(fund.totalPaid || 0) >= 5000 || !!fund.claimedFullAmount,
+          }
+        : prevUser,
+    );
+  };
+
   const handleMarkPaid = async (index) => {
-    setInstallments(prev => {
+    const previousInstallment = installments[index];
+    const previousClaimedFullAmount = !!user?.claimedFullAmount;
+
+    setInstallments((prev) => {
       const updated = [...prev];
 
-      const raw = updated[index]?.amountInput ?? updated[index]?.amount ?? "";
+      const raw = updated[index]?.amountInput ?? updated[index]?.amount ?? '';
       const parsed = parseFloat(String(raw).trim());
 
       if (!parsed || Number.isNaN(parsed) || parsed <= 0) {
-        alert("Please enter a valid amount (> 0) before marking as paid.");
+        toast.error('Please enter a valid amount greater than 0.');
         return prev;
       }
 
@@ -63,15 +116,30 @@ export default function ViewProfile() {
         ...updated[index],
         amount: parsed,
         amountInput: String(parsed),
-        date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+        date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         paid: true,
       };
 
+      const nextTotalPaid = updated.reduce(
+        (sum, installment) =>
+          sum + (installment.paid ? Number(installment.amount || 0) : 0),
+        0,
+      );
+      const hasPaidFullAmount = nextTotalPaid >= 5000;
+
+      setUser((prevUser) =>
+        prevUser
+          ? {
+              ...prevUser,
+              claimedFullAmount: hasPaidFullAmount,
+            }
+          : prevUser,
+      );
+
       (async () => {
         try {
-
           const formatMySQL = (d) =>
-            d ? dayjs(d).format("YYYY-MM-DD HH:mm:ss") : null;
+            d ? dayjs(d).format('YYYY-MM-DD HH:mm:ss') : null;
 
           const payload = {
             installment1: updated[0].amount,
@@ -89,32 +157,40 @@ export default function ViewProfile() {
             installment5: updated[4].amount,
             installment5Date: formatMySQL(updated[4].date),
 
-            claimedFullAmount: updated.every(i => i.paid),
+            claimedFullAmount: hasPaidFullAmount,
           };
 
+          console.log('📤 Sending payload:', payload);
 
-          console.log("📤 Sending payload:", payload);
-
-          await axios.put(
-            `http://localhost:3000/funds/upd-ints/${user.hrmsNo}`,
-            payload
+          const response = await axios.put(
+            `http://localhost:3000/funds/upd-ints/${hrmsNo}`,
+            payload,
+          );
+          syncInstallmentsFromFund(response.data?.fund);
+          toast.success('Fund amount marked as paid successfully.');
+        } catch (err) {
+          console.error('Failed to update payments:', err);
+          toast.error(
+            err?.response?.data?.details ||
+              'Failed to update installment on server. Reverting change.',
           );
 
-        } catch (err) {
-          console.error("Failed to update payments:", err);
-          alert("Failed to update installment on server. Reverting change.");
-
-          setInstallments(prev2 => {
+          setInstallments((prev2) => {
             const revert = [...prev2];
             revert[index] = {
-              ...revert[index],
-              paid: false,
-              date: null,
-              amount: 0,
-              amountInput: ""
+              ...previousInstallment,
             };
             return revert;
           });
+
+          setUser((prevUser) =>
+            prevUser
+              ? {
+                  ...prevUser,
+                  claimedFullAmount: previousClaimedFullAmount,
+                }
+              : prevUser,
+          );
         }
       })();
 
@@ -122,78 +198,46 @@ export default function ViewProfile() {
     });
   };
 
-
   /* -------------------------- Fetch User If Needed -------------------------- */
   useEffect(() => {
-    if (!user) {
-      axios
-        .get(`http://localhost:3000/employees/get-emp-prf/${hrmsNo}`)
-        .then((res) => {
-          setUser(res.data);
-          if (res.data.welfarePayments) {
-            setInstallments(res.data.welfarePayments);
-          }
-        })
-        .catch((err) => console.error("Error fetching user:", err));
-    } else {
-      if (user.welfarePayments) {
-        setInstallments(user.welfarePayments);
-      }
+    if (!hrmsNo) return;
+
+    axios
+      .get(`http://localhost:3000/employees/get-emp-prf/${hrmsNo}`)
+      .then((res) => {
+        setUser((prevUser) => ({
+          ...(prevUser || {}),
+          ...res.data,
+        }));
+        if (res.data.welfarePayments) {
+          setInstallments(res.data.welfarePayments);
+        }
+      })
+      .catch((err) => console.error('Error fetching user:', err));
+
+    if (initialUser?.welfarePayments) {
+      setInstallments(initialUser.welfarePayments);
+    }
+  }, [hrmsNo, initialUser]);
+
+  useEffect(() => {
+    if (hrmsNo) {
+      axios.get(`http://localhost:3000/funds/${hrmsNo}`).then((res) => {
+        syncInstallmentsFromFund(res.data);
+      });
     }
   }, [hrmsNo]);
 
-
-  useEffect(() => {
-    if (user) {
-      axios.get(`http://localhost:3000/funds/${user.hrmsNo}`)
-        .then(res => {
-          const f = res.data;
-          setInstallments([
-            {
-              amount: f.installment1,
-              date: f.installment1Date,
-              paid: f.installment1 > 0,
-              amountInput: f.installment1 ? String(f.installment1) : ""
-            },
-            {
-              amount: f.installment2,
-              date: f.installment2Date,
-              paid: f.installment2 > 0,
-              amountInput: f.installment2 ? String(f.installment2) : ""
-            },
-            {
-              amount: f.installment3,
-              date: f.installment3Date,
-              paid: f.installment3 > 0,
-              amountInput: f.installment3 ? String(f.installment3) : ""
-            },
-            {
-              amount: f.installment4,
-              date: f.installment4Date,
-              paid: f.installment4 > 0,
-              amountInput: f.installment4 ? String(f.installment4) : ""
-            },
-            {
-              amount: f.installment5,
-              date: f.installment5Date,
-              paid: f.installment5 > 0,
-              amountInput: f.installment5 ? String(f.installment5) : ""
-            }
-          ]);
-        })
-    }
-  }, [user]);
-
-
-
   useEffect(() => {
     if (user?.welfarePayments) {
-      setInstallments(user.welfarePayments.map(i => ({
-        date: i.date || null,
-        amount: i.amount || 0,
-        amountInput: i.amount ? String(i.amount) : "",
-        paid: !!i.paid,
-      })));
+      setInstallments(
+        user.welfarePayments.map((i) => ({
+          date: i.date || null,
+          amount: i.amount || 0,
+          amountInput: i.amount ? String(i.amount) : '',
+          paid: !!i.paid,
+        })),
+      );
     }
   }, [user]);
 
@@ -202,10 +246,10 @@ export default function ViewProfile() {
   const data = user;
   const totalPaid = installments.reduce(
     (sum, inst) => sum + (inst.paid ? Number(inst.amount || 0) : 0),
-    0
+    0,
   );
 
-  const remainingAmount = 5000 - totalPaid;
+  const remainingAmount = Math.max(0, 5000 - totalPaid);
 
   return (
     <Box sx={{ p: 4 }}>
@@ -213,15 +257,27 @@ export default function ViewProfile() {
         User Profile
       </Typography>
 
-      <Card sx={{ p: 3, borderRadius: 3, boxShadow: 4 }}>
+      <Card
+        sx={{
+          p: 3,
+          borderRadius: 3,
+          boxShadow: 4,
+          maxWidth: '100vw',
+          overflowX: 'visible',
+        }}
+      >
         <CardContent>
-
           {/* HEADER */}
           <Box display="flex" alignItems="center" gap={3} sx={{ mb: 4 }}>
             <Avatar
-              sx={{ bgcolor: deepPurple[500], width: 80, height: 80, fontSize: 32 }}
+              sx={{
+                bgcolor: deepPurple[500],
+                width: 80,
+                height: 80,
+                fontSize: 32,
+              }}
             >
-              {(data.employeeName || "U").charAt(0)}
+              {(data.employeeName || 'U').charAt(0)}
             </Avatar>
 
             <Box>
@@ -247,8 +303,16 @@ export default function ViewProfile() {
             <InfoItem label="Phone" value={data.mobileNo} />
             <InfoItem label="PAN Number" value={data.panNo} />
             <InfoItem label="Date of Birth" value={formatDate(data.dob)} />
-            <InfoItem label="Present Address" value={data.presentAddress} full />
-            <InfoItem label="Permanent Address" value={data.permanentAddress} full />
+            <InfoItem
+              label="Present Address"
+              value={data.presentAddress}
+              full
+            />
+            <InfoItem
+              label="Permanent Address"
+              value={data.permanentAddress}
+              full
+            />
           </Section>
 
           {/* SECTION 2 — EMPLOYMENT */}
@@ -261,21 +325,49 @@ export default function ViewProfile() {
 
           {/* SECTION 3 — APPOINTMENT */}
           <Section title="Appointment Details">
-            <InfoItem label="Current Appointment Date" value={formatDate(data.currentAppointmentDate)} />
-            <InfoItem label="Current Appointment Type" value={data.currentAppointmentType} />
-            <InfoItem label="First Appointment Date" value={formatDate(data.firstAppointmentDate)} />
-            <InfoItem label="First Joining Date" value={formatDate(data.firstJoiningDate)} />
-            <InfoItem label="First Appointment Type" value={data.firstAppointmentType} />
+            <InfoItem
+              label="Current Appointment Date"
+              value={formatDate(data.currentAppointmentDate)}
+            />
+            <InfoItem
+              label="Current Appointment Type"
+              value={data.currentAppointmentType}
+            />
+            <InfoItem
+              label="First Appointment Date"
+              value={formatDate(data.firstAppointmentDate)}
+            />
+            <InfoItem
+              label="First Joining Date"
+              value={formatDate(data.firstJoiningDate)}
+            />
+            <InfoItem
+              label="First Appointment Type"
+              value={data.firstAppointmentType}
+            />
             <InfoItem label="Employee Type" value={data.employeeType} />
-            <InfoItem label="Appointment Nature" value={data.appointmentNature} />
+            <InfoItem
+              label="Appointment Nature"
+              value={data.appointmentNature}
+            />
             <InfoItem label="Qualifications" value={data.qualifications} full />
           </Section>
 
           {/* SECTION 4 — ADMIN */}
           <Section title="Administrative Details">
             <InfoItem label="Approval Ref No" value={data.approvalRefNo} />
-            <InfoItem label="Approval Letter Date" value={formatDate(data.approvalLetterDate)} />
-            <InfoItem label="Retirement Date" value={formatDate(data.retirementDate)} />
+            <InfoItem
+              label="Approval Letter Date"
+              value={formatDate(data.approvalLetterDate)}
+            />
+            <InfoItem
+              label="Retirement Date"
+              value={formatDate(data.retirementDate)}
+            />
+            <InfoItem
+              label="Full Amount Paid"
+              value={data.claimedFullAmount ? 'Yes' : 'No'}
+            />
           </Section>
 
           {/* SECTION 5 — BRANCH */}
@@ -283,7 +375,10 @@ export default function ViewProfile() {
             <InfoItem label="Branch Name" value={data.branchName} />
             <InfoItem label="Branch Region" value={data.branchRegionName} />
             <InfoItem label="Branch Type" value={data.branchType} />
-            <InfoItem label="Branch Joining Date" value={formatDate(data.branchJoiningDate)} />
+            <InfoItem
+              label="Branch Joining Date"
+              value={formatDate(data.branchJoiningDate)}
+            />
           </Section>
 
           {/* SECTION 6 — BANK */}
@@ -307,22 +402,39 @@ export default function ViewProfile() {
                   p: 3,
                   borderRadius: 3,
                   boxShadow: 3,
-                  width: 1340,
-                  maxWidth: "100%",
-                  mx: "auto",
-                  overflowX: "auto",
+                  width: '100%',
+                  maxWidth: '100%',
+                  mx: 'auto',
+                  overflowX: 'visible',
                 }}
               >
-                <Box sx={{ display: "flex", justifyContent: "center", width: "100%" }}>
-                  <TableContainer sx={{ maxWidth: 900, width: "100%" }}>
-                    <Table sx={{ minWidth: 600 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '100%',
+                    overflowX: 'visible',
+                  }}
+                >
+                  <TableContainer sx={{ width: '100%', overflowX: 'visible' }}>
+                    <Table sx={{ minWidth: 600, width: '100%' }}>
                       <TableHead>
-                        <TableRow sx={{ background: "#f3f4f6" }}>
-                          <TableCell align="center"><b>#</b></TableCell>
-                          <TableCell align="center"><b>Date Paid</b></TableCell>
-                          <TableCell align="center"><b>Amount</b></TableCell>
-                          <TableCell align="center"><b>Status</b></TableCell>
-                          <TableCell align="center"><b>Action</b></TableCell>
+                        <TableRow sx={{ background: '#f3f4f6' }}>
+                          <TableCell align="center">
+                            <b>#</b>
+                          </TableCell>
+                          <TableCell align="center">
+                            <b>Date Paid</b>
+                          </TableCell>
+                          <TableCell align="center">
+                            <b>Amount</b>
+                          </TableCell>
+                          <TableCell align="center">
+                            <b>Status</b>
+                          </TableCell>
+                          <TableCell align="center">
+                            <b>Action</b>
+                          </TableCell>
                         </TableRow>
                       </TableHead>
 
@@ -332,7 +444,7 @@ export default function ViewProfile() {
                             <TableCell align="center">{index + 1}</TableCell>
 
                             <TableCell align="center">
-                              {inst.date ? formatDate(inst.date) : "—"}
+                              {inst.date ? formatDate(inst.date) : '—'}
                             </TableCell>
 
                             <TableCell align="center">
@@ -343,10 +455,10 @@ export default function ViewProfile() {
                                   type="number"
                                   min="0"
                                   placeholder="Amount"
-                                  value={inst.amountInput ?? ""}
+                                  value={inst.amountInput ?? ''}
                                   onChange={(e) => {
                                     const val = e.target.value;
-                                    setInstallments(prev => {
+                                    setInstallments((prev) => {
                                       const updated = [...prev];
                                       updated[index] = {
                                         ...updated[index],
@@ -356,11 +468,11 @@ export default function ViewProfile() {
                                     });
                                   }}
                                   style={{
-                                    width: "100px",
-                                    padding: "6px",
-                                    textAlign: "center",
-                                    border: "1px solid #ccc",
-                                    borderRadius: "6px",
+                                    width: '100px',
+                                    padding: '6px',
+                                    textAlign: 'center',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '6px',
                                   }}
                                 />
                               )}
@@ -368,11 +480,15 @@ export default function ViewProfile() {
 
                             <TableCell align="center">
                               {inst.paid ? (
-                                <span style={{ color: "green", fontWeight: "bold" }}>
+                                <span
+                                  style={{ color: 'green', fontWeight: 'bold' }}
+                                >
                                   Paid
                                 </span>
                               ) : (
-                                <span style={{ color: "red", fontWeight: "bold" }}>
+                                <span
+                                  style={{ color: 'red', fontWeight: 'bold' }}
+                                >
                                   Pending
                                 </span>
                               )}
@@ -383,7 +499,7 @@ export default function ViewProfile() {
                                 <Button
                                   variant="contained"
                                   size="small"
-                                  sx={{ background: "#16a34a" }}
+                                  sx={{ background: '#16a34a' }}
                                   onClick={() => handleMarkPaid(index)}
                                 >
                                   Mark Paid
@@ -394,28 +510,28 @@ export default function ViewProfile() {
                         ))}
 
                         {/* TOTAL PAID */}
-                        <TableRow sx={{ background: "#e8f5e9" }}>
+                        <TableRow sx={{ background: '#e8f5e9' }}>
                           <TableCell align="center" colSpan={2}>
                             <b>Total Paid</b>
                           </TableCell>
                           <TableCell align="center">
-                            <b style={{ color: "#16a34a" }}>₹ {totalPaid}</b>
+                            <b style={{ color: '#16a34a' }}>₹ {totalPaid}</b>
                           </TableCell>
                           <TableCell align="center" colSpan={2}></TableCell>
                         </TableRow>
 
                         {/* REMAINING */}
-                        <TableRow sx={{ background: "#fff3e0" }}>
+                        <TableRow sx={{ background: '#fff3e0' }}>
                           <TableCell align="center" colSpan={2}>
                             <b>Remaining Amount</b>
                           </TableCell>
                           <TableCell align="center">
-                            <b style={{ color: "#d32f2f" }}>₹ {remainingAmount}</b>
+                            <b style={{ color: '#d32f2f' }}>
+                              ₹ {remainingAmount}
+                            </b>
                           </TableCell>
                           <TableCell align="center" colSpan={2}></TableCell>
                         </TableRow>
-
-
                       </TableBody>
                     </Table>
                   </TableContainer>
@@ -427,12 +543,10 @@ export default function ViewProfile() {
           <Divider sx={{ my: 3 }} />
 
           <Box display="flex" justifyContent="flex-end" gap={2}>
-            <Button variant="outlined">Back</Button>
-            <Button variant="contained" sx={{ background: "#16a34a" }}>
-              Edit Profile
+            <Button variant="outlined" onClick={handleBack}>
+              Back
             </Button>
           </Box>
-
         </CardContent>
       </Card>
     </Box>
@@ -456,6 +570,6 @@ const Section = ({ title, children }) => (
 const InfoItem = ({ label, value, full }) => (
   <Grid item xs={12} sm={full ? 12 : 6}>
     <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{label}</Typography>
-    <Typography sx={{ color: "text.secondary" }}>{value || "—"}</Typography>
+    <Typography sx={{ color: 'text.secondary' }}>{value || '—'}</Typography>
   </Grid>
 );

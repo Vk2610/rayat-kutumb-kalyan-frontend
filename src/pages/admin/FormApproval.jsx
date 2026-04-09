@@ -289,6 +289,7 @@ function FormApproval() {
                                                             state: {
                                                                 requestId: form.requestId,
                                                                 form,
+                                                                returnTo: "/admin/form-approval",
                                                             }
                                                         })
                                                     }
