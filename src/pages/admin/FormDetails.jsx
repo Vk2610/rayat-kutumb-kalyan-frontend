@@ -50,6 +50,7 @@ export default function FormDetails() {
     const location = useLocation();
     const navigate = useNavigate();
     const [previewUrl, setPreviewUrl] = useState(null);
+    const [previewZoom, setPreviewZoom] = useState(1);
     const [approving, setApproving] = useState(false);
 
     const { requestId, form, returnTo = "/admin/form-approval" } = location.state || {};
@@ -74,6 +75,20 @@ export default function FormDetails() {
         await updateFormStatus("Rejected", requestId);
         navigate(returnTo, { replace: true });
     };
+
+    const handleOpenPreview = (url) => {
+        setPreviewZoom(1);
+        setPreviewUrl(url);
+    };
+
+    const handleClosePreview = () => {
+        setPreviewZoom(1);
+        setPreviewUrl(null);
+    };
+
+    const zoomInPreview = () => setPreviewZoom((zoom) => Math.min(zoom + 0.2, 3));
+    const zoomOutPreview = () => setPreviewZoom((zoom) => Math.max(zoom - 0.2, 0.6));
+    const resetPreviewZoom = () => setPreviewZoom(1);
 
     const docFields = [
         { label: "Discharge Certificate", key: "dischargeCertificate" },
@@ -185,7 +200,7 @@ export default function FormDetails() {
                         <Typography sx={{ color: "#94a3b8", fontSize: "0.875rem" }}>No documents uploaded.</Typography>
                     ) : (
                         docFields.map(d => (
-                            <DocButton key={d.key} label={d.label} url={form[d.key]} onView={setPreviewUrl} />
+                            <DocButton key={d.key} label={d.label} url={form[d.key]} onView={handleOpenPreview} />
                         ))
                     )}
                 </Box>
@@ -211,7 +226,7 @@ export default function FormDetails() {
             </Box>
 
             {/* ── Embedded Doc Viewer ── */}
-            <Dialog open={!!previewUrl} onClose={() => setPreviewUrl(null)} maxWidth="md" fullWidth>
+            <Dialog open={!!previewUrl} onClose={handleClosePreview} maxWidth="md" fullWidth>
                 <Box sx={{ p: 1, position: "relative" }}>
                     <Button
                         onClick={() => setPreviewUrl(null)}
