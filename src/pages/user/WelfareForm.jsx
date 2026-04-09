@@ -109,6 +109,11 @@ export default function SevakWelfareForm() {
       return;
     }
 
+    if (!uploads.isUploaded || !uploads.id || !uploads.applicantSignature) {
+      alert("Please upload and submit all required documents before submitting the welfare form.");
+      return;
+    }
+
     if (form.certificatesAttached === 'नाही') {
       alert('please upload documents and update the documents attached status');
       return;
@@ -124,18 +129,19 @@ export default function SevakWelfareForm() {
 
       const formattedDate = `${dd}/${mm}/${yyyy}`;
 
-      let formData = { ...form, ...uploads.urls };
-
-      form.formDate = formattedDate;
-      formData.applicantSignature = uploads.applicantSignature;
       const token = localStorage.getItem('token');
       const decoded = jwtDecode(token);
-      formData.hrmsNo = decoded.hrmsNo;
-
-      formData.patientId = uuidv4();
-      formData.expensesId = uuidv4();
-      formData.requestId = uploads.id;
-      formData.previousId = uuidv4();
+      const formData = {
+        ...form,
+        ...uploads.urls,
+        formDate: formattedDate,
+        applicantSignature: uploads.applicantSignature,
+        hrmsNo: decoded.hrmsNo,
+        patientId: uuidv4(),
+        expensesId: uuidv4(),
+        requestId: uploads.id,
+        previousId: uuidv4(),
+      };
 
       console.log(`request id: ${formData.requestId}`);
 

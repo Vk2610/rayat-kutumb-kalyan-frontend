@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Save, Search } from "lucide-react";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
 import { getSchemeTheme } from "../../utils/schemeTheme";
+import { BRANCHES, REGION, BRANCH_TYPE, DESIGNATIONS } from "../../utils/branches";
 
 /* ----------------------- Helpers ----------------------- */
 
@@ -44,6 +46,10 @@ const defaultEmptyForm = {
   appointmentNature: "",
   qualifications: "",
   role: "",
+  Nominee1: "",
+  Relation1: "",
+  Nominee2: "",
+  Relation2: "",
 };
 
 /* ----------------------- Components ----------------------- */
@@ -57,7 +63,7 @@ const FormSection = ({ title, children }) => (
   </div>
 );
 
-const InputField = ({ name, label, type = "text", value, onChange }) => (
+const InputField = ({ name, label, type = "text", value, onChange, required = true }) => (
   <div className="space-y-2">
     <label className="text-sm font-medium text-slate-700">{label}</label>
     <input
@@ -65,12 +71,90 @@ const InputField = ({ name, label, type = "text", value, onChange }) => (
       type={type}
       value={value}
       onChange={onChange}
+      required={required}
       className="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl outline-none 
       focus:border-green-600 focus:ring-1 focus:ring-green-500/30 transition-all text-sm"
-      required
     />
   </div>
 );
+
+const SearchableSelectField = ({ name, label, value, onChange, options, required = true }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState(value || "");
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    setSearch(value || "");
+  }, [value]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filtered = options.filter((opt) =>
+    opt.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const handleSelect = (selectedValue) => {
+    setSearch(selectedValue);
+    onChange({ target: { name, value: selectedValue } });
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="space-y-2" ref={wrapperRef}>
+      <label className="text-sm font-medium text-slate-700">{label}</label>
+      <div className="relative leading-none">
+        <input
+          type="text"
+          value={search}
+          placeholder={`Select or type ${label}...`}
+          onClick={() => setIsOpen(true)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            onChange({ target: { name, value: e.target.value } });
+            setIsOpen(true);
+          }}
+          required={required}
+          autoComplete="off"
+          className="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl outline-none 
+          focus:border-green-600 focus:ring-1 focus:ring-green-500/30 transition-all text-sm text-slate-800"
+        />
+
+        {isOpen && (
+          <div className="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+            {filtered.length > 0 ? (
+              filtered.map((opt) => (
+                <div
+                  key={opt}
+                  onClick={() => handleSelect(opt)}
+                  className="px-4 py-3 text-sm text-slate-700 hover:bg-green-50 cursor-pointer border-b border-slate-50 last:border-0"
+                >
+                  {opt}
+                </div>
+              ))
+            ) : (
+              <div className="px-4 py-3 text-sm text-slate-400">No match found</div>
+            )}
+          </div>
+        )}
+
+        <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
+          <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const SelectField = ({ name, label, value, onChange, options }) => (
   <div className="space-y-2">
@@ -170,12 +254,12 @@ export default function UpdateUser() {
         `http://localhost:3000/employees/upd-emp/${form.hrmsNo}`,
         form
       );
-      alert("User updated successfully!");
+      toast.success("User updated successfully!");
       console.log(res.data);
     } catch (err) {
       console.error("ERROR RESPONSE:", err.response?.data);
       console.error("FULL ERROR:", err);
-      alert("Error updating user!");
+      toast.error("Error updating user!");
 
     }
   };
@@ -386,24 +470,27 @@ export default function UpdateUser() {
 
         {/* Branch */}
         <FormSection title="Branch Information">
-          <InputField
+          <SearchableSelectField
             name="branchName"
             label="Branch Name"
             value={form.branchName}
             onChange={handleChange}
+            options={BRANCHES}
           />
-          <InputField
+          <SearchableSelectField
             name="branchRegionName"
             label="Branch Region Name"
             value={form.branchRegionName}
             onChange={handleChange}
+            options={REGION}
           />
 
-          <InputField
+          <SearchableSelectField
             name="branchType"
             label="Branch Type"
             value={form.branchType}
             onChange={handleChange}
+            options={BRANCH_TYPE}
           />
           <InputField
             name="branchJoiningDate"
@@ -436,35 +523,45 @@ export default function UpdateUser() {
           />
         </FormSection> */}
 
-        {/* Nominee */}
-        <FormSection title="Nominee Details">
-          <InputField
-            name="nomineeName"
-            label="Nominee Name"
-            value={form.nomineeName}
+        <FormSection title="Designation">
+          <SearchableSelectField
+            name="designation"
+            label="Designation"
+            value={form.designation}
             onChange={handleChange}
-          />
-          <InputField
-            name="nomineeRelation"
-            label="Nominee Relation"
-            value={form.nomineeRelation}
-            onChange={handleChange}
+            options={DESIGNATIONS}
           />
         </FormSection>
 
-        {/* Status & Dept */}
-        <FormSection title="Employment Status">
+        {/* Nominee */}
+        <FormSection title="Nominee Details">
           <InputField
-            name="status"
-            label="Employment Status"
-            value={form.status}
+            name="Nominee1"
+            label="Nominee 1"
+            value={form.Nominee1}
             onChange={handleChange}
+            required={false}
           />
           <InputField
-            name="department"
-            label="Department"
-            value={form.department}
+            name="Relation1"
+            label="Relation 1"
+            value={form.Relation1}
             onChange={handleChange}
+            required={false}
+          />
+          <InputField
+            name="Nominee2"
+            label="Nominee 2"
+            value={form.Nominee2}
+            onChange={handleChange}
+            required={false}
+          />
+          <InputField
+            name="Relation2"
+            label="Relation 2"
+            value={form.Relation2}
+            onChange={handleChange}
+            required={false}
           />
         </FormSection>
 

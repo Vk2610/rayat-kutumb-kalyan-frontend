@@ -16,11 +16,11 @@ const FormSection = ({ title, children }) => (
 );
 
 // Input Field
-const InputField = ({ name, label, type = "text", placeholder = "" }) => (
+const InputField = ({ name, label, type = "text", placeholder = "", required = true }) => (
   <div className="space-y-2">
     <label className="text-sm font-medium text-slate-600">{label}</label>
     <input
-      required
+      required={required}
       name={name}
       type={type}
       placeholder={placeholder}
@@ -187,6 +187,33 @@ const NewUser = () => {
           <InputField name="retirementDate" label="Retirement Date" type="date" />
           <InputField name="qualifications" label="Qualifications" placeholder="BSc, MSc, etc." />
           <SelectField name="role" label="Role" options={["user", "Manager", "Admin"]} />
+        </FormSection>
+
+        <FormSection title="Nominee Details">
+          <InputField
+            name="Nominee1"
+            label="Nominee 1"
+            placeholder="Enter nominee name"
+            required={false}
+          />
+          <InputField
+            name="Relation1"
+            label="Relation 1"
+            placeholder="Enter relation"
+            required={false}
+          />
+          <InputField
+            name="Nominee2"
+            label="Nominee 2"
+            placeholder="Enter nominee name"
+            required={false}
+          />
+          <InputField
+            name="Relation2"
+            label="Relation 2"
+            placeholder="Enter relation"
+            required={false}
+          />
         </FormSection>
 
         {/* Address */}

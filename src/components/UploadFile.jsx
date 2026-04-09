@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -8,40 +8,70 @@ import {
   Chip,
   IconButton,
   Alert,
-  Paper
-} from "@mui/material";
+  Paper,
+} from '@mui/material';
 import {
   Upload as UploadIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
   CheckCircle as CheckCircleIcon,
-  Description as DescriptionIcon
-} from "@mui/icons-material";
-import axios from "axios";
+  Description as DescriptionIcon,
+} from '@mui/icons-material';
+import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
 export default function UploadComponent({
   maxFileSizeMB = 10,
-  accept = ["image/jpeg", "image/png", "image/jpg"],
+  accept = ['image/jpeg', 'image/png', 'image/jpg'],
   applicantSignature,
   hrmsNo,
-  onUpload
+  onUpload,
 }) {
-
   const [documents, setDocuments] = useState([
-    { id: 1, name: "dischargeCertificate", file: null, previewUrl: null, isMandatory: true },
-    { id: 2, name: "doctorPrescription", file: null, previewUrl: null, isMandatory: true },
-    { id: 3, name: "medicineBills", file: null, previewUrl: null, isMandatory: true },
-    { id: 4, name: "diagnosticReports", file: null, previewUrl: null, isMandatory: true },
+    {
+      id: 1,
+      name: 'dischargeCertificate',
+      file: null,
+      previewUrl: null,
+      isMandatory: true,
+    },
+    {
+      id: 2,
+      name: 'doctorPrescription',
+      file: null,
+      previewUrl: null,
+      isMandatory: true,
+    },
+    {
+      id: 3,
+      name: 'medicineBills',
+      file: null,
+      previewUrl: null,
+      isMandatory: true,
+    },
+    {
+      id: 4,
+      name: 'diagnosticReports',
+      file: null,
+      previewUrl: null,
+      isMandatory: true,
+    },
   ]);
 
   const [dynamicRows, setDynamicRows] = useState([]);
-  const [alert, setAlert] = useState({ show: false, message: "", severity: "error" });
+  const [alert, setAlert] = useState({
+    show: false,
+    message: '',
+    severity: 'error',
+  });
 
-  const showAlert = (message, severity = "error") => {
+  const showAlert = (message, severity = 'error') => {
     setAlert({ show: true, message, severity });
-    setTimeout(() => setAlert({ show: false, message: "", severity: "error" }), 3000);
+    setTimeout(
+      () => setAlert({ show: false, message: '', severity: 'error' }),
+      3000,
+    );
   };
 
   // ------------------------ VALIDATION --------------------------
@@ -56,70 +86,93 @@ export default function UploadComponent({
     }
 
     // Validate image type
-    if (!["image/jpeg", "image/png", "image/jpg"].includes(file.type)) {
-      showAlert("Only JPG, JPEG, PNG files are allowed");
+    if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+      showAlert('Only JPG, JPEG, PNG files are allowed');
       return;
     }
 
-    const docRecord = documents.find(d => d.id === docId) || dynamicRows.find(d => d.id === docId);
+    const docRecord =
+      documents.find((d) => d.id === docId) ||
+      dynamicRows.find((d) => d.id === docId);
 
     const previewUrl = URL.createObjectURL(file);
 
     // update state
-    setDocuments(prev =>
-      prev.map(doc => (doc.id === docId ? { ...doc, file, previewUrl } : doc))
+    setDocuments((prev) =>
+      prev.map((doc) =>
+        doc.id === docId ? { ...doc, file, previewUrl } : doc,
+      ),
     );
 
-    setDynamicRows(prev =>
-      prev.map(row => (row.id === docId ? { ...row, file, previewUrl } : row))
+    setDynamicRows((prev) =>
+      prev.map((row) =>
+        row.id === docId ? { ...row, file, previewUrl } : row,
+      ),
     );
 
     if (docRecord) {
-      const formattedName = docRecord.name.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase());
+      const formattedName = docRecord.name
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (str) => str.toUpperCase());
       toast.success(`${formattedName} uploaded successfully.`);
     }
   };
 
   const handleRemoveFile = (docId) => {
-    setDocuments(prev =>
-      prev.map(doc => (doc.id === docId ? { ...doc, file: null, previewUrl: null } : doc))
+    setDocuments((prev) =>
+      prev.map((doc) =>
+        doc.id === docId ? { ...doc, file: null, previewUrl: null } : doc,
+      ),
     );
-    setDynamicRows(prev =>
-      prev.map(row => (row.id === docId ? { ...row, file: null, previewUrl: null } : row))
+    setDynamicRows((prev) =>
+      prev.map((row) =>
+        row.id === docId ? { ...row, file: null, previewUrl: null } : row,
+      ),
     );
-    toast.info("Document removed successfully.");
+    toast.info('Document removed successfully.');
   };
 
   // ------------------------ ADD/REMOVE ROWS --------------------------
   const addDynamicRow = () => {
     if (dynamicRows.length >= 5) {
-      showAlert("Maximum 5 additional documents allowed", "warning");
+      showAlert('Maximum 5 additional documents allowed', 'warning');
       return;
     }
 
-    const newId = Math.max(...documents.map(d => d.id), ...dynamicRows.map(d => d.id), 0) + 1;
+    const newId =
+      Math.max(
+        ...documents.map((d) => d.id),
+        ...dynamicRows.map((d) => d.id),
+        0,
+      ) + 1;
 
-    setDynamicRows(prev => [
+    setDynamicRows((prev) => [
       ...prev,
-      { id: newId, name: `Document ${dynamicRows.length + 1}`, file: null, previewUrl: null, isMandatory: false }
+      {
+        id: newId,
+        name: `Document ${dynamicRows.length + 1}`,
+        file: null,
+        previewUrl: null,
+        isMandatory: false,
+      },
     ]);
   };
 
   const removeDynamicRow = (id) => {
-    setDynamicRows(prev => prev.filter(row => row.id !== id));
+    setDynamicRows((prev) => prev.filter((row) => row.id !== id));
   };
 
   // ------------------------ CLOUDINARY UPLOAD --------------------------
-  const CLOUD_NAME = "dcnzddzni";
-  const UPLOAD_PRESET = "welfare_uploads";
+  const CLOUD_NAME = 'dcnzddzni';
+  const UPLOAD_PRESET = 'welfare_uploads';
   const CLOUD_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
   const uploadToCloudinary = async (file, folderPath, publicId) => {
     const fd = new FormData();
-    fd.append("file", file);
-    fd.append("upload_preset", UPLOAD_PRESET);
-    fd.append("folder", folderPath);
-    fd.append("public_id", publicId);
+    fd.append('file', file);
+    fd.append('upload_preset', UPLOAD_PRESET);
+    fd.append('folder', folderPath);
+    fd.append('public_id', publicId);
 
     const res = await axios.post(CLOUD_URL, fd);
     return res.data.secure_url;
@@ -130,20 +183,20 @@ export default function UploadComponent({
     // ensure mandatory docs
     for (let doc of documents) {
       if (doc.isMandatory && !doc.file) {
-        showAlert(`Please upload ${doc.name}`, "warning");
+        showAlert(`Please upload ${doc.name}`, 'warning');
         return;
       }
     }
 
     if (!applicantSignature) {
-      showAlert("Please upload applicant signature", "warning");
+      showAlert('Please upload applicant signature', 'warning');
       return;
     }
 
     const id = uuidv4();
     let urls = {};
 
-    const allDocs = [...documents, ...dynamicRows].filter(doc => doc.file);
+    const allDocs = [...documents, ...dynamicRows].filter((doc) => doc.file);
 
     try {
       // upload signature
@@ -151,47 +204,79 @@ export default function UploadComponent({
       const applicantSignatureUrl = await uploadToCloudinary(
         applicantSignature,
         signPath,
-        "applicantSignature"
+        'applicantSignature',
       );
 
       // upload other docs
       for (let doc of allDocs) {
         const path = `welfare_uploads/${hrmsNo}/${id}`;
-        const publicId = doc.name.replace(/\s+/g, "_");
+        const publicId = doc.name.replace(/\s+/g, '_');
 
         const url = await uploadToCloudinary(doc.file, path, publicId);
         urls[doc.name] = url;
       }
 
-      toast.success("All documents uploaded successfully! They are now ready for printing or final form submission.");
+      toast.success(
+        'All documents uploaded successfully! They are now ready for printing or final form submission.',
+      );
 
-      const tempUpload = {...{
-        id,
-        isUploaded: true,
-        applicantSignature: applicantSignatureUrl,
-        urls,
-        length: allDocs.length
-      }};
+      const tempUpload = {
+        ...{
+          id,
+          isUploaded: true,
+          applicantSignature: applicantSignatureUrl,
+          urls,
+          length: allDocs.length,
+        },
+      };
 
       onUpload(tempUpload);
-
     } catch (error) {
-      console.error("Upload failed:", error);
-      showAlert("Upload failed!", "error");
+      console.error('Upload failed:', error);
+      showAlert('Upload failed!', 'error');
     }
   };
 
   // ------------------------ UI COMPONENT --------------------------
   const DocumentCard = ({ doc, onFileUpload, onRemove, onFileRemove }) => (
-    <Card sx={{ mb: 2, boxShadow: 'none', border: '1px solid #e2e8f0', borderRadius: 2, backgroundColor: doc.file ? '#f0fdf4' : '#f8fafc' }}>
+    <Card
+      sx={{
+        mb: 2,
+        boxShadow: 'none',
+        border: '1px solid #e2e8f0',
+        borderRadius: 2,
+        backgroundColor: doc.file ? '#f0fdf4' : '#f8fafc',
+      }}
+    >
       <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
-        <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap={{ xs: 'wrap', sm: 'nowrap' }} gap={2}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          flexWrap={{ xs: 'wrap', sm: 'nowrap' }}
+          gap={2}
+        >
           <Box display="flex" alignItems="center" gap={2}>
             <DescriptionIcon sx={{ color: doc.file ? '#22c55e' : '#94a3b8' }} />
             <Box>
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#334155', lineHeight: 1.2 }}>{doc.name}</Typography>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 600, color: '#334155', lineHeight: 1.2 }}
+              >
+                {doc.name}
+              </Typography>
               {doc.isMandatory && (
-                <Chip label="Required" size="small" sx={{ ml: 1, height: 20, fontSize: '0.65rem', backgroundColor: '#fee2e2', color: '#ef4444' }} />
+                <Chip
+                  label="Required"
+                  size="small"
+                  sx={{
+                    ml: 1,
+                    height: 20,
+                    fontSize: '0.65rem',
+                    backgroundColor: '#fee2e2',
+                    color: '#ef4444',
+                  }}
+                />
               )}
             </Box>
           </Box>
@@ -206,7 +291,11 @@ export default function UploadComponent({
                 onDelete={() => onFileRemove(doc.id)}
               />
             ) : (
-              <Button variant="contained" component="label" startIcon={<UploadIcon />}>
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<UploadIcon />}
+              >
                 Upload
                 <input
                   type="file"
@@ -230,9 +319,20 @@ export default function UploadComponent({
 
   // ------------------------ RENDER --------------------------
   return (
-    <Box sx={{ width: '100%', mt: 4, pt: 4, borderTop: '2px dashed #e2e8f0', '@media print': { borderTop: 'none', mt: 0, pt: 0 } }}>
+    <Box
+      sx={{
+        width: '100%',
+        mt: 4,
+        pt: 4,
+        borderTop: '2px dashed #e2e8f0',
+        '@media print': { borderTop: 'none', mt: 0, pt: 0 },
+      }}
+    >
       <Box sx={{ '@media print': { display: 'none' } }}>
-        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#1e293b' }}>
+        <Typography
+          variant="h6"
+          sx={{ mb: 2, fontWeight: 'bold', color: '#1e293b' }}
+        >
           आवश्यक कागदपत्रे अपलोड करा (Upload Documents)
         </Typography>
 
@@ -242,8 +342,11 @@ export default function UploadComponent({
           </Alert>
         )}
 
-        <Paper elevation={0} sx={{ p: 0, pt: 1, backgroundColor: 'transparent' }}>
-          {documents.map(doc => (
+        <Paper
+          elevation={0}
+          sx={{ p: 0, pt: 1, backgroundColor: 'transparent' }}
+        >
+          {documents.map((doc) => (
             <DocumentCard
               key={doc.id}
               doc={doc}
@@ -254,11 +357,14 @@ export default function UploadComponent({
 
           {dynamicRows.length > 0 && (
             <>
-              <Typography variant="subtitle1" sx={{ mt: 3, mb: 1, fontWeight: 'bold', color: '#475569' }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ mt: 3, mb: 1, fontWeight: 'bold', color: '#475569' }}
+              >
                 Additional Documents
               </Typography>
 
-              {dynamicRows.map(doc => (
+              {dynamicRows.map((doc) => (
                 <DocumentCard
                   key={doc.id}
                   doc={doc}
@@ -271,27 +377,113 @@ export default function UploadComponent({
           )}
 
           <Box display="flex" justifyContent="flex-start" gap={2} mt={3}>
-            <Button variant="outlined" startIcon={<AddIcon />} onClick={addDynamicRow} sx={{ textTransform: 'none', borderColor: '#cbd5e1', color: '#475569' }}>
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={addDynamicRow}
+              sx={{
+                textTransform: 'none',
+                borderColor: '#cbd5e1',
+                color: '#475569',
+              }}
+            >
               Add Extra Document ({dynamicRows.length}/5)
             </Button>
 
-            <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ textTransform: 'none', backgroundColor: '#3b82f6', boxShadow: 'none' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              sx={{
+                textTransform: 'none',
+                backgroundColor: '#3b82f6',
+                boxShadow: 'none',
+              }}
+            >
               Submit All Documents
             </Button>
           </Box>
         </Paper>
       </Box>
 
-      {/* Print rendering container mapping preview URLs to physical page ends */}
-      <Box sx={{ display: 'none', '@media print': { display: 'block', mt: 4 } }}>
-         {[...documents, ...dynamicRows].filter(d => d.previewUrl).map((doc, idx) => (
-             <div key={idx} style={{ pageBreakBefore: 'always', width: '100%', textAlign: 'center', paddingTop: '20px' }}>
-                <h2 style={{ marginBottom: '10px', fontSize: '1.5rem', fontWeight: 'bold' }}>{doc.name} Attachment</h2>
-                <img src={doc.previewUrl} alt={doc.name} style={{ maxWidth: '100%', maxHeight: '900px', objectFit: 'contain' }} />
-             </div>
-         ))}
-      </Box>
+      {/* Print rendering container mapping preview URLs into fixed-size pages */}
+      <Box
+        sx={{
+          display: 'none',
+          '@media print': {
+            display: 'block',
+            mt: 0,
+            pageBreakBefore: 'always',
+            breakBefore: 'page',
+          },
+        }}
+      >
+        {[...documents, ...dynamicRows]
+          .filter((d) => d.previewUrl)
+          .map((doc, idx) => (
+            <Box
+              key={idx}
+              sx={{
+                width: '195mm',
+                height: '285mm',
+                margin: '0 auto',
+                padding: '6mm',
+                boxSizing: 'border-box',
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: '#fff',
+                pageBreakBefore: 'always',
+                pageBreakAfter: 'always',
+                pageBreakInside: 'avoid',
+                breakBefore: 'page',
+                breakAfter: 'page',
+                breakInside: 'avoid-page',
+              }}
+            >
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontSize: '13pt',
+                  fontWeight: 700,
+                  textAlign: 'center',
+                  color: '#0f172a',
+                  flexShrink: 0,
+                }}
+              >
+                {doc.name} Attachment
+              </Typography>
 
+              <Box
+                sx={{
+                  flex: 1,
+                  width: '100%',
+                  minHeight: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid #cbd5e1',
+                  backgroundColor: '#fff',
+                  p: '2mm',
+                  boxSizing: 'border-box',
+                  overflow: 'hidden',
+                }}
+              >
+                <Box
+                  component="img"
+                  src={doc.previewUrl}
+                  alt={doc.name}
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    objectPosition: 'center',
+                    display: 'block',
+                  }}
+                />
+              </Box>
+            </Box>
+          ))}
+      </Box>
     </Box>
   );
 }
