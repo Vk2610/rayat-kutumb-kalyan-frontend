@@ -34,11 +34,11 @@ export default function ViewProfile() {
   const hrmsNo = initialUser?.hrmsNo || location.state?.hrmsNo || '';
   const [user, setUser] = useState(initialUser);
   const [installments, setInstallments] = useState([
-    { date: null, amount: 0, paid: false },
-    { date: null, amount: 0, paid: false },
-    { date: null, amount: 0, paid: false },
-    { date: null, amount: 0, paid: false },
-    { date: null, amount: 0, paid: false },
+    { date: null, dateInput: '', amount: 0, paid: false, amountInput: '' },
+    { date: null, dateInput: '', amount: 0, paid: false, amountInput: '' },
+    { date: null, dateInput: '', amount: 0, paid: false, amountInput: '' },
+    { date: null, dateInput: '', amount: 0, paid: false, amountInput: '' },
+    { date: null, dateInput: '', amount: 0, paid: false, amountInput: '' },
   ]);
 
   const handleBack = () => {
@@ -57,30 +57,45 @@ export default function ViewProfile() {
       {
         amount: Number(fund.installment1 || 0),
         date: fund.installment1Date,
+        dateInput: fund.installment1Date
+          ? dayjs(fund.installment1Date).format('YYYY-MM-DD')
+          : '',
         paid: Number(fund.installment1 || 0) > 0,
         amountInput: fund.installment1 ? String(fund.installment1) : '',
       },
       {
         amount: Number(fund.installment2 || 0),
         date: fund.installment2Date,
+        dateInput: fund.installment2Date
+          ? dayjs(fund.installment2Date).format('YYYY-MM-DD')
+          : '',
         paid: Number(fund.installment2 || 0) > 0,
         amountInput: fund.installment2 ? String(fund.installment2) : '',
       },
       {
         amount: Number(fund.installment3 || 0),
         date: fund.installment3Date,
+        dateInput: fund.installment3Date
+          ? dayjs(fund.installment3Date).format('YYYY-MM-DD')
+          : '',
         paid: Number(fund.installment3 || 0) > 0,
         amountInput: fund.installment3 ? String(fund.installment3) : '',
       },
       {
         amount: Number(fund.installment4 || 0),
         date: fund.installment4Date,
+        dateInput: fund.installment4Date
+          ? dayjs(fund.installment4Date).format('YYYY-MM-DD')
+          : '',
         paid: Number(fund.installment4 || 0) > 0,
         amountInput: fund.installment4 ? String(fund.installment4) : '',
       },
       {
         amount: Number(fund.installment5 || 0),
         date: fund.installment5Date,
+        dateInput: fund.installment5Date
+          ? dayjs(fund.installment5Date).format('YYYY-MM-DD')
+          : '',
         paid: Number(fund.installment5 || 0) > 0,
         amountInput: fund.installment5 ? String(fund.installment5) : '',
       },
@@ -106,9 +121,15 @@ export default function ViewProfile() {
 
       const raw = updated[index]?.amountInput ?? updated[index]?.amount ?? '';
       const parsed = parseFloat(String(raw).trim());
+      const selectedDate = updated[index]?.dateInput || updated[index]?.date;
 
       if (!parsed || Number.isNaN(parsed) || parsed <= 0) {
         toast.error('Please enter a valid amount greater than 0.');
+        return prev;
+      }
+
+      if (!selectedDate) {
+        toast.error('Please select the payment date.');
         return prev;
       }
 
@@ -116,7 +137,8 @@ export default function ViewProfile() {
         ...updated[index],
         amount: parsed,
         amountInput: String(parsed),
-        date: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        date: dayjs(selectedDate).format('YYYY-MM-DD'),
+        dateInput: dayjs(selectedDate).format('YYYY-MM-DD'),
         paid: true,
       };
 
@@ -233,6 +255,7 @@ export default function ViewProfile() {
       setInstallments(
         user.welfarePayments.map((i) => ({
           date: i.date || null,
+          dateInput: i.date ? dayjs(i.date).format('YYYY-MM-DD') : '',
           amount: i.amount || 0,
           amountInput: i.amount ? String(i.amount) : '',
           paid: !!i.paid,
@@ -444,7 +467,35 @@ export default function ViewProfile() {
                             <TableCell align="center">{index + 1}</TableCell>
 
                             <TableCell align="center">
-                              {inst.date ? formatDate(inst.date) : '—'}
+                              {inst.paid ? (
+                                inst.date ? (
+                                  formatDate(inst.date)
+                                ) : (
+                                  '—'
+                                )
+                              ) : (
+                                <input
+                                  type="date"
+                                  value={inst.dateInput ?? ''}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    setInstallments((prev) => {
+                                      const updated = [...prev];
+                                      updated[index] = {
+                                        ...updated[index],
+                                        dateInput: val,
+                                      };
+                                      return updated;
+                                    });
+                                  }}
+                                  style={{
+                                    padding: '6px',
+                                    textAlign: 'center',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '6px',
+                                  }}
+                                />
+                              )}
                             </TableCell>
 
                             <TableCell align="center">
