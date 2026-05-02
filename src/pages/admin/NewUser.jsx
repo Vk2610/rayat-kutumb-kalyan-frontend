@@ -131,7 +131,10 @@ const NewUser = () => {
     const form = e.target;
     const formData = new FormData(form);
 
-    const payload = Object.fromEntries(formData.entries());
+    const payload = {
+      ...Object.fromEntries(formData.entries()),
+      schemeType: "New Scheme",
+    };
     console.log("Submitting:", payload);
 
     try {
