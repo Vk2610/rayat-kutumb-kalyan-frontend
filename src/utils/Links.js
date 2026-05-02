@@ -105,6 +105,13 @@ export const ADMIN_LINKS = [
         icon: MdQueryStats,
         formType: "welfare",
     },
+    {
+        key: "Fund Disbursement",
+        label: "Fund Disbursement",
+        Path: "/admin/fund-disbursement",
+        icon: GiReceiveMoney,
+        formType: "rkky",
+    },
     // {
     //     key: "View Profile",
     //     label: "View Profile",

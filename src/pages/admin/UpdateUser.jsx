@@ -325,7 +325,7 @@ export default function UpdateUser() {
             label="Profile Type"
             value={form.profileType}
             onChange={handleChange}
-            options={["Permanent", "Teaching", "Contract"]}
+            options={["Teaching", "Non-Teaching"]}
           />
 
           <SelectField
