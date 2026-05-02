@@ -14,6 +14,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -26,6 +30,14 @@ const formatDate = (date) => {
   if (!date) return '—';
   return dayjs(date).format('DD/MM/YYYY');
 };
+
+const SCHEME_TYPES = ['Old Scheme', 'New Scheme'];
+
+const getUserSchemeType = (user) =>
+  user?.schemeType === 'New Scheme' ? 'New Scheme' : 'Old Scheme';
+
+const getSchemeMinimum = (user) =>
+  getUserSchemeType(user) === 'New Scheme' ? 5000 : 1200;
 
 export default function ViewProfile() {
   const location = useLocation();
@@ -105,11 +117,41 @@ export default function ViewProfile() {
       prevUser
         ? {
             ...prevUser,
+            schemeType: fund.schemeType || getUserSchemeType(prevUser),
             claimedFullAmount:
-              Number(fund.totalPaid || 0) >= 5000 || !!fund.claimedFullAmount,
+              Number(fund.totalPaid || 0) >=
+              getSchemeMinimum({
+                ...prevUser,
+                schemeType: fund.schemeType || prevUser.schemeType,
+              }),
           }
         : prevUser,
     );
+  };
+
+  const handleSchemeTypeChange = async (schemeType) => {
+    const previousUser = user;
+
+    setUser((prevUser) =>
+      prevUser
+        ? {
+            ...prevUser,
+            schemeType,
+            claimedFullAmount: totalPaid >= getSchemeMinimum({ schemeType }),
+          }
+        : prevUser,
+    );
+
+    try {
+      await axios.put(`http://localhost:3000/employees/upd-emp/${hrmsNo}`, {
+        schemeType,
+      });
+      toast.success('Scheme type updated successfully.');
+    } catch (err) {
+      console.error('Failed to update scheme type:', err);
+      setUser(previousUser);
+      toast.error('Failed to update scheme type.');
+    }
   };
 
   const handleMarkPaid = async (index) => {
@@ -147,7 +189,7 @@ export default function ViewProfile() {
           sum + (installment.paid ? Number(installment.amount || 0) : 0),
         0,
       );
-      const hasPaidFullAmount = nextTotalPaid >= 5000;
+      const hasPaidFullAmount = nextTotalPaid >= getSchemeMinimum(user);
 
       setUser((prevUser) =>
         prevUser
@@ -272,7 +314,9 @@ export default function ViewProfile() {
     0,
   );
 
-  const remainingAmount = Math.max(0, 5000 - totalPaid);
+  const schemeType = getUserSchemeType(user);
+  const schemeMinimum = getSchemeMinimum(user);
+  const remainingAmount = Math.max(0, schemeMinimum - totalPaid);
 
   return (
     <Box sx={{ p: 4 }}>
@@ -391,6 +435,7 @@ export default function ViewProfile() {
               label="Full Amount Paid"
               value={data.claimedFullAmount ? 'Yes' : 'No'}
             />
+            <InfoItem label="Scheme Type" value={schemeType} />
           </Section>
 
           {/* SECTION 5 — BRANCH */}
@@ -418,7 +463,9 @@ export default function ViewProfile() {
           </Section>
 
           {/* SECTION 8 — WELFARE FUND */}
-          <Section title="Welfare Fund Contribution (5 Installments)">
+          <Section
+            title={`Welfare Fund Contribution (${schemeType}, Minimum Rs. ${schemeMinimum})`}
+          >
             <Grid item xs={12}>
               <Card
                 sx={{
@@ -434,12 +481,17 @@ export default function ViewProfile() {
                 <Box
                   sx={{
                     display: 'flex',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    gap: 2,
                     width: '100%',
                     overflowX: 'visible',
+                    flexWrap: 'wrap',
                   }}
                 >
-                  <TableContainer sx={{ width: '100%', overflowX: 'visible' }}>
+                  <TableContainer
+                    sx={{ flex: 1, minWidth: 600, overflowX: 'visible' }}
+                  >
                     <Table sx={{ minWidth: 600, width: '100%' }}>
                       <TableHead>
                         <TableRow sx={{ background: '#f3f4f6' }}>
@@ -586,6 +638,21 @@ export default function ViewProfile() {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                  <FormControl size="small" sx={{ minWidth: 180 }}>
+                    <InputLabel id="scheme-type-label">Scheme Type</InputLabel>
+                    <Select
+                      labelId="scheme-type-label"
+                      label="Scheme Type"
+                      value={schemeType}
+                      onChange={(e) => handleSchemeTypeChange(e.target.value)}
+                    >
+                      {SCHEME_TYPES.map((type) => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Box>
               </Card>
             </Grid>

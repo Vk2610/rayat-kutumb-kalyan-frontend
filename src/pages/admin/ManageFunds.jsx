@@ -26,6 +26,25 @@ import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { getSchemeTheme } from '../../utils/schemeTheme';
 
+const getUserSchemeType = (user) =>
+  user?.schemeType === 'New Scheme' ? 'New Scheme' : 'Old Scheme';
+
+const getSchemeMinimum = (user) =>
+  getUserSchemeType(user) === 'New Scheme' ? 5000 : 1200;
+
+const getTotalPaid = (user) =>
+  Number(user?.totalPaid) ||
+  [1, 2, 3, 4, 5].reduce(
+    (sum, index) => sum + Number(user?.[`installment${index}`] || 0),
+    0,
+  );
+
+const withComputedFundStatus = (user) => ({
+  ...user,
+  schemeType: getUserSchemeType(user),
+  claimedFullAmount: getTotalPaid(user) >= getSchemeMinimum(user),
+});
+
 const ManageFunds = () => {
   const navigate = useNavigate();
   const formType = localStorage.getItem('formType') || 'welfare';
@@ -45,7 +64,7 @@ const ManageFunds = () => {
       const retirement = dayjs(u.retirementDate);
       const today = dayjs();
 
-      return {
+      return withComputedFundStatus({
         ...u,
         retirementDateFormatted: u.retirementDate
           ? retirement.format('DD/MM/YYYY')
@@ -54,7 +73,7 @@ const ManageFunds = () => {
           retirement.isValid() && retirement.isAfter(today)
             ? 'Active'
             : 'Retired',
-      };
+      });
     });
 
   const fetchAllUsers = async () => {
@@ -203,7 +222,7 @@ const ManageFunds = () => {
   }
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box sx={{ px: { xs: 1, sm: 2, md: 3 }, py: 3, overflowX: 'hidden' }}>
       <Typography
         variant="h4"
         sx={{ mb: 3, fontWeight: 600, maxWidth: 1300, mx: 'auto' }}
@@ -212,9 +231,16 @@ const ManageFunds = () => {
       </Typography>
 
       <Card
-        sx={{ p: 3, borderRadius: 3, boxShadow: 4, maxWidth: 1300, mx: 'auto' }}
+        sx={{
+          p: { xs: 1, sm: 2 },
+          borderRadius: 3,
+          boxShadow: 4,
+          maxWidth: 1300,
+          mx: 'auto',
+          overflowX: 'hidden',
+        }}
       >
-        <CardContent>
+        <CardContent sx={{ p: { xs: 1, sm: 2 }, '&:last-child': { pb: 2 } }}>
           {/* 🔹 TOP FILTER BUTTONS */}
           {/* <ToggleButtonGroup
             value={filterType}
@@ -225,7 +251,9 @@ const ManageFunds = () => {
             <ToggleButton value="all">All Users</ToggleButton>
             <ToggleButton value="retiring">Retiring in 60 Days</ToggleButton>
             <ToggleButton value="claimed">Claimed All Benefits</ToggleButton>
-            <ToggleButton value="lowInstallment">Paid &lt; ₹5000</ToggleButton>
+            <ToggleButton value="lowInstallment">
+              Below Scheme Minimum
+            </ToggleButton>
           </ToggleButtonGroup> */}
           <ToggleButtonGroup
             value={filterType}
@@ -298,12 +326,26 @@ const ManageFunds = () => {
                 }
               }
             }}
-            sx={{ mb: 3 }}
+            sx={{
+              mb: 3,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 0.75,
+              '& .MuiToggleButton-root': {
+                px: { xs: 1, sm: 1.5 },
+                py: 0.75,
+                fontSize: { xs: '0.72rem', sm: '0.78rem' },
+                lineHeight: 1.15,
+                whiteSpace: 'normal',
+              },
+            }}
           >
             <ToggleButton value="all">All Users</ToggleButton>
             <ToggleButton value="retiring">Retiring in 60 Days</ToggleButton>
             <ToggleButton value="claimed">Fully Paid</ToggleButton>
-            <ToggleButton value="lowInstallment">Paid &lt; ₹5000</ToggleButton>
+            <ToggleButton value="lowInstallment">
+              Below Scheme Minimum
+            </ToggleButton>
             <ToggleButton value="retiredUsers">Retired Users</ToggleButton>
           </ToggleButtonGroup>
 
@@ -312,13 +354,19 @@ const ManageFunds = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 2,
+              gap: { xs: 1, sm: 2 },
               mb: 3,
               flexWrap: 'wrap',
             }}
           >
             <Box
-              sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: { xs: 1, sm: 2 },
+                flex: '1 1 260px',
+                minWidth: 0,
+              }}
             >
               <TextField
                 fullWidth
@@ -369,29 +417,46 @@ const ManageFunds = () => {
           </Box>
 
           {/* 🔹 USERS TABLE */}
-          <TableContainer>
-            <Table>
+          <TableContainer sx={{ width: '100%', overflowX: 'hidden' }}>
+            <Table
+              size="small"
+              sx={{
+                width: '100%',
+                tableLayout: 'fixed',
+                '& .MuiTableCell-root': {
+                  px: { xs: 0.5, sm: 0.75, md: 1 },
+                  py: 1,
+                  fontSize: { xs: '0.68rem', sm: '0.76rem', md: '0.82rem' },
+                  lineHeight: 1.25,
+                  overflowWrap: 'anywhere',
+                  wordBreak: 'break-word',
+                },
+              }}
+            >
               <TableHead>
                 <TableRow sx={{ background: '#f3f4f6' }}>
-                  <TableCell>
+                  <TableCell sx={{ width: '10%' }}>
                     <b>HRMS No</b>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ width: '17%' }}>
                     <b>Name</b>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ width: '15%' }}>
                     <b>Department</b>
                   </TableCell>
-                  <TableCell>
-                    <b>Phone Number</b>
+                  <TableCell sx={{ width: '12%' }}>
+                    <b>Phone</b>
                   </TableCell>
-                  <TableCell>
-                    <b>Retirement Date</b>
+                  <TableCell sx={{ width: '12%' }}>
+                    <b>Retirement</b>
                   </TableCell>
-                  <TableCell>
-                    <b>Full Amount Paid</b>
+                  <TableCell sx={{ width: '10%' }}>
+                    <b>Paid</b>
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ width: '13%' }}>
+                    <b>Scheme</b>
+                  </TableCell>
+                  <TableCell sx={{ width: '11%' }}>
                     <b>Actions</b>
                   </TableCell>
                 </TableRow>
@@ -412,11 +477,19 @@ const ManageFunds = () => {
                       <TableCell>
                         {user.claimedFullAmount ? 'Yes' : 'No'}
                       </TableCell>
+                      <TableCell>{getUserSchemeType(user)}</TableCell>
                       <TableCell>
                         <Button
                           variant="contained"
+                          size="small"
                           sx={{
                             background: schemeTheme.primary,
+                            minWidth: 0,
+                            px: { xs: 0.75, sm: 1 },
+                            py: 0.75,
+                            fontSize: { xs: '0.66rem', sm: '0.72rem' },
+                            lineHeight: 1.1,
+                            whiteSpace: 'normal',
                             '&:hover': {
                               background: schemeTheme.primary,
                               filter: 'brightness(0.92)',
@@ -434,7 +507,7 @@ const ManageFunds = () => {
 
                 {filteredUsers.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={7} align="center">
+                    <TableCell colSpan={8} align="center">
                       No users found
                     </TableCell>
                   </TableRow>
