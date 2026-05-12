@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Save, Search } from "lucide-react";
 import dayjs from "dayjs";
@@ -216,7 +216,7 @@ export default function UpdateUser() {
 
     try {
       const res = await axios.get(
-        `https://rayat-backend-1.onrender.com/employees/get-emp-prf/${searchInput}`
+        `${import.meta.env.VITE_BASE_URL}/employees/get-emp-prf/${searchInput}`
       );
 
       if (!res.data) {
@@ -251,7 +251,7 @@ export default function UpdateUser() {
 
     try {
       const res = await axios.put(
-        `https://rayat-backend-1.onrender.com/employees/upd-emp/${form.hrmsNo}`,
+        `${import.meta.env.VITE_BASE_URL}/employees/upd-emp/${form.hrmsNo}`,
         form
       );
       toast.success("User updated successfully!");

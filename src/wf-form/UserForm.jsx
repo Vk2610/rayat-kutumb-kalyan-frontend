@@ -105,7 +105,7 @@ export default function UserForm({ role }) {
 
       // Submit to backend
       const response = await axios.post(
-        'https://rayat-backend-1.onrender.com/user/submit-welfare-form',
+        `${import.meta.env.VITE_BASE_URL}/user/submit-welfare-form`,
         formDataToSend,
         {
           headers: { 'Content-Type': 'application/json' },

@@ -99,7 +99,7 @@ const ResetPassword = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.put("https://rayat-backend-1.onrender.com/auth/reset-password", {
+      const response = await axios.put(`${import.meta.env.VITE_BASE_URL}/auth/reset-password`, {
         Email_ID: formData.Email_ID,
         password: formData.password
       });

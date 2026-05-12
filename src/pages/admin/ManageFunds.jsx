@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Box,
@@ -77,7 +77,7 @@ const ManageFunds = () => {
     });
 
   const fetchAllUsers = async () => {
-    const res = await axios.get('https://rayat-backend-1.onrender.com/employees/get-all-emp');
+    const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/employees/get-all-emp`);
 
     const data = Array.isArray(res.data)
       ? res.data
@@ -270,7 +270,7 @@ const ManageFunds = () => {
                   setLoading(true);
                   const token = localStorage.getItem('token');
                   const res = await axios.get(
-                    'https://rayat-backend-1.onrender.com/admin/funds-users?type=claimed',
+                    `${import.meta.env.VITE_BASE_URL}/admin/funds-users?type=claimed`,
                     {
                       headers: {
                         Authorization: `Bearer ${token}`,
@@ -292,7 +292,7 @@ const ManageFunds = () => {
                   setLoading(true);
                   const token = localStorage.getItem('token');
                   const res = await axios.get(
-                    'https://rayat-backend-1.onrender.com/admin/funds-users?type=lowPaid',
+                    `${import.meta.env.VITE_BASE_URL}/admin/funds-users?type=lowPaid`,
                     {
                       headers: {
                         Authorization: `Bearer ${token}`,

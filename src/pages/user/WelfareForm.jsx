@@ -146,7 +146,7 @@ export default function SevakWelfareForm() {
       console.log(`request id: ${formData.requestId}`);
 
       const response = await axios.post(
-        "https://rayat-backend-1.onrender.com/user/submit-welfare-form",
+        `${import.meta.env.VITE_BASE_URL}/user/submit-welfare-form`,
         formData,
         {
           headers: {

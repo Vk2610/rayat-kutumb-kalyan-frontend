@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -138,7 +138,7 @@ export default function MyApplications() {
         const hrmsNo = decoded.hrmsNo;
         setUsername(decoded.employeeName || "");
 
-        const response = await axios.get("https://rayat-backend-1.onrender.com/admin/get-user-forms", {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/get-user-forms`, {
           params: { hrmsNo },
         });
 

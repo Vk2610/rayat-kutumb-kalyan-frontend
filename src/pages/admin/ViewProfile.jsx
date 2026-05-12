@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -143,7 +143,7 @@ export default function ViewProfile() {
     );
 
     try {
-      await axios.put(`https://rayat-backend-1.onrender.com/employees/upd-emp/${hrmsNo}`, {
+      await axios.put(`${import.meta.env.VITE_BASE_URL}/employees/upd-emp/${hrmsNo}`, {
         schemeType,
       });
       toast.success('Scheme type updated successfully.');
@@ -227,7 +227,7 @@ export default function ViewProfile() {
           console.log('ðŸ“¤ Sending payload:', payload);
 
           const response = await axios.put(
-            `https://rayat-backend-1.onrender.com/funds/upd-ints/${hrmsNo}`,
+            `${import.meta.env.VITE_BASE_URL}/funds/upd-ints/${hrmsNo}`,
             payload,
           );
           syncInstallmentsFromFund(response.data?.fund);
@@ -267,7 +267,7 @@ export default function ViewProfile() {
     if (!hrmsNo) return;
 
     axios
-      .get(`https://rayat-backend-1.onrender.com/employees/get-emp-prf/${hrmsNo}`)
+      .get(`${import.meta.env.VITE_BASE_URL}/employees/get-emp-prf/${hrmsNo}`)
       .then((res) => {
         setUser((prevUser) => ({
           ...(prevUser || {}),
@@ -286,7 +286,7 @@ export default function ViewProfile() {
 
   useEffect(() => {
     if (hrmsNo) {
-      axios.get(`https://rayat-backend-1.onrender.com/funds/${hrmsNo}`).then((res) => {
+      axios.get(`${import.meta.env.VITE_BASE_URL}/funds/${hrmsNo}`).then((res) => {
         syncInstallmentsFromFund(res.data);
       });
     }

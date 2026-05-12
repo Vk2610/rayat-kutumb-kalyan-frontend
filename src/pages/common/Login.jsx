@@ -49,7 +49,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://rayat-backend-1.onrender.com/auth/login", {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/login`, {
         hrmsNo,
         password,
         formType

@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
@@ -29,7 +29,7 @@ export default function FormDialog({ data, isDisabled, handleUpdate }) {
 
     try {
       if (data.title === "Status") {
-        await axios.patch("https://rayat-backend-1.onrender.com/admin/update-form-status", {
+        await axios.patch(`${import.meta.env.VITE_BASE_URL}/admin/update-form-status`, {
           id: data.requestId,
           status: value
         });
@@ -37,7 +37,7 @@ export default function FormDialog({ data, isDisabled, handleUpdate }) {
       }
 
       else if (data.title === "Approved Amount") {
-        await axios.patch("https://rayat-backend-1.onrender.com/admin/update-appr-amt", {
+        await axios.patch(`${import.meta.env.VITE_BASE_URL}/admin/update-appr-amt`, {
           id: data.requestId,
           amt: value
         });

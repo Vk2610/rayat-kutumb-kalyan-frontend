@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Box,
@@ -64,7 +64,7 @@ const FundDisbursement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('https://rayat-backend-1.onrender.com/admin/fund-disbursement-users', {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/fund-disbursement-users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -120,7 +120,7 @@ const FundDisbursement = () => {
         usersData: users.map((u) => ({ hrmsNo: u.hrmsNo, totalPayableAmt: u.computedTotal, bonus: u.computedBonus })),
       };
 
-      const res = await axios.post('https://rayat-backend-1.onrender.com/admin/approve-fund-disbursement', payload, {
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/admin/approve-fund-disbursement`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

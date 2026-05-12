@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import {
   TextField,
   Box,
@@ -54,7 +54,7 @@ const History = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("https://rayat-backend-1.onrender.com/admin/get-users", {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/admin/get-users`, {
         params: { page, limit, search: searchQuery }
       });
 
