@@ -337,8 +337,8 @@ const FundDisbursement = () => {
                 <TableBody>
                   {filteredUsers.length > 0 ? (
                     filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => {
-                      const joinDateStr = user.joiningDate ? dayjs(user.joiningDate).format('DD/MM/YYYY') : 'â€”';
-                      const retDateStr = user.retirementDate ? dayjs(user.retirementDate).format('DD/MM/YYYY') : 'â€”';
+                      const joinDateStr = user.joiningDate ? dayjs(user.joiningDate).format('DD/MM/YYYY') : '—';
+                      const retDateStr = user.retirementDate ? dayjs(user.retirementDate).format('DD/MM/YYYY') : '—';
 
                       return (
                         <TableRow key={user.hrmsNo} hover>
@@ -349,7 +349,7 @@ const FundDisbursement = () => {
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>{joinDateStr}</TableCell>
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>{retDateStr}</TableCell>
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.schemeType}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>â‚¹{user.computedTotal}</TableCell>
+                          <TableCell sx={{ whiteSpace: 'nowrap' }}>₹{user.computedTotal}</TableCell>
                           <TableCell>
                             <Button
                               variant="outlined"
@@ -412,8 +412,8 @@ const FundDisbursement = () => {
               hrms: selectedUser.hrmsNo,
               scheme: selectedUser.schemeType,
               mobile: selectedUser.mobileNo,
-              meetingDate: meetingDate || 'â€”',
-              checkNo: chequeNo || 'â€”',
+              meetingDate: meetingDate || '—',
+              checkNo: chequeNo || '—',
               joining: selectedUser.joiningDate,
               installment1Date: selectedUser.installment1Date,
               retirement: selectedUser.retirementDate,

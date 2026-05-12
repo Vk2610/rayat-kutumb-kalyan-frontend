@@ -66,9 +66,8 @@ const ManageFunds = () => {
 
       return withComputedFundStatus({
         ...u,
-        retirementDateFormatted: u.retirementDate
           ? retirement.format('DD/MM/YYYY')
-          : 'â€”',
+          : '—',
         status:
           retirement.isValid() && retirement.isAfter(today)
             ? 'Active'
@@ -89,7 +88,7 @@ const ManageFunds = () => {
   };
 
   // -------------------------------
-  // ðŸ”¹ FETCH USERS FROM BACKEND
+  // 🔹 FETCH USERS FROM BACKEND
   // -------------------------------
   useEffect(() => {
     const fetchUsers = async () => {
@@ -106,7 +105,7 @@ const ManageFunds = () => {
   }, []);
 
   // -------------------------------
-  // ðŸ”¹ Retiring in 60 Days Logic
+  // 🔹 Retiring in 60 Days Logic
   // -------------------------------
   const retiringIn60 = (date) => {
     const today = dayjs();
@@ -115,7 +114,7 @@ const ManageFunds = () => {
   };
 
   // -------------------------------
-  // ðŸ”¹ EXPORT LOGIC
+  // 🔹 EXPORT LOGIC
   // -------------------------------
   const handleExportPDF = () => {
     const retiringUsers = filteredUsers;
@@ -182,7 +181,7 @@ const ManageFunds = () => {
   };
 
   // -------------------------------
-  // ðŸ”¹ Search + Filter Logic
+  // 🔹 Search + Filter Logic
   // -------------------------------
 
   const sourceUsers =
@@ -241,7 +240,7 @@ const ManageFunds = () => {
         }}
       >
         <CardContent sx={{ p: { xs: 1, sm: 2 }, '&:last-child': { pb: 2 } }}>
-          {/* ðŸ”¹ TOP FILTER BUTTONS */}
+          {/* 🔹 TOP FILTER BUTTONS */}
           {/* <ToggleButtonGroup
             value={filterType}
             exclusive
@@ -264,7 +263,7 @@ const ManageFunds = () => {
               setFilterType(v);
               setPage(0);
 
-              // âœ… ONLY claimed filter hits API
+              // ✅ ONLY claimed filter hits API
               if (v === 'claimed') {
                 try {
                   setLoading(true);
@@ -286,7 +285,7 @@ const ManageFunds = () => {
                 }
               }
 
-              // âœ… Paid < â‚¹5000 (Pending)
+              // ✅ Paid < ₹5000 (Pending)
               if (v === 'lowInstallment') {
                 try {
                   setLoading(true);
@@ -308,13 +307,13 @@ const ManageFunds = () => {
                 }
               }
 
-              // âœ… Retired Users (local filter)
+              // ✅ Retired Users (local filter)
               if (v === 'retiredUsers') {
                 // No API call needed, just filter locally
                 setUsers(processUsers(allUsers));
               }
 
-              // âœ… When switching back to ALL users
+              // ✅ When switching back to ALL users
               if (v === 'all') {
                 try {
                   setLoading(true);
@@ -349,7 +348,7 @@ const ManageFunds = () => {
             <ToggleButton value="retiredUsers">Retired Users</ToggleButton>
           </ToggleButtonGroup>
 
-          {/* ðŸ”¹ SEARCH BAR */}
+          {/* 🔹 SEARCH BAR */}
           <Box
             sx={{
               display: 'flex',
@@ -416,7 +415,7 @@ const ManageFunds = () => {
             )}
           </Box>
 
-          {/* ðŸ”¹ USERS TABLE */}
+          {/* 🔹 USERS TABLE */}
           <TableContainer sx={{ width: '100%', overflowX: 'hidden' }}>
             <Table
               size="small"
@@ -516,7 +515,7 @@ const ManageFunds = () => {
             </Table>
           </TableContainer>
 
-          {/* ðŸ”¹ Pagination */}
+          {/* 🔹 Pagination */}
           <TablePagination
             component="div"
             count={filteredUsers.length}

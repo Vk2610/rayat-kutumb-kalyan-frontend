@@ -621,7 +621,7 @@ export default function UserForm({ role }) {
                 )}
                 {form.applicantSignature && (
                   <p className="text-base text-gray-600">
-                    ðŸ“Ž {form.applicantSignature.name}
+                    📌 {form.applicantSignature.name}
                   </p>
                 )}
                 <p className="text-base text-gray-500 mt-1">
@@ -634,7 +634,7 @@ export default function UserForm({ role }) {
               <UploadFile onUpload={handleDocsUpload} />
             ) : (
               <p className="text-lg mt-4 text-blue-800">
-                ðŸ“„ Documents will be viewed by you in panel below.
+                📄 Documents will be viewed by you in panel below.
               </p>
             )}
 
@@ -645,14 +645,14 @@ export default function UserForm({ role }) {
                 onClick={handlePrint}
                 className="bg-blue-600 text-white px-4 py-2 text-xl rounded-md hover:bg-blue-700 focus:outline-none transition"
               >
-                ðŸ–¨ï¸ Print
+                🖨️ Print
               </button>
               <button
                 type="button"
                 onClick={handleSubmit}
                 className="bg-green-700 text-white px-4 py-2 text-xl rounded-md hover:bg-green-800 focus:outline-none transition"
               >
-                âœ“ Submit
+                ✓ Submit
               </button>
             </div>
           </form>

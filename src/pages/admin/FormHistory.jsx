@@ -61,7 +61,7 @@ export default function FormHistory() {
             '&:hover': { backgroundColor: '#cbd5e1', boxShadow: 'none' },
           }}
         >
-          View Document ðŸ“„
+          View Document 📄
         </Button>
       ) : (
         <Typography
@@ -436,19 +436,19 @@ export default function FormHistory() {
                   <SectionHeader title="Expenses Details" />
                   <DetailRow
                     label="Medicine Bill"
-                    value={`â‚¹${selectedForm.medicineBill}`}
+                    value={`₹${selectedForm.medicineBill}`}
                   />
                   <DetailRow
                     label="Doctor Bill"
-                    value={`â‚¹${selectedForm.doctorBill}`}
+                    value={`₹${selectedForm.doctorBill}`}
                   />
                   <DetailRow
                     label="Other Expenses"
-                    value={`â‚¹${selectedForm.otherExpenses}`}
+                    value={`₹${selectedForm.otherExpenses}`}
                   />
                   <DetailRow
                     label="Total Expenses"
-                    value={`â‚¹${selectedForm.totalExpenses}`}
+                    value={`₹${selectedForm.totalExpenses}`}
                     isBold={true}
                   />
                   <DetailRow
@@ -487,7 +487,7 @@ export default function FormHistory() {
                   />
                   <DetailRow
                     label="Requested Amount (Num)"
-                    value={`â‚¹${selectedForm.requestedAmountNumbers}`}
+                    value={`₹${selectedForm.requestedAmountNumbers}`}
                     isBold={true}
                   />
                   <DetailRow
@@ -496,7 +496,7 @@ export default function FormHistory() {
                   />
                   <DetailRow
                     label="Approved Amount"
-                    value={`â‚¹${selectedForm.approvedAmount}`}
+                    value={`₹${selectedForm.approvedAmount}`}
                     isBold={true}
                   />
 
@@ -586,7 +586,7 @@ export default function FormHistory() {
                 onClick={() => setSelectedDoc(null)}
                 sx={{ color: '#fff', minWidth: 'auto', p: 1 }}
               >
-                Close Modal âœ•
+                Close Modal ✖
               </Button>
             </DialogTitle>
             <DialogContent

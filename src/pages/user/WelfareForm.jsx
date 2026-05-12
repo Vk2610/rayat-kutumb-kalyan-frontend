@@ -674,7 +674,7 @@ export default function SevakWelfareForm() {
 
               {form.applicantSignature && !signaturePreview && (
                 <p className="text-sm text-gray-600 mt-2 text-center truncate">
-                  ðŸ“Ž {form.applicantSignature.name}
+                  📌 {form.applicantSignature.name}
                 </p>
               )}
             </div>
@@ -688,14 +688,14 @@ export default function SevakWelfareForm() {
               onClick={handlePrint}
               className="bg-blue-600 text-white px-4 py-2 text-xl rounded-md hover:bg-blue-700 focus:outline-none transition"
             >
-              ðŸ–¨ï¸ Print
+              🖨️ Print
             </button>
             <button
               type="button"
               onClick={handleSubmit}
               className="bg-green-600 text-white px-4 py-2 text-xl rounded-md hover:bg-green-700 focus:outline-none transition shadow-lg shadow-green-500/30"
             >
-              âœ“ Submit
+              ✓ Submit
             </button>
           </div>
         </form>
