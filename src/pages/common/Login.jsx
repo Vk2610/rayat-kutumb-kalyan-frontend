@@ -1,5 +1,5 @@
-﻿import { useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import api from "../../services/api";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -49,7 +49,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://rayat-backend-1.onrender.com/auth/login", {
+      const response = await api.post("/auth/login", {
         hrmsNo,
         password,
         formType

@@ -461,7 +461,7 @@ export default function FormHistory() {
                     label="Previous Help Recv."
                     value={selectedForm.previousHelp}
                   />
-                  {selectedForm.previousHelp === 'à¤¹à¥‹à¤¯' && (
+                  {selectedForm.previousHelp === 'होय' && (
                     <DetailRow
                       label="Previous Help Details"
                       value={selectedForm.previousHelpDetails}
