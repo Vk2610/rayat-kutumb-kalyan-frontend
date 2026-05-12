@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { 
@@ -99,7 +99,7 @@ const ResetPassword = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.put("http://localhost:3000/auth/reset-password", {
+      const response = await axios.put("https://rayat-backend.onrender.com/auth/reset-password", {
         Email_ID: formData.Email_ID,
         password: formData.password
       });
@@ -269,3 +269,4 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+

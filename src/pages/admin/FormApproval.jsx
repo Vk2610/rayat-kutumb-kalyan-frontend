@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
     Box,
@@ -36,7 +36,7 @@ function FormApproval() {
     const fetchPaginatedForms = async (currentPage) => {
         setLoading(true);
         try {
-            const response = await axios.get("http://localhost:3000/admin/get-all-forms", {
+            const response = await axios.get("https://rayat-backend.onrender.com/admin/get-all-forms", {
                 params: { page: currentPage, limit }
             });
 
@@ -53,7 +53,7 @@ function FormApproval() {
     const fetchAllForms = async () => {
         setLoading(true);
         try {
-            const response = await axios.get("http://localhost:3000/admin/get-all-forms", {
+            const response = await axios.get("https://rayat-backend.onrender.com/admin/get-all-forms", {
                 params: {
                     page: 1,
                     limit: totalForms || 1000,
@@ -354,3 +354,4 @@ function FormApproval() {
 }
 
 export default FormApproval;
+

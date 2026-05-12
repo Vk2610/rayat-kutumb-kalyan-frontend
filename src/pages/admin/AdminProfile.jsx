@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -82,8 +82,8 @@ const AdminProfile = () => {
       const hrmsNo = decoded.hrmsNo;
 
       const [profileResponse, statsResponse] = await Promise.all([
-        axios.get(`http://localhost:3000/employees/get-emp-prf/${hrmsNo}`),
-        axios.get("http://localhost:3000/employees/stats"),
+        axios.get(`https://rayat-backend.onrender.com/employees/get-emp-prf/${hrmsNo}`),
+        axios.get("https://rayat-backend.onrender.com/employees/stats"),
       ]);
 
       setAdmin(profileResponse.data);
@@ -409,3 +409,4 @@ const AdminProfile = () => {
 };
 
 export default AdminProfile;
+

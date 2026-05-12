@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+﻿import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Save } from "lucide-react";
 import { toast } from "react-toastify";
@@ -138,7 +138,7 @@ const NewUser = () => {
     console.log("Submitting:", payload);
 
     try {
-      const res = await axios.post("http://localhost:3000/employees/create", payload);
+      const res = await axios.post("https://rayat-backend.onrender.com/employees/create", payload);
       toast.success("User added successfully!");
       console.log(res.data);
       form.reset();
@@ -271,3 +271,4 @@ const NewUser = () => {
 };
 
 export default NewUser;
+

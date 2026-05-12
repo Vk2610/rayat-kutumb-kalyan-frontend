@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Box,
@@ -68,7 +68,7 @@ const ManageFunds = () => {
         ...u,
         retirementDateFormatted: u.retirementDate
           ? retirement.format('DD/MM/YYYY')
-          : '—',
+          : 'â€”',
         status:
           retirement.isValid() && retirement.isAfter(today)
             ? 'Active'
@@ -77,7 +77,7 @@ const ManageFunds = () => {
     });
 
   const fetchAllUsers = async () => {
-    const res = await axios.get('http://localhost:3000/employees/get-all-emp');
+    const res = await axios.get('https://rayat-backend.onrender.com/employees/get-all-emp');
 
     const data = Array.isArray(res.data)
       ? res.data
@@ -89,7 +89,7 @@ const ManageFunds = () => {
   };
 
   // -------------------------------
-  // 🔹 FETCH USERS FROM BACKEND
+  // ðŸ”¹ FETCH USERS FROM BACKEND
   // -------------------------------
   useEffect(() => {
     const fetchUsers = async () => {
@@ -106,7 +106,7 @@ const ManageFunds = () => {
   }, []);
 
   // -------------------------------
-  // 🔹 Retiring in 60 Days Logic
+  // ðŸ”¹ Retiring in 60 Days Logic
   // -------------------------------
   const retiringIn60 = (date) => {
     const today = dayjs();
@@ -115,7 +115,7 @@ const ManageFunds = () => {
   };
 
   // -------------------------------
-  // 🔹 EXPORT LOGIC
+  // ðŸ”¹ EXPORT LOGIC
   // -------------------------------
   const handleExportPDF = () => {
     const retiringUsers = filteredUsers;
@@ -182,7 +182,7 @@ const ManageFunds = () => {
   };
 
   // -------------------------------
-  // 🔹 Search + Filter Logic
+  // ðŸ”¹ Search + Filter Logic
   // -------------------------------
 
   const sourceUsers =
@@ -241,7 +241,7 @@ const ManageFunds = () => {
         }}
       >
         <CardContent sx={{ p: { xs: 1, sm: 2 }, '&:last-child': { pb: 2 } }}>
-          {/* 🔹 TOP FILTER BUTTONS */}
+          {/* ðŸ”¹ TOP FILTER BUTTONS */}
           {/* <ToggleButtonGroup
             value={filterType}
             exclusive
@@ -264,13 +264,13 @@ const ManageFunds = () => {
               setFilterType(v);
               setPage(0);
 
-              // ✅ ONLY claimed filter hits API
+              // âœ… ONLY claimed filter hits API
               if (v === 'claimed') {
                 try {
                   setLoading(true);
                   const token = localStorage.getItem('token');
                   const res = await axios.get(
-                    'http://localhost:3000/admin/funds-users?type=claimed',
+                    'https://rayat-backend.onrender.com/admin/funds-users?type=claimed',
                     {
                       headers: {
                         Authorization: `Bearer ${token}`,
@@ -286,13 +286,13 @@ const ManageFunds = () => {
                 }
               }
 
-              // ✅ Paid < ₹5000 (Pending)
+              // âœ… Paid < â‚¹5000 (Pending)
               if (v === 'lowInstallment') {
                 try {
                   setLoading(true);
                   const token = localStorage.getItem('token');
                   const res = await axios.get(
-                    'http://localhost:3000/admin/funds-users?type=lowPaid',
+                    'https://rayat-backend.onrender.com/admin/funds-users?type=lowPaid',
                     {
                       headers: {
                         Authorization: `Bearer ${token}`,
@@ -308,13 +308,13 @@ const ManageFunds = () => {
                 }
               }
 
-              // ✅ Retired Users (local filter)
+              // âœ… Retired Users (local filter)
               if (v === 'retiredUsers') {
                 // No API call needed, just filter locally
                 setUsers(processUsers(allUsers));
               }
 
-              // ✅ When switching back to ALL users
+              // âœ… When switching back to ALL users
               if (v === 'all') {
                 try {
                   setLoading(true);
@@ -349,7 +349,7 @@ const ManageFunds = () => {
             <ToggleButton value="retiredUsers">Retired Users</ToggleButton>
           </ToggleButtonGroup>
 
-          {/* 🔹 SEARCH BAR */}
+          {/* ðŸ”¹ SEARCH BAR */}
           <Box
             sx={{
               display: 'flex',
@@ -416,7 +416,7 @@ const ManageFunds = () => {
             )}
           </Box>
 
-          {/* 🔹 USERS TABLE */}
+          {/* ðŸ”¹ USERS TABLE */}
           <TableContainer sx={{ width: '100%', overflowX: 'hidden' }}>
             <Table
               size="small"
@@ -516,7 +516,7 @@ const ManageFunds = () => {
             </Table>
           </TableContainer>
 
-          {/* 🔹 Pagination */}
+          {/* ðŸ”¹ Pagination */}
           <TablePagination
             component="div"
             count={filteredUsers.length}
@@ -536,3 +536,4 @@ const ManageFunds = () => {
 };
 
 export default ManageFunds;
+

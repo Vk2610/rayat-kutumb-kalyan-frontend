@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import axios from "axios";
 import UploadFile from "../../components/UploadFile";
 import { v4 as uuidv4 } from 'uuid';
@@ -23,11 +23,11 @@ export default function SevakWelfareForm() {
     doctorBill: 0,
     otherExpenses: 0,
     totalExpenses: 0,
-    certificatesAttached: 'होय',
+    certificatesAttached: 'à¤¹à¥‹à¤¯',
     sanctionLetter: "",
-    previousHelp: "होय",
+    previousHelp: "à¤¹à¥‹à¤¯",
     previousHelpDetails: "",
-    annualDeductions: "होय",
+    annualDeductions: "à¤¹à¥‹à¤¯",
     requestedAmountNumbers: 0,
     requestedAmountWords: "",
     branchNameForDeposit: "",
@@ -114,7 +114,7 @@ export default function SevakWelfareForm() {
       return;
     }
 
-    if (form.certificatesAttached === 'नाही') {
+    if (form.certificatesAttached === 'à¤¨à¤¾à¤¹à¥€') {
       alert('please upload documents and update the documents attached status');
       return;
     }
@@ -146,7 +146,7 @@ export default function SevakWelfareForm() {
       console.log(`request id: ${formData.requestId}`);
 
       const response = await axios.post(
-        "http://localhost:3000/user/submit-welfare-form",
+        "https://rayat-backend.onrender.com/user/submit-welfare-form",
         formData,
         {
           headers: {
@@ -180,11 +180,11 @@ export default function SevakWelfareForm() {
         doctorBill: 0,
         otherExpenses: 0,
         totalExpenses: 0,
-        certificatesAttached: 'होय',
+        certificatesAttached: 'à¤¹à¥‹à¤¯',
         sanctionLetter: "",
-        previousHelp: "होय",
+        previousHelp: "à¤¹à¥‹à¤¯",
         previousHelpDetails: "",
-        annualDeductions: "होय",
+        annualDeductions: "à¤¹à¥‹à¤¯",
         requestedAmountNumbers: 0,
         requestedAmountWords: "",
         branchNameForDeposit: "",
@@ -228,10 +228,10 @@ export default function SevakWelfareForm() {
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
             <h1 className="text-2xl font-bold">
-              रयत शिक्षण संस्था, रयत सेवक वेलफेअर फंड, सातारा.
+              à¤°à¤¯à¤¤ à¤¶à¤¿à¤•à¥à¤·à¤£ à¤¸à¤‚à¤¸à¥à¤¥à¤¾, à¤°à¤¯à¤¤ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡, à¤¸à¤¾à¤¤à¤¾à¤°à¤¾.
             </h1>
             <h2 className="text-xl underline font-medium mt-1">
-              मदत मागणी अर्ज
+              à¤®à¤¦à¤¤ à¤®à¤¾à¤—à¤£à¥€ à¤…à¤°à¥à¤œ
             </h2>
           </div>
 
@@ -240,9 +240,9 @@ export default function SevakWelfareForm() {
             className="mb-4 text-base"
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
-            <p>प्रति,</p>
-            <p>मा. चेअरमनसो,</p>
-            <p>रयत शिक्षण संस्था, रयत सेवक वेलफेअर फंड, सातारा.</p>
+            <p>à¤ªà¥à¤°à¤¤à¤¿,</p>
+            <p>à¤®à¤¾. à¤šà¥‡à¤…à¤°à¤®à¤¨à¤¸à¥‹,</p>
+            <p>à¤°à¤¯à¤¤ à¤¶à¤¿à¤•à¥à¤·à¤£ à¤¸à¤‚à¤¸à¥à¤¥à¤¾, à¤°à¤¯à¤¤ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡, à¤¸à¤¾à¤¤à¤¾à¤°à¤¾.</p>
           </div>
 
           <div
@@ -251,7 +251,7 @@ export default function SevakWelfareForm() {
           >
             <p className="ml-10">
               <strong>
-                विषय: सेवक वेल्फेअर फंडातून आर्थिक मदत मिळण्याबाबत.
+                à¤µà¤¿à¤·à¤¯: à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¥à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤†à¤°à¥à¤¥à¤¿à¤• à¤®à¤¦à¤¤ à¤®à¤¿à¤³à¤£à¥à¤¯à¤¾à¤¬à¤¾à¤¬à¤¤.
               </strong>
             </p>
           </div>
@@ -261,11 +261,11 @@ export default function SevakWelfareForm() {
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
             <p>
-              महाशय, <br />
+              à¤®à¤¹à¤¾à¤¶à¤¯, <br />
               <p className="ml-5">
-                मी खालील कारणाकरिता आपल्या सेवक वेल्फेअर फंडातून आर्थिक मदत
-                मिळावी म्हणून हा अर्ज करीत आहे. त्यासाठी मी माझी पुढीलप्रमाणे
-                माहिती देत आहे.
+                à¤®à¥€ à¤–à¤¾à¤²à¥€à¤² à¤•à¤¾à¤°à¤£à¤¾à¤•à¤°à¤¿à¤¤à¤¾ à¤†à¤ªà¤²à¥à¤¯à¤¾ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¥à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤†à¤°à¥à¤¥à¤¿à¤• à¤®à¤¦à¤¤
+                à¤®à¤¿à¤³à¤¾à¤µà¥€ à¤®à¥à¤¹à¤£à¥‚à¤¨ à¤¹à¤¾ à¤…à¤°à¥à¤œ à¤•à¤°à¥€à¤¤ à¤†à¤¹à¥‡. à¤¤à¥à¤¯à¤¾à¤¸à¤¾à¤ à¥€ à¤®à¥€ à¤®à¤¾à¤à¥€ à¤ªà¥à¤¢à¥€à¤²à¤ªà¥à¤°à¤®à¤¾à¤£à¥‡
+                à¤®à¤¾à¤¹à¤¿à¤¤à¥€ à¤¦à¥‡à¤¤ à¤†à¤¹à¥‡.
               </p>
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function SevakWelfareForm() {
           >
             <div className="flex items-center gap-3 text-base">
               <div className="w-1/3">
-                १ अ) अर्जदाराचे संपूर्ण नाव (प्रथम आडनाव )
+                à¥§ à¤…) à¤…à¤°à¥à¤œà¤¦à¤¾à¤°à¤¾à¤šà¥‡ à¤¸à¤‚à¤ªà¥‚à¤°à¥à¤£ à¤¨à¤¾à¤µ (à¤ªà¥à¤°à¤¥à¤® à¤†à¤¡à¤¨à¤¾à¤µ )
               </div>
               <div className="flex-1">
                 <input
@@ -291,7 +291,7 @@ export default function SevakWelfareForm() {
             </div>
 
             <div className="flex items-center gap-3 text-base">
-              <div className="w-1/3">ब) शाखेचे नाव</div>
+              <div className="w-1/3">à¤¬) à¤¶à¤¾à¤–à¥‡à¤šà¥‡ à¤¨à¤¾à¤µ</div>
               <div className="flex-1">
                 <input
                   name="branchName"
@@ -305,7 +305,7 @@ export default function SevakWelfareForm() {
 
             <div className="flex flex-wrap gap-3 text-base">
               <div className="flex-1 min-w-40">
-                क) नेमणूक तारीख
+                à¤•) à¤¨à¥‡à¤®à¤£à¥‚à¤• à¤¤à¤¾à¤°à¥€à¤–
                 <div>
                   <input
                     name="joiningDate"
@@ -318,7 +318,7 @@ export default function SevakWelfareForm() {
               </div>
 
               <div className="flex-1 min-w-[120px]">
-                ड)हुद्दा
+                à¤¡)à¤¹à¥à¤¦à¥à¤¦à¤¾
                 <div>
                   <input
                     name="designation"
@@ -331,7 +331,7 @@ export default function SevakWelfareForm() {
               </div>
 
               <div className="flex-1 min-w-40">
-                ई) संस्थेतील एकूण सेवाकालावधी
+                à¤ˆ) à¤¸à¤‚à¤¸à¥à¤¥à¥‡à¤¤à¥€à¤² à¤à¤•à¥‚à¤£ à¤¸à¥‡à¤µà¤¾à¤•à¤¾à¤²à¤¾à¤µà¤§à¥€
                 <div>
                   <input
                     name="totalService"
@@ -351,7 +351,7 @@ export default function SevakWelfareForm() {
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
             <div className="flex items-center gap-3">
-              <div className="w-1/2">२. दरमहा सर्व पगार</div>
+              <div className="w-1/2">à¥¨. à¤¦à¤°à¤®à¤¹à¤¾ à¤¸à¤°à¥à¤µ à¤ªà¤—à¤¾à¤°</div>
               <div className="w-1/2">
                 <input
                   name="monthlySalary"
@@ -364,7 +364,7 @@ export default function SevakWelfareForm() {
             </div>
 
             <div className="flex items-center gap-3 mt-2">
-              <div className="w-1/2">मोबाईल नं.</div>
+              <div className="w-1/2">à¤®à¥‹à¤¬à¤¾à¤ˆà¤² à¤¨à¤‚.</div>
               <div className="w-1/2">
                 <input
                   name="mobileNo"
@@ -384,7 +384,7 @@ export default function SevakWelfareForm() {
           >
             <div className="flex gap-3 items-start">
               <div className="w-1/3">
-                ३. अ) ज्याचे आजारासाठी मदत हवी आहे त्याचे संपूर्ण नाव
+                à¥©. à¤…) à¤œà¥à¤¯à¤¾à¤šà¥‡ à¤†à¤œà¤¾à¤°à¤¾à¤¸à¤¾à¤ à¥€ à¤®à¤¦à¤¤ à¤¹à¤µà¥€ à¤†à¤¹à¥‡ à¤¤à¥à¤¯à¤¾à¤šà¥‡ à¤¸à¤‚à¤ªà¥‚à¤°à¥à¤£ à¤¨à¤¾à¤µ
               </div>
               <div className="flex-1">
                 <input
@@ -398,7 +398,7 @@ export default function SevakWelfareForm() {
             </div>
 
             <div className="flex gap-3 items-start">
-              <div className="w-1/3">सेवकाशी नाते</div>
+              <div className="w-1/3">à¤¸à¥‡à¤µà¤•à¤¾à¤¶à¥€ à¤¨à¤¾à¤¤à¥‡</div>
               <div className="w-1/3">
                 <select
                   name="relation"
@@ -417,7 +417,7 @@ export default function SevakWelfareForm() {
               </div>
 
               <div className="w-1/3">
-                ब) आजाराचे स्वरूप
+                à¤¬) à¤†à¤œà¤¾à¤°à¤¾à¤šà¥‡ à¤¸à¥à¤µà¤°à¥‚à¤ª
                 <input
                   name="illnessNature"
                   value={form.illnessNature}
@@ -429,7 +429,7 @@ export default function SevakWelfareForm() {
             </div>
 
             <div>
-              क) आजाराचा कालावधी
+              à¤•) à¤†à¤œà¤¾à¤°à¤¾à¤šà¤¾ à¤•à¤¾à¤²à¤¾à¤µà¤§à¥€
               <input
                 name="illnessDuration"
                 value={form.illnessDuration}
@@ -446,7 +446,7 @@ export default function SevakWelfareForm() {
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
             <div className="flex gap-3 items-center">
-              <div className="w-1/3">४ अ) औषधे रु.</div>
+              <div className="w-1/3">à¥ª à¤…) à¤”à¤·à¤§à¥‡ à¤°à¥.</div>
               <div className="w-1/3">
                 <input
                   name="medicineBill"
@@ -458,7 +458,7 @@ export default function SevakWelfareForm() {
                 />
               </div>
 
-              <div className="w-1/3">ब) डॉक्टरांचे बिल रु.</div>
+              <div className="w-1/3">à¤¬) à¤¡à¥‰à¤•à¥à¤Ÿà¤°à¤¾à¤‚à¤šà¥‡ à¤¬à¤¿à¤² à¤°à¥.</div>
               <div className="w-1/3">
                 <input
                   name="doctorBill"
@@ -472,7 +472,7 @@ export default function SevakWelfareForm() {
             </div>
 
             <div className="flex gap-3 items-center">
-              <div className="w-1/3">क) इतर खर्च रु.</div>
+              <div className="w-1/3">à¤•) à¤‡à¤¤à¤° à¤–à¤°à¥à¤š à¤°à¥.</div>
               <div className="w-1/3">
                 <input
                   name="otherExpenses"
@@ -484,7 +484,7 @@ export default function SevakWelfareForm() {
                 />
               </div>
 
-              <div className="w-1/3">ड) एकूण झालेला खर्च रु.</div>
+              <div className="w-1/3">à¤¡) à¤à¤•à¥‚à¤£ à¤à¤¾à¤²à¥‡à¤²à¤¾ à¤–à¤°à¥à¤š à¤°à¥.</div>
               <div className="w-1/3">
                 <input
                   name="totalExpenses"
@@ -504,13 +504,13 @@ export default function SevakWelfareForm() {
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
             <div>
-              ५. वरील प्रमाणे झालेल्या खर्चाची बिले व पावत्या क्रमांक ०१ ते ___
-              सोबत जोडलेली आहेत.
+              à¥«. à¤µà¤°à¥€à¤² à¤ªà¥à¤°à¤®à¤¾à¤£à¥‡ à¤à¤¾à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤–à¤°à¥à¤šà¤¾à¤šà¥€ à¤¬à¤¿à¤²à¥‡ à¤µ à¤ªà¤¾à¤µà¤¤à¥à¤¯à¤¾ à¤•à¥à¤°à¤®à¤¾à¤‚à¤• à¥¦à¥§ à¤¤à¥‡ ___
+              à¤¸à¥‹à¤¬à¤¤ à¤œà¥‹à¤¡à¤²à¥‡à¤²à¥€ à¤†à¤¹à¥‡à¤¤.
             </div>
 
             <div className="flex gap-3 items-center">
               <div className="w-1/2">
-                ६. वर नमूद केलेल्या आजारांबाबत डॉक्टरांचे सर्टिफिकेट जोडले आहे.
+                à¥¬. à¤µà¤° à¤¨à¤®à¥‚à¤¦ à¤•à¥‡à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤†à¤œà¤¾à¤°à¤¾à¤‚à¤¬à¤¾à¤¬à¤¤ à¤¡à¥‰à¤•à¥à¤Ÿà¤°à¤¾à¤‚à¤šà¥‡ à¤¸à¤°à¥à¤Ÿà¤¿à¤«à¤¿à¤•à¥‡à¤Ÿ à¤œà¥‹à¤¡à¤²à¥‡ à¤†à¤¹à¥‡.
               </div>
               <div className="w-1/2">
                 <select
@@ -519,15 +519,15 @@ export default function SevakWelfareForm() {
                   onChange={handleChange}
                   className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
                 >
-                  <option value="होय">होय</option>
-                  <option value="नाही">नाही</option>
+                  <option value="à¤¹à¥‹à¤¯">à¤¹à¥‹à¤¯</option>
+                  <option value="à¤¨à¤¾à¤¹à¥€">à¤¨à¤¾à¤¹à¥€</option>
                 </select>
               </div>
             </div>
 
             <div className="flex gap-3 items-start">
               <div className="w-1/3">
-                ७. यापूर्वी फंडातून मदत घेतली आहे / नाही
+                à¥­. à¤¯à¤¾à¤ªà¥‚à¤°à¥à¤µà¥€ à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤®à¤¦à¤¤ à¤˜à¥‡à¤¤à¤²à¥€ à¤†à¤¹à¥‡ / à¤¨à¤¾à¤¹à¥€
               </div>
               <div className="w-2/3">
                 <select
@@ -536,8 +536,8 @@ export default function SevakWelfareForm() {
                   onChange={handleChange}
                   className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
                 >
-                  <option value="होय">होय</option>
-                  <option value="नाही">नाही</option>
+                  <option value="à¤¹à¥‹à¤¯">à¤¹à¥‹à¤¯</option>
+                  <option value="à¤¨à¤¾à¤¹à¥€">à¤¨à¤¾à¤¹à¥€</option>
                 </select>
                 <textarea
                   name="previousHelpDetails"
@@ -557,7 +557,7 @@ export default function SevakWelfareForm() {
           >
             <div className="flex gap-3 items-center">
               <div className="w-1/2">
-                ८ अ) प्रत्येक वर्षासाठी सेवक वेलफेअर फंडाची वगणी दिलेली आहे काय
+                à¥® à¤…) à¤ªà¥à¤°à¤¤à¥à¤¯à¥‡à¤• à¤µà¤°à¥à¤·à¤¾à¤¸à¤¾à¤ à¥€ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡à¤¾à¤šà¥€ à¤µà¤—à¤£à¥€ à¤¦à¤¿à¤²à¥‡à¤²à¥€ à¤†à¤¹à¥‡ à¤•à¤¾à¤¯
               </div>
               <div className="w-1/2">
                 <select
@@ -567,15 +567,15 @@ export default function SevakWelfareForm() {
                   className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
                   placeholder="____________________________"
                 >
-                  <option value="होय">होय</option>
-                  <option value="नाही">नाही</option>
+                  <option value="à¤¹à¥‹à¤¯">à¤¹à¥‹à¤¯</option>
+                  <option value="à¤¨à¤¾à¤¹à¥€">à¤¨à¤¾à¤¹à¥€</option>
                 </select>
               </div>
             </div>
 
             <div className="flex gap-3 items-center">
               <div className="w-1/3">
-                ९ अ) आता किती मदतीची आवश्यकता आहे ती रक्कम रु. अंकी व अक्षरी
+                à¥¯ à¤…) à¤†à¤¤à¤¾ à¤•à¤¿à¤¤à¥€ à¤®à¤¦à¤¤à¥€à¤šà¥€ à¤†à¤µà¤¶à¥à¤¯à¤•à¤¤à¤¾ à¤†à¤¹à¥‡ à¤¤à¥€ à¤°à¤•à¥à¤•à¤® à¤°à¥. à¤…à¤‚à¤•à¥€ à¤µ à¤…à¤•à¥à¤·à¤°à¥€
               </div>
               <div className="w-2/3">
                 <input
@@ -584,24 +584,24 @@ export default function SevakWelfareForm() {
                   value={form.requestedAmountNumbers}
                   onChange={handleChange}
                   className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base mb-1"
-                  placeholder="(अंकी) ___________________"
+                  placeholder="(à¤…à¤‚à¤•à¥€) ___________________"
                 />
                 <input
                   name="requestedAmountWords"
                   value={form.requestedAmountWords}
                   onChange={handleChange}
                   className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
-                  placeholder="(अक्षरी) ____________________________________"
+                  placeholder="(à¤…à¤•à¥à¤·à¤°à¥€) ____________________________________"
                 />
               </div>
             </div>
 
             <div className="mt-2">
-              ब) किमतीने मंजूर केलेली मदत जमा रयत सेवक को-ऑपरेटिव्ह बँक लिमिटेड
-              सातारा शाखा
+              à¤¬) à¤•à¤¿à¤®à¤¤à¥€à¤¨à¥‡ à¤®à¤‚à¤œà¥‚à¤° à¤•à¥‡à¤²à¥‡à¤²à¥€ à¤®à¤¦à¤¤ à¤œà¤®à¤¾ à¤°à¤¯à¤¤ à¤¸à¥‡à¤µà¤• à¤•à¥‹-à¤‘à¤ªà¤°à¥‡à¤Ÿà¤¿à¤µà¥à¤¹ à¤¬à¤à¤• à¤²à¤¿à¤®à¤¿à¤Ÿà¥‡à¤¡
+              à¤¸à¤¾à¤¤à¤¾à¤°à¤¾ à¤¶à¤¾à¤–à¤¾
               <div className="flex gap-3 mt-2">
                 <div className="w-1/2">
-                  शाखा
+                  à¤¶à¤¾à¤–à¤¾
                   <input
                     name="branchNameForDeposit"
                     value={form.branchNameForDeposit}
@@ -611,7 +611,7 @@ export default function SevakWelfareForm() {
                   />
                 </div>
                 <div className="w-1/2">
-                  सेविंग ठेव खाते क्र.
+                  à¤¸à¥‡à¤µà¤¿à¤‚à¤— à¤ à¥‡à¤µ à¤–à¤¾à¤¤à¥‡ à¤•à¥à¤°.
                   <input
                     name="savingsAccountNo"
                     value={form.savingsAccountNo}
@@ -630,11 +630,11 @@ export default function SevakWelfareForm() {
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
             <p>
-              अर्जात वर दिलेली माहिती खरी व परिस्थितीत धरून आहे. त्यामध्ये काही
-              चूक अगर विसंगती आढळल्यास त्याबाबत संस्थेकडून माझ्याविरुद्ध
-              होणाऱ्या कारवाईस मी जबाबदार राहील याची मला पूर्ण जाणीव आहे तरी
-              माझ्या अर्जाचा सहानुभूतीपूर्वक विचार करून फंडातून मला मदत मिळावी
-              अशी विनंती आहे
+              à¤…à¤°à¥à¤œà¤¾à¤¤ à¤µà¤° à¤¦à¤¿à¤²à¥‡à¤²à¥€ à¤®à¤¾à¤¹à¤¿à¤¤à¥€ à¤–à¤°à¥€ à¤µ à¤ªà¤°à¤¿à¤¸à¥à¤¥à¤¿à¤¤à¥€à¤¤ à¤§à¤°à¥‚à¤¨ à¤†à¤¹à¥‡. à¤¤à¥à¤¯à¤¾à¤®à¤§à¥à¤¯à¥‡ à¤•à¤¾à¤¹à¥€
+              à¤šà¥‚à¤• à¤…à¤—à¤° à¤µà¤¿à¤¸à¤‚à¤—à¤¤à¥€ à¤†à¤¢à¤³à¤²à¥à¤¯à¤¾à¤¸ à¤¤à¥à¤¯à¤¾à¤¬à¤¾à¤¬à¤¤ à¤¸à¤‚à¤¸à¥à¤¥à¥‡à¤•à¤¡à¥‚à¤¨ à¤®à¤¾à¤à¥à¤¯à¤¾à¤µà¤¿à¤°à¥à¤¦à¥à¤§
+              à¤¹à¥‹à¤£à¤¾à¤±à¥à¤¯à¤¾ à¤•à¤¾à¤°à¤µà¤¾à¤ˆà¤¸ à¤®à¥€ à¤œà¤¬à¤¾à¤¬à¤¦à¤¾à¤° à¤°à¤¾à¤¹à¥€à¤² à¤¯à¤¾à¤šà¥€ à¤®à¤²à¤¾ à¤ªà¥‚à¤°à¥à¤£ à¤œà¤¾à¤£à¥€à¤µ à¤†à¤¹à¥‡ à¤¤à¤°à¥€
+              à¤®à¤¾à¤à¥à¤¯à¤¾ à¤…à¤°à¥à¤œà¤¾à¤šà¤¾ à¤¸à¤¹à¤¾à¤¨à¥à¤­à¥‚à¤¤à¥€à¤ªà¥‚à¤°à¥à¤µà¤• à¤µà¤¿à¤šà¤¾à¤° à¤•à¤°à¥‚à¤¨ à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤®à¤²à¤¾ à¤®à¤¦à¤¤ à¤®à¤¿à¤³à¤¾à¤µà¥€
+              à¤…à¤¶à¥€ à¤µà¤¿à¤¨à¤‚à¤¤à¥€ à¤†à¤¹à¥‡
             </p>
           </div>
 
@@ -644,7 +644,7 @@ export default function SevakWelfareForm() {
             style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
           >
             <div className="w-64">
-              <p className="mb-2 text-right font-medium text-lg text-gray-800">अर्जदाराची सही :</p>
+              <p className="mb-2 text-right font-medium text-lg text-gray-800">à¤…à¤°à¥à¤œà¤¦à¤¾à¤°à¤¾à¤šà¥€ à¤¸à¤¹à¥€ :</p>
               
               <label className="flex flex-col items-center justify-center border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 rounded-lg p-4 cursor-pointer transition w-full h-full text-center">
                 {!signaturePreview ? (
@@ -674,7 +674,7 @@ export default function SevakWelfareForm() {
 
               {form.applicantSignature && !signaturePreview && (
                 <p className="text-sm text-gray-600 mt-2 text-center truncate">
-                  📎 {form.applicantSignature.name}
+                  ðŸ“Ž {form.applicantSignature.name}
                 </p>
               )}
             </div>
@@ -688,14 +688,14 @@ export default function SevakWelfareForm() {
               onClick={handlePrint}
               className="bg-blue-600 text-white px-4 py-2 text-xl rounded-md hover:bg-blue-700 focus:outline-none transition"
             >
-              🖨️ Print
+              ðŸ–¨ï¸ Print
             </button>
             <button
               type="button"
               onClick={handleSubmit}
               className="bg-green-600 text-white px-4 py-2 text-xl rounded-md hover:bg-green-700 focus:outline-none transition shadow-lg shadow-green-500/30"
             >
-              ✓ Submit
+              âœ“ Submit
             </button>
           </div>
         </form>
@@ -763,3 +763,4 @@ export default function SevakWelfareForm() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   Typography,
   Card,
@@ -61,7 +61,7 @@ export default function FormHistory() {
             '&:hover': { backgroundColor: '#cbd5e1', boxShadow: 'none' },
           }}
         >
-          View Document 📄
+          View Document ðŸ“„
         </Button>
       ) : (
         <Typography
@@ -192,7 +192,7 @@ export default function FormHistory() {
   const fetchForms = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:3000/admin/get-user-forms',
+        'https://rayat-backend.onrender.com/admin/get-user-forms',
         {
           params: { hrmsNo: hrmsNo },
         },
@@ -436,19 +436,19 @@ export default function FormHistory() {
                   <SectionHeader title="Expenses Details" />
                   <DetailRow
                     label="Medicine Bill"
-                    value={`₹${selectedForm.medicineBill}`}
+                    value={`â‚¹${selectedForm.medicineBill}`}
                   />
                   <DetailRow
                     label="Doctor Bill"
-                    value={`₹${selectedForm.doctorBill}`}
+                    value={`â‚¹${selectedForm.doctorBill}`}
                   />
                   <DetailRow
                     label="Other Expenses"
-                    value={`₹${selectedForm.otherExpenses}`}
+                    value={`â‚¹${selectedForm.otherExpenses}`}
                   />
                   <DetailRow
                     label="Total Expenses"
-                    value={`₹${selectedForm.totalExpenses}`}
+                    value={`â‚¹${selectedForm.totalExpenses}`}
                     isBold={true}
                   />
                   <DetailRow
@@ -461,7 +461,7 @@ export default function FormHistory() {
                     label="Previous Help Recv."
                     value={selectedForm.previousHelp}
                   />
-                  {selectedForm.previousHelp === 'होय' && (
+                  {selectedForm.previousHelp === 'à¤¹à¥‹à¤¯' && (
                     <DetailRow
                       label="Previous Help Details"
                       value={selectedForm.previousHelpDetails}
@@ -487,7 +487,7 @@ export default function FormHistory() {
                   />
                   <DetailRow
                     label="Requested Amount (Num)"
-                    value={`₹${selectedForm.requestedAmountNumbers}`}
+                    value={`â‚¹${selectedForm.requestedAmountNumbers}`}
                     isBold={true}
                   />
                   <DetailRow
@@ -496,7 +496,7 @@ export default function FormHistory() {
                   />
                   <DetailRow
                     label="Approved Amount"
-                    value={`₹${selectedForm.approvedAmount}`}
+                    value={`â‚¹${selectedForm.approvedAmount}`}
                     isBold={true}
                   />
 
@@ -586,7 +586,7 @@ export default function FormHistory() {
                 onClick={() => setSelectedDoc(null)}
                 sx={{ color: '#fff', minWidth: 'auto', p: 1 }}
               >
-                Close Modal ✕
+                Close Modal âœ•
               </Button>
             </DialogTitle>
             <DialogContent
@@ -617,3 +617,4 @@ export default function FormHistory() {
     </Box>
   );
 }
+

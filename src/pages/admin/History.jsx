@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import {
   TextField,
   Box,
@@ -54,7 +54,7 @@ const History = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:3000/admin/get-users", {
+      const res = await axios.get("https://rayat-backend.onrender.com/admin/get-users", {
         params: { page, limit, search: searchQuery }
       });
 
@@ -270,3 +270,4 @@ const History = () => {
 };
 
 export default History;
+

@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 import axiosInstance from "../pages/admin/axiosInstance";
 
 export const updateFormStatus = async (status, id) => {
@@ -7,7 +7,7 @@ export const updateFormStatus = async (status, id) => {
             status: status,
             id: id
         };
-        await axios.patch('http://localhost:3000/admin/update-form-status', payload);
+        await axios.patch('https://rayat-backend.onrender.com/admin/update-form-status', payload);
         alert(`Form Status changed to ${status}`);
         return true;
     } catch (error) {
@@ -23,7 +23,7 @@ export const updateApprovalAmount = async (amount, id) => {
             amt: amount,
             id: id
         };
-        await axios.patch('http://localhost:3000/admin/update-appr-amt', payload);
+        await axios.patch('https://rayat-backend.onrender.com/admin/update-appr-amt', payload);
         alert('Form approval amount updated successfully');
     } catch (error) {
         console.log('Error updating approval amount: ', error);
@@ -56,7 +56,7 @@ export const getFormDetailByRequestId = async (requestId) => {
 };
 
 export const deleteFormEntry = async (id) => {
-    await axios.delete(`http://localhost:3000/admin/delete-form/${id}`);
+    await axios.delete(`https://rayat-backend.onrender.com/admin/delete-form/${id}`);
     return true;
 };
 
@@ -68,3 +68,4 @@ export const updateApprovedApplicationAmount = async (id, payload) => {
 
     return response.data;
 };
+

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { MdEdit, MdCheck } from "react-icons/md";
@@ -50,7 +50,7 @@ const UserProfile = () => {
         const hrmsNo = decoded.hrmsNo;
         console.log('profile hrms ', hrmsNo);
 
-        const res = await axios.get(`http://localhost:3000/employees/get-emp-prf/${hrmsNo}`, {
+        const res = await axios.get(`https://rayat-backend.onrender.com/employees/get-emp-prf/${hrmsNo}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -136,7 +136,7 @@ const UserProfile = () => {
       const hrmsNo = decoded.hrmsNo;
 
       const response = await axios.put(
-        `http://localhost:3000/employees/upd-emp/${hrmsNo}`,
+        `https://rayat-backend.onrender.com/employees/upd-emp/${hrmsNo}`,
         user,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -421,3 +421,4 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
+

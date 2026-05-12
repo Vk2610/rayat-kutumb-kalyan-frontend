@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -138,7 +138,7 @@ export default function MyApplications() {
         const hrmsNo = decoded.hrmsNo;
         setUsername(decoded.employeeName || "");
 
-        const response = await axios.get("http://localhost:3000/admin/get-user-forms", {
+        const response = await axios.get("https://rayat-backend.onrender.com/admin/get-user-forms", {
           params: { hrmsNo },
         });
 
@@ -418,3 +418,4 @@ export default function MyApplications() {
     </Box>
   );
 }
+

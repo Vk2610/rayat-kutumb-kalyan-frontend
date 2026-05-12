@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Box,
@@ -64,7 +64,7 @@ const FundDisbursement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:3000/admin/fund-disbursement-users', {
+      const res = await axios.get('https://rayat-backend.onrender.com/admin/fund-disbursement-users', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -120,7 +120,7 @@ const FundDisbursement = () => {
         usersData: users.map((u) => ({ hrmsNo: u.hrmsNo, totalPayableAmt: u.computedTotal, bonus: u.computedBonus })),
       };
 
-      const res = await axios.post('http://localhost:3000/admin/approve-fund-disbursement', payload, {
+      const res = await axios.post('https://rayat-backend.onrender.com/admin/approve-fund-disbursement', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -337,8 +337,8 @@ const FundDisbursement = () => {
                 <TableBody>
                   {filteredUsers.length > 0 ? (
                     filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => {
-                      const joinDateStr = user.joiningDate ? dayjs(user.joiningDate).format('DD/MM/YYYY') : '—';
-                      const retDateStr = user.retirementDate ? dayjs(user.retirementDate).format('DD/MM/YYYY') : '—';
+                      const joinDateStr = user.joiningDate ? dayjs(user.joiningDate).format('DD/MM/YYYY') : 'â€”';
+                      const retDateStr = user.retirementDate ? dayjs(user.retirementDate).format('DD/MM/YYYY') : 'â€”';
 
                       return (
                         <TableRow key={user.hrmsNo} hover>
@@ -349,7 +349,7 @@ const FundDisbursement = () => {
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>{joinDateStr}</TableCell>
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>{retDateStr}</TableCell>
                           <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.schemeType}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>₹{user.computedTotal}</TableCell>
+                          <TableCell sx={{ whiteSpace: 'nowrap' }}>â‚¹{user.computedTotal}</TableCell>
                           <TableCell>
                             <Button
                               variant="outlined"
@@ -412,8 +412,8 @@ const FundDisbursement = () => {
               hrms: selectedUser.hrmsNo,
               scheme: selectedUser.schemeType,
               mobile: selectedUser.mobileNo,
-              meetingDate: meetingDate || '—',
-              checkNo: chequeNo || '—',
+              meetingDate: meetingDate || 'â€”',
+              checkNo: chequeNo || 'â€”',
               joining: selectedUser.joiningDate,
               installment1Date: selectedUser.installment1Date,
               retirement: selectedUser.retirementDate,
@@ -428,3 +428,4 @@ const FundDisbursement = () => {
 };
 
 export default FundDisbursement;
+

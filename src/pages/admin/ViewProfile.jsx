@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -27,7 +27,7 @@ import { toast } from 'react-toastify';
 
 /* --------------------------- Date Formatter --------------------------- */
 const formatDate = (date) => {
-  if (!date) return '—';
+  if (!date) return 'â€”';
   return dayjs(date).format('DD/MM/YYYY');
 };
 
@@ -143,7 +143,7 @@ export default function ViewProfile() {
     );
 
     try {
-      await axios.put(`http://localhost:3000/employees/upd-emp/${hrmsNo}`, {
+      await axios.put(`https://rayat-backend.onrender.com/employees/upd-emp/${hrmsNo}`, {
         schemeType,
       });
       toast.success('Scheme type updated successfully.');
@@ -224,10 +224,10 @@ export default function ViewProfile() {
             claimedFullAmount: hasPaidFullAmount,
           };
 
-          console.log('📤 Sending payload:', payload);
+          console.log('ðŸ“¤ Sending payload:', payload);
 
           const response = await axios.put(
-            `http://localhost:3000/funds/upd-ints/${hrmsNo}`,
+            `https://rayat-backend.onrender.com/funds/upd-ints/${hrmsNo}`,
             payload,
           );
           syncInstallmentsFromFund(response.data?.fund);
@@ -267,7 +267,7 @@ export default function ViewProfile() {
     if (!hrmsNo) return;
 
     axios
-      .get(`http://localhost:3000/employees/get-emp-prf/${hrmsNo}`)
+      .get(`https://rayat-backend.onrender.com/employees/get-emp-prf/${hrmsNo}`)
       .then((res) => {
         setUser((prevUser) => ({
           ...(prevUser || {}),
@@ -286,7 +286,7 @@ export default function ViewProfile() {
 
   useEffect(() => {
     if (hrmsNo) {
-      axios.get(`http://localhost:3000/funds/${hrmsNo}`).then((res) => {
+      axios.get(`https://rayat-backend.onrender.com/funds/${hrmsNo}`).then((res) => {
         syncInstallmentsFromFund(res.data);
       });
     }
@@ -352,7 +352,7 @@ export default function ViewProfile() {
                 {data.employeeName}
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                {data.designation} • {data.department}
+                {data.designation} â€¢ {data.department}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 HRMS No: {data.hrmsNo}
@@ -362,7 +362,7 @@ export default function ViewProfile() {
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* SECTION 1 — PERSONAL */}
+          {/* SECTION 1 â€” PERSONAL */}
           <Section title="Personal Information">
             <InfoItem label="Gender" value={data.gender} />
             <InfoItem label="Marital Status" value={data.maritalStatus} />
@@ -382,7 +382,7 @@ export default function ViewProfile() {
             />
           </Section>
 
-          {/* SECTION 2 — EMPLOYMENT */}
+          {/* SECTION 2 â€” EMPLOYMENT */}
           <Section title="Employment Details">
             <InfoItem label="Designation" value={data.designation} />
             <InfoItem label="Department" value={data.department} />
@@ -390,7 +390,7 @@ export default function ViewProfile() {
             <InfoItem label="Role" value={data.role} />
           </Section>
 
-          {/* SECTION 3 — APPOINTMENT */}
+          {/* SECTION 3 â€” APPOINTMENT */}
           <Section title="Appointment Details">
             <InfoItem
               label="Current Appointment Date"
@@ -420,7 +420,7 @@ export default function ViewProfile() {
             <InfoItem label="Qualifications" value={data.qualifications} full />
           </Section>
 
-          {/* SECTION 4 — ADMIN */}
+          {/* SECTION 4 â€” ADMIN */}
           <Section title="Administrative Details">
             <InfoItem label="Approval Ref No" value={data.approvalRefNo} />
             <InfoItem
@@ -438,7 +438,7 @@ export default function ViewProfile() {
             <InfoItem label="Scheme Type" value={schemeType} />
           </Section>
 
-          {/* SECTION 5 — BRANCH */}
+          {/* SECTION 5 â€” BRANCH */}
           <Section title="Branch Details">
             <InfoItem label="Branch Name" value={data.branchName} />
             <InfoItem label="Branch Region" value={data.branchRegionName} />
@@ -449,20 +449,20 @@ export default function ViewProfile() {
             />
           </Section>
 
-          {/* SECTION 6 — BANK */}
+          {/* SECTION 6 â€” BANK */}
           <Section title="Bank Details">
             <InfoItem label="Bank Name" value={data.bankName} />
             <InfoItem label="Account Number" value={data.accountNo} />
             <InfoItem label="IFSC Code" value={data.ifsc} />
           </Section>
 
-          {/* SECTION 7 — NOMINEE */}
+          {/* SECTION 7 â€” NOMINEE */}
           <Section title="Nominee Details">
             <InfoItem label="Nominee Name" value={data.nomineeName} />
             <InfoItem label="Nominee Relation" value={data.nomineeRelation} />
           </Section>
 
-          {/* SECTION 8 — WELFARE FUND */}
+          {/* SECTION 8 â€” WELFARE FUND */}
           <Section
             title={`Welfare Fund Contribution (${schemeType}, Minimum Rs. ${schemeMinimum})`}
           >
@@ -523,7 +523,7 @@ export default function ViewProfile() {
                                 inst.date ? (
                                   formatDate(inst.date)
                                 ) : (
-                                  '—'
+                                  'â€”'
                                 )
                               ) : (
                                 <input
@@ -552,7 +552,7 @@ export default function ViewProfile() {
 
                             <TableCell align="center">
                               {inst.paid ? (
-                                <span>₹ {inst.amount}</span>
+                                <span>â‚¹ {inst.amount}</span>
                               ) : (
                                 <input
                                   type="number"
@@ -618,7 +618,7 @@ export default function ViewProfile() {
                             <b>Total Paid</b>
                           </TableCell>
                           <TableCell align="center">
-                            <b style={{ color: '#16a34a' }}>₹ {totalPaid}</b>
+                            <b style={{ color: '#16a34a' }}>â‚¹ {totalPaid}</b>
                           </TableCell>
                           <TableCell align="center" colSpan={2}></TableCell>
                         </TableRow>
@@ -630,7 +630,7 @@ export default function ViewProfile() {
                           </TableCell>
                           <TableCell align="center">
                             <b style={{ color: '#d32f2f' }}>
-                              ₹ {remainingAmount}
+                              â‚¹ {remainingAmount}
                             </b>
                           </TableCell>
                           <TableCell align="center" colSpan={2}></TableCell>
@@ -688,6 +688,7 @@ const Section = ({ title, children }) => (
 const InfoItem = ({ label, value, full }) => (
   <Grid item xs={12} sm={full ? 12 : 6}>
     <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{label}</Typography>
-    <Typography sx={{ color: 'text.secondary' }}>{value || '—'}</Typography>
+    <Typography sx={{ color: 'text.secondary' }}>{value || 'â€”'}</Typography>
   </Grid>
 );
+
