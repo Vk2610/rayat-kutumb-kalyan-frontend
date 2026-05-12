@@ -59,21 +59,33 @@ const formatDate = (value) => {
     return '-';
   }
 
+  // Handle DD/MM/YYYY format explicitly to avoid locale-based swapping
+  if (typeof value === 'string' && value.includes('/')) {
+    const parts = value.split('/');
+    if (parts.length === 3) {
+      const day = parts[0].padStart(2, '0');
+      const month = parts[1].padStart(2, '0');
+      const year = parts[2];
+      return `${day}-${month}-${year}`;
+    }
+  }
+
   const parsedDate = new Date(value);
   if (Number.isNaN(parsedDate.getTime())) {
     return value;
   }
 
-  return parsedDate.toLocaleDateString('en-IN', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
+  const day = String(parsedDate.getDate()).padStart(2, '0');
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+  const year = parsedDate.getFullYear();
+
+  return `${day}-${month}-${year}`;
 };
 
 export default function ApprovedApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [draftAmounts, setDraftAmounts] = useState({});
+  const [draftDates, setDraftDates] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState(DEFAULT_SORT);
   const [isLoading, setIsLoading] = useState(true);
@@ -106,6 +118,16 @@ export default function ApprovedApplicationsPage() {
           accumulator[application.id] = String(
             application.approvedAmount ?? '',
           );
+          return accumulator;
+        }, {}),
+      );
+      setDraftDates(
+        records.reduce((accumulator, application) => {
+          accumulator[application.id] = application.approvedAmountDate
+            ? new Date(application.approvedAmountDate)
+                .toISOString()
+                .split('T')[0]
+            : new Date().toISOString().split('T')[0];
           return accumulator;
         }, {}),
       );
@@ -175,6 +197,13 @@ export default function ApprovedApplicationsPage() {
     }
   };
 
+  const handleApprovedDateChange = (id, value) => {
+    setDraftDates((previous) => ({
+      ...previous,
+      [id]: value,
+    }));
+  };
+
   const handleApprovedAmountSave = async (application) => {
     const nextValue = draftAmounts[application.id] ?? '';
     const validationMessage = validateApprovedAmount(
@@ -193,6 +222,7 @@ export default function ApprovedApplicationsPage() {
     try {
       const updated = await updateApprovedApplicationAmount(application.id, {
         approvedAmount: Number(nextValue),
+        approvedDate: draftDates[application.id],
       });
 
       const updatedApprovedAmount =
@@ -220,6 +250,14 @@ export default function ApprovedApplicationsPage() {
           nextDrafts[application.id] = String(updatedApprovedAmount);
         }
 
+        return nextDrafts;
+      });
+
+      setDraftDates((previous) => {
+        const nextDrafts = { ...previous };
+        if (Number(updatedApprovedAmount) > 0) {
+          delete nextDrafts[application.id];
+        }
         return nextDrafts;
       });
     } catch (saveError) {
@@ -380,7 +418,7 @@ export default function ApprovedApplicationsPage() {
     isMoreThan50KRequired
       ? {
           key: 'moreThan50K',
-          label: 'Requested Amount > 50K',
+          label: 'Requested Amount >= 50K',
           onDelete: () => setIsMoreThan50KRequired(false),
         }
       : null,
@@ -513,7 +551,7 @@ export default function ApprovedApplicationsPage() {
             onClick={() => setIsMoreThan50KRequired((previous) => !previous)}
             sx={{ minWidth: 220, height: 40, fontWeight: 600 }}
           >
-            More than 50K required
+            50K or more required
           </Button>
         </Box>
 
@@ -610,11 +648,14 @@ export default function ApprovedApplicationsPage() {
                   <TableCell sx={{ fontWeight: 700, minWidth: 180 }}>
                     Approved Amount
                   </TableCell>
+                  <TableCell sx={{ fontWeight: 700, minWidth: 160 }}>
+                    Approved Date
+                  </TableCell>
                   <TableCell
                     sx={{ fontWeight: 700, cursor: 'pointer' }}
                     onClick={() => handleSort('formDate')}
                   >
-                    Date {sortConfig.sortBy === 'formDate' ? sortIcon : null}
+                    Form Date {sortConfig.sortBy === 'formDate' ? sortIcon : null}
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -676,6 +717,21 @@ export default function ApprovedApplicationsPage() {
                           inputMode: 'decimal',
                           min: 0,
                         }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        type="date"
+                        value={draftDates[application.id] || ''}
+                        onChange={(event) =>
+                          handleApprovedDateChange(
+                            application.id,
+                            event.target.value,
+                          )
+                        }
+                        size="small"
+                        disabled={savingId === application.id}
+                        fullWidth
                       />
                     </TableCell>
                     <TableCell>{formatDate(application.formDate)}</TableCell>
