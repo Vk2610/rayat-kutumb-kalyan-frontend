@@ -1,7 +1,7 @@
 ﻿import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://rayat-backend.onrender.com",
+  baseURL: "https://rayat-backend-1.onrender.com",
 });
 
 axiosInstance.interceptors.request.use((config) => {

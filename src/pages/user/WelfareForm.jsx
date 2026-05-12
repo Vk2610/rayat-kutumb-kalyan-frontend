@@ -62,7 +62,7 @@ export default function SevakWelfareForm() {
     const doc = Number(form.doctorBill) || 0;
     const oth = Number(form.otherExpenses) || 0;
     const total = med + doc + oth;
-    
+
     if (form.totalExpenses !== total) {
       setForm((prev) => ({ ...prev, totalExpenses: total }));
     }
@@ -124,7 +124,7 @@ export default function SevakWelfareForm() {
       const today = new Date();
 
       const dd = String(today.getDate()).padStart(2, '0');
-      const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
       const yyyy = today.getFullYear();
 
       const formattedDate = `${dd}/${mm}/${yyyy}`;
@@ -146,7 +146,7 @@ export default function SevakWelfareForm() {
       console.log(`request id: ${formData.requestId}`);
 
       const response = await axios.post(
-        "https://rayat-backend.onrender.com/user/submit-welfare-form",
+        "https://rayat-backend-1.onrender.com/user/submit-welfare-form",
         formData,
         {
           headers: {
@@ -645,7 +645,7 @@ export default function SevakWelfareForm() {
           >
             <div className="w-64">
               <p className="mb-2 text-right font-medium text-lg text-gray-800">à¤…à¤°à¥à¤œà¤¦à¤¾à¤°à¤¾à¤šà¥€ à¤¸à¤¹à¥€ :</p>
-              
+
               <label className="flex flex-col items-center justify-center border-2 border-dashed border-blue-300 bg-blue-50 hover:bg-blue-100 rounded-lg p-4 cursor-pointer transition w-full h-full text-center">
                 {!signaturePreview ? (
                   <>
@@ -660,7 +660,7 @@ export default function SevakWelfareForm() {
                       className="max-h-24 object-contain mb-2"
                     />
                     <span className="text-sm text-blue-600 font-semibold truncate w-full px-2">
-                       Change Signature
+                      Change Signature
                     </span>
                   </div>
                 )}

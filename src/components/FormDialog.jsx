@@ -23,13 +23,13 @@ export default function FormDialog({ data, isDisabled, handleUpdate }) {
 
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
-    const value = formJson.text; 
+    const value = formJson.text;
 
     console.log("SUBMITTED VALUE:", value);
 
     try {
       if (data.title === "Status") {
-        await axios.patch("https://rayat-backend.onrender.com/admin/update-form-status", {
+        await axios.patch("https://rayat-backend-1.onrender.com/admin/update-form-status", {
           id: data.requestId,
           status: value
         });
@@ -37,7 +37,7 @@ export default function FormDialog({ data, isDisabled, handleUpdate }) {
       }
 
       else if (data.title === "Approved Amount") {
-        await axios.patch("https://rayat-backend.onrender.com/admin/update-appr-amt", {
+        await axios.patch("https://rayat-backend-1.onrender.com/admin/update-appr-amt", {
           id: data.requestId,
           amt: value
         });

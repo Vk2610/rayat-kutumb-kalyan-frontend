@@ -216,7 +216,7 @@ export default function UpdateUser() {
 
     try {
       const res = await axios.get(
-        `https://rayat-backend.onrender.com/employees/get-emp-prf/${searchInput}`
+        `https://rayat-backend-1.onrender.com/employees/get-emp-prf/${searchInput}`
       );
 
       if (!res.data) {
@@ -251,7 +251,7 @@ export default function UpdateUser() {
 
     try {
       const res = await axios.put(
-        `https://rayat-backend.onrender.com/employees/upd-emp/${form.hrmsNo}`,
+        `https://rayat-backend-1.onrender.com/employees/upd-emp/${form.hrmsNo}`,
         form
       );
       toast.success("User updated successfully!");

@@ -50,7 +50,7 @@ const UserProfile = () => {
         const hrmsNo = decoded.hrmsNo;
         console.log('profile hrms ', hrmsNo);
 
-        const res = await axios.get(`https://rayat-backend.onrender.com/employees/get-emp-prf/${hrmsNo}`, {
+        const res = await axios.get(`https://rayat-backend-1.onrender.com/employees/get-emp-prf/${hrmsNo}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -136,7 +136,7 @@ const UserProfile = () => {
       const hrmsNo = decoded.hrmsNo;
 
       const response = await axios.put(
-        `https://rayat-backend.onrender.com/employees/upd-emp/${hrmsNo}`,
+        `https://rayat-backend-1.onrender.com/employees/upd-emp/${hrmsNo}`,
         user,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -182,11 +182,11 @@ const UserProfile = () => {
       }}
     >
       <Typography
-          sx={{
-            color: schemeTheme.primary,
-            fontWeight: 600,
-            width: "35%",
-            fontSize: "0.95rem",
+        sx={{
+          color: schemeTheme.primary,
+          fontWeight: 600,
+          width: "35%",
+          fontSize: "0.95rem",
         }}
       >
         {label}:

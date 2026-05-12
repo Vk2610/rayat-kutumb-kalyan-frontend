@@ -1,7 +1,7 @@
 ﻿import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { 
+import {
   Card,
   CardContent,
   Typography,
@@ -91,7 +91,7 @@ const ResetPassword = () => {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -99,7 +99,7 @@ const ResetPassword = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.put("https://rayat-backend.onrender.com/auth/reset-password", {
+      const response = await axios.put("https://rayat-backend-1.onrender.com/auth/reset-password", {
         Email_ID: formData.Email_ID,
         password: formData.password
       });
@@ -137,7 +137,7 @@ const ResetPassword = () => {
       }}
     >
       <Container maxWidth="sm">
-        <Card sx={{ 
+        <Card sx={{
           backdropFilter: 'blur(10px)',
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           boxShadow: 3,
@@ -150,7 +150,7 @@ const ResetPassword = () => {
             <Typography variant="body1" sx={{ textAlign: 'center', mb: 4, color: 'text.secondary' }}>
               Enter your email and new password to reset your account password.
             </Typography>
-            
+
             <Box component="form" onSubmit={handleResetPassword} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <TextField
                 fullWidth
@@ -234,7 +234,7 @@ const ResetPassword = () => {
               <Box sx={{ textAlign: 'center', mt: 2 }}>
                 <Link
                   to="/login"
-                  style={{ 
+                  style={{
                     color: '#16a34a',
                     textDecoration: 'none',
                     fontSize: '0.875rem',
@@ -250,14 +250,14 @@ const ResetPassword = () => {
           </CardContent>
         </Card>
       </Container>
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert 
-          onClose={handleCloseSnackbar} 
+        <Alert
+          onClose={handleCloseSnackbar}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >

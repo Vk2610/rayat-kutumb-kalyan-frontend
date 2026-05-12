@@ -64,7 +64,7 @@ const FundDisbursement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('https://rayat-backend.onrender.com/admin/fund-disbursement-users', {
+      const res = await axios.get('https://rayat-backend-1.onrender.com/admin/fund-disbursement-users', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -120,7 +120,7 @@ const FundDisbursement = () => {
         usersData: users.map((u) => ({ hrmsNo: u.hrmsNo, totalPayableAmt: u.computedTotal, bonus: u.computedBonus })),
       };
 
-      const res = await axios.post('https://rayat-backend.onrender.com/admin/approve-fund-disbursement', payload, {
+      const res = await axios.post('https://rayat-backend-1.onrender.com/admin/approve-fund-disbursement', payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

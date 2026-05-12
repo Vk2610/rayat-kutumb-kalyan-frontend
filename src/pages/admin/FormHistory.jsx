@@ -192,7 +192,7 @@ export default function FormHistory() {
   const fetchForms = async () => {
     try {
       const response = await axios.get(
-        'https://rayat-backend.onrender.com/admin/get-user-forms',
+        'https://rayat-backend-1.onrender.com/admin/get-user-forms',
         {
           params: { hrmsNo: hrmsNo },
         },

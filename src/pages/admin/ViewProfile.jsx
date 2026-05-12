@@ -116,15 +116,15 @@ export default function ViewProfile() {
     setUser((prevUser) =>
       prevUser
         ? {
-            ...prevUser,
-            schemeType: fund.schemeType || getUserSchemeType(prevUser),
-            claimedFullAmount:
-              Number(fund.totalPaid || 0) >=
-              getSchemeMinimum({
-                ...prevUser,
-                schemeType: fund.schemeType || prevUser.schemeType,
-              }),
-          }
+          ...prevUser,
+          schemeType: fund.schemeType || getUserSchemeType(prevUser),
+          claimedFullAmount:
+            Number(fund.totalPaid || 0) >=
+            getSchemeMinimum({
+              ...prevUser,
+              schemeType: fund.schemeType || prevUser.schemeType,
+            }),
+        }
         : prevUser,
     );
   };
@@ -135,15 +135,15 @@ export default function ViewProfile() {
     setUser((prevUser) =>
       prevUser
         ? {
-            ...prevUser,
-            schemeType,
-            claimedFullAmount: totalPaid >= getSchemeMinimum({ schemeType }),
-          }
+          ...prevUser,
+          schemeType,
+          claimedFullAmount: totalPaid >= getSchemeMinimum({ schemeType }),
+        }
         : prevUser,
     );
 
     try {
-      await axios.put(`https://rayat-backend.onrender.com/employees/upd-emp/${hrmsNo}`, {
+      await axios.put(`https://rayat-backend-1.onrender.com/employees/upd-emp/${hrmsNo}`, {
         schemeType,
       });
       toast.success('Scheme type updated successfully.');
@@ -194,9 +194,9 @@ export default function ViewProfile() {
       setUser((prevUser) =>
         prevUser
           ? {
-              ...prevUser,
-              claimedFullAmount: hasPaidFullAmount,
-            }
+            ...prevUser,
+            claimedFullAmount: hasPaidFullAmount,
+          }
           : prevUser,
       );
 
@@ -227,7 +227,7 @@ export default function ViewProfile() {
           console.log('ðŸ“¤ Sending payload:', payload);
 
           const response = await axios.put(
-            `https://rayat-backend.onrender.com/funds/upd-ints/${hrmsNo}`,
+            `https://rayat-backend-1.onrender.com/funds/upd-ints/${hrmsNo}`,
             payload,
           );
           syncInstallmentsFromFund(response.data?.fund);
@@ -236,7 +236,7 @@ export default function ViewProfile() {
           console.error('Failed to update payments:', err);
           toast.error(
             err?.response?.data?.details ||
-              'Failed to update installment on server. Reverting change.',
+            'Failed to update installment on server. Reverting change.',
           );
 
           setInstallments((prev2) => {
@@ -250,9 +250,9 @@ export default function ViewProfile() {
           setUser((prevUser) =>
             prevUser
               ? {
-                  ...prevUser,
-                  claimedFullAmount: previousClaimedFullAmount,
-                }
+                ...prevUser,
+                claimedFullAmount: previousClaimedFullAmount,
+              }
               : prevUser,
           );
         }
@@ -267,7 +267,7 @@ export default function ViewProfile() {
     if (!hrmsNo) return;
 
     axios
-      .get(`https://rayat-backend.onrender.com/employees/get-emp-prf/${hrmsNo}`)
+      .get(`https://rayat-backend-1.onrender.com/employees/get-emp-prf/${hrmsNo}`)
       .then((res) => {
         setUser((prevUser) => ({
           ...(prevUser || {}),
@@ -286,7 +286,7 @@ export default function ViewProfile() {
 
   useEffect(() => {
     if (hrmsNo) {
-      axios.get(`https://rayat-backend.onrender.com/funds/${hrmsNo}`).then((res) => {
+      axios.get(`https://rayat-backend-1.onrender.com/funds/${hrmsNo}`).then((res) => {
         syncInstallmentsFromFund(res.data);
       });
     }

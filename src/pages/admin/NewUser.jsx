@@ -138,7 +138,7 @@ const NewUser = () => {
     console.log("Submitting:", payload);
 
     try {
-      const res = await axios.post("https://rayat-backend.onrender.com/employees/create", payload);
+      const res = await axios.post("https://rayat-backend-1.onrender.com/employees/create", payload);
       toast.success("User added successfully!");
       console.log(res.data);
       form.reset();

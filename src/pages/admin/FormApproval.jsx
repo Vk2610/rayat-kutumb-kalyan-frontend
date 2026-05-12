@@ -36,7 +36,7 @@ function FormApproval() {
     const fetchPaginatedForms = async (currentPage) => {
         setLoading(true);
         try {
-            const response = await axios.get("https://rayat-backend.onrender.com/admin/get-all-forms", {
+            const response = await axios.get("https://rayat-backend-1.onrender.com/admin/get-all-forms", {
                 params: { page: currentPage, limit }
             });
 
@@ -53,7 +53,7 @@ function FormApproval() {
     const fetchAllForms = async () => {
         setLoading(true);
         try {
-            const response = await axios.get("https://rayat-backend.onrender.com/admin/get-all-forms", {
+            const response = await axios.get("https://rayat-backend-1.onrender.com/admin/get-all-forms", {
                 params: {
                     page: 1,
                     limit: totalForms || 1000,

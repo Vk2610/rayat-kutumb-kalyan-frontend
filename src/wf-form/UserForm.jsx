@@ -105,7 +105,7 @@ export default function UserForm({ role }) {
 
       // Submit to backend
       const response = await axios.post(
-        'https://rayat-backend.onrender.com/user/submit-welfare-form',
+        'https://rayat-backend-1.onrender.com/user/submit-welfare-form',
         formDataToSend,
         {
           headers: { 'Content-Type': 'application/json' },
@@ -521,7 +521,7 @@ export default function UserForm({ role }) {
                     disabled={role !== 'user'}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
-                    // placeholder="____________________________"
+                  // placeholder="____________________________"
                   />
                 </div>
               </div>

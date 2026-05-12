@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import { 
+import {
   Alert,
   Card,
   CardContent,
@@ -27,29 +27,29 @@ const Login = () => {
   const isRkky = formType === "rkky";
   const schemeConfig = isRkky
     ? {
-        chip: "Rayat Kutumb Kalyan Yojana",
-        title: "Scheme Access Login",
-        subtitle:
-          "Securely access the Kutumb Kalyan workflow, member records, and scheme operations from one verified portal.",
-        accent: "#0f766e",
-        accentSoft: "rgba(15,118,110,0.14)",
-        icon: <FaShieldAlt />,
-      }
+      chip: "Rayat Kutumb Kalyan Yojana",
+      title: "Scheme Access Login",
+      subtitle:
+        "Securely access the Kutumb Kalyan workflow, member records, and scheme operations from one verified portal.",
+      accent: "#0f766e",
+      accentSoft: "rgba(15,118,110,0.14)",
+      icon: <FaShieldAlt />,
+    }
     : {
-        chip: "Rayat Welfare Form",
-        title: "Welfare Portal Login",
-        subtitle:
-          "Sign in to submit welfare forms, review requests, and continue employee support workflows without friction.",
-        accent: "#1d4ed8",
-        accentSoft: "rgba(29,78,216,0.14)",
-        icon: <FaHandHoldingHeart />,
-      };
+      chip: "Rayat Welfare Form",
+      title: "Welfare Portal Login",
+      subtitle:
+        "Sign in to submit welfare forms, review requests, and continue employee support workflows without friction.",
+      accent: "#1d4ed8",
+      accentSoft: "rgba(29,78,216,0.14)",
+      icon: <FaHandHoldingHeart />,
+    };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://rayat-backend.onrender.com/auth/login", {
+      const response = await axios.post("https://rayat-backend-1.onrender.com/auth/login", {
         hrmsNo,
         password,
         formType
@@ -58,7 +58,7 @@ const Login = () => {
       const { token } = response.data;
       const decoded = jwtDecode(token);
       const role = decoded.role;
-      
+
       localStorage.setItem("formType", formType);
 
       localStorage.setItem("token", token);

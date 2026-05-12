@@ -82,8 +82,8 @@ const AdminProfile = () => {
       const hrmsNo = decoded.hrmsNo;
 
       const [profileResponse, statsResponse] = await Promise.all([
-        axios.get(`https://rayat-backend.onrender.com/employees/get-emp-prf/${hrmsNo}`),
-        axios.get("https://rayat-backend.onrender.com/employees/stats"),
+        axios.get(`https://rayat-backend-1.onrender.com/employees/get-emp-prf/${hrmsNo}`),
+        axios.get("https://rayat-backend-1.onrender.com/employees/stats"),
       ]);
 
       setAdmin(profileResponse.data);
