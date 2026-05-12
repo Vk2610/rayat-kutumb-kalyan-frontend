@@ -173,10 +173,10 @@ export default function UserForm({ role }) {
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
               <h1 className="text-2xl font-bold">
-                à¤°à¤¯à¤¤ à¤¶à¤¿à¤•à¥à¤·à¤£ à¤¸à¤‚à¤¸à¥à¤¥à¤¾, à¤°à¤¯à¤¤ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡, à¤¸à¤¾à¤¤à¤¾à¤°à¤¾.
+                रयत शिक्षण संस्था, रयत सेवक वेलफेअर फंड, सातारा.
               </h1>
               <h2 className="text-xl underline font-medium mt-1">
-                à¤®à¤¦à¤¤ à¤®à¤¾à¤—à¤£à¥€ à¤…à¤°à¥à¤œ
+                मदत मागणी अर्ज
               </h2>
             </div>
 
@@ -185,9 +185,9 @@ export default function UserForm({ role }) {
               className="mb-4 text-base"
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
-              <p>à¤ªà¥à¤°à¤¤à¤¿,</p>
-              <p>à¤®à¤¾. à¤šà¥‡à¤…à¤°à¤®à¤¨à¤¸à¥‹,</p>
-              <p>à¤°à¤¯à¤¤ à¤¶à¤¿à¤•à¥à¤·à¤£ à¤¸à¤‚à¤¸à¥à¤¥à¤¾, à¤°à¤¯à¤¤ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡, à¤¸à¤¾à¤¤à¤¾à¤°à¤¾.</p>
+              <p>प्रति,</p>
+              <p>मा. चेअरमनसो,</p>
+              <p>रयत शिक्षण संस्था, रयत सेवक वेलफेअर फंड, सातारा.</p>
             </div>
 
             <div
@@ -196,7 +196,7 @@ export default function UserForm({ role }) {
             >
               <p className="ml-10">
                 <strong>
-                  à¤µà¤¿à¤·à¤¯: à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¥à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤†à¤°à¥à¤¥à¤¿à¤• à¤®à¤¦à¤¤ à¤®à¤¿à¤³à¤£à¥à¤¯à¤¾à¤¬à¤¾à¤¬à¤¤.
+                  विषय: सेवक वेल्फेअर फंडातून आर्थिक मदत मिळण्याबाबत.
                 </strong>
               </p>
             </div>
@@ -206,11 +206,11 @@ export default function UserForm({ role }) {
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
               <p>
-                à¤®à¤¹à¤¾à¤¶à¤¯, <br />
+                महाशय, <br />
                 <p className="ml-5">
-                  à¤®à¥€ à¤–à¤¾à¤²à¥€à¤² à¤•à¤¾à¤°à¤£à¤¾à¤•à¤°à¤¿à¤¤à¤¾ à¤†à¤ªà¤²à¥à¤¯à¤¾ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¥à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤†à¤°à¥à¤¥à¤¿à¤• à¤®à¤¦à¤¤
-                  à¤®à¤¿à¤³à¤¾à¤µà¥€ à¤®à¥à¤¹à¤£à¥‚à¤¨ à¤¹à¤¾ à¤…à¤°à¥à¤œ à¤•à¤°à¥€à¤¤ à¤†à¤¹à¥‡. à¤¤à¥à¤¯à¤¾à¤¸à¤¾à¤ à¥€ à¤®à¥€ à¤®à¤¾à¤à¥€ à¤ªà¥à¤¢à¥€à¤²à¤ªà¥à¤°à¤®à¤¾à¤£à¥‡
-                  à¤®à¤¾à¤¹à¤¿à¤¤à¥€ à¤¦à¥‡à¤¤ à¤†à¤¹à¥‡.
+                  मी खालील कारणाकरिता आपल्या सेवक वेल्फेअर फंडातून आर्थिक मदत
+                  मिळावी म्हणून हा अर्ज करीत आहे. त्यासा� ी मी माझी पुढीलप्रमाणे
+                  माहिती देत आहे.
                 </p>
               </p>
             </div>
@@ -222,7 +222,7 @@ export default function UserForm({ role }) {
             >
               <div className="flex items-center gap-3 text-base">
                 <div className="w-1/3">
-                  à¥§ à¤…) à¤…à¤°à¥à¤œà¤¦à¤¾à¤°à¤¾à¤šà¥‡ à¤¸à¤‚à¤ªà¥‚à¤°à¥à¤£ à¤¨à¤¾à¤µ (à¤ªà¥à¤°à¤¥à¤® à¤†à¤¡à¤¨à¤¾à¤µ )
+                  १ अ) अर्जदाराचे संपूर्ण नाव (प्रथम आडनाव )
                 </div>
                 <div className="flex-1">
                   <input
@@ -237,7 +237,7 @@ export default function UserForm({ role }) {
               </div>
 
               <div className="flex items-center gap-3 text-base">
-                <div className="w-1/3">à¤¬) à¤¶à¤¾à¤–à¥‡à¤šà¥‡ à¤¨à¤¾à¤µ</div>
+                <div className="w-1/3">ब) शाखेचे नाव</div>
                 <div className="flex-1">
                   <input
                     name="branchName"
@@ -252,7 +252,7 @@ export default function UserForm({ role }) {
 
               <div className="flex flex-wrap gap-3 text-base">
                 <div className="flex-1 min-w-40">
-                  à¤•) à¤¨à¥‡à¤®à¤£à¥‚à¤• à¤¤à¤¾à¤°à¥€à¤–
+                  क) नेमणूक तारीख
                   <div>
                     <input
                       name="joiningDate"
@@ -266,7 +266,7 @@ export default function UserForm({ role }) {
                 </div>
 
                 <div className="flex-1 min-w-[120px]">
-                  à¤¡)à¤¹à¥à¤¦à¥à¤¦à¤¾
+                  ड)हुद्दा
                   <div>
                     <input
                       name="designation"
@@ -280,7 +280,7 @@ export default function UserForm({ role }) {
                 </div>
 
                 <div className="flex-1 min-w-40">
-                  à¤ˆ) à¤¸à¤‚à¤¸à¥à¤¥à¥‡à¤¤à¥€à¤² à¤à¤•à¥‚à¤£ à¤¸à¥‡à¤µà¤¾à¤•à¤¾à¤²à¤¾à¤µà¤§à¥€
+                  ई) संस्थेतील एकूण सेवाकालावधी
                   <div>
                     <input
                       name="totalService"
@@ -301,7 +301,7 @@ export default function UserForm({ role }) {
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-1/2">à¥¨. à¤¦à¤°à¤®à¤¹à¤¾ à¤¸à¤°à¥à¤µ à¤ªà¤—à¤¾à¤°</div>
+                <div className="w-1/2">२. दरमहा सर्व पगार</div>
                 <div className="w-1/2">
                   <input
                     name="monthlySalary"
@@ -315,7 +315,7 @@ export default function UserForm({ role }) {
               </div>
 
               <div className="flex items-center gap-3 mt-2">
-                <div className="w-1/2">à¤®à¥‹à¤¬à¤¾à¤ˆà¤² à¤¨à¤‚.</div>
+                <div className="w-1/2">मोबाईल नं.</div>
                 <div className="w-1/2">
                   <input
                     name="mobile"
@@ -336,7 +336,7 @@ export default function UserForm({ role }) {
             >
               <div className="flex gap-3 items-start">
                 <div className="w-1/3">
-                  à¥©. à¤…) à¤œà¥à¤¯à¤¾à¤šà¥‡ à¤†à¤œà¤¾à¤°à¤¾à¤¸à¤¾à¤ à¥€ à¤®à¤¦à¤¤ à¤¹à¤µà¥€ à¤†à¤¹à¥‡ à¤¤à¥à¤¯à¤¾à¤šà¥‡ à¤¸à¤‚à¤ªà¥‚à¤°à¥à¤£ à¤¨à¤¾à¤µ
+                  ३. अ) ज्याचे आजारासा� ी मदत हवी आहे त्याचे संपूर्ण नाव
                 </div>
                 <div className="flex-1">
                   <input
@@ -351,7 +351,7 @@ export default function UserForm({ role }) {
               </div>
 
               <div className="flex gap-3 items-start">
-                <div className="w-1/3">à¤¸à¥‡à¤µà¤•à¤¾à¤¶à¥€ à¤¨à¤¾à¤¤à¥‡</div>
+                <div className="w-1/3">सेवकाशी नाते</div>
                 <div className="w-1/3">
                   <input
                     name="relation"
@@ -364,7 +364,7 @@ export default function UserForm({ role }) {
                 </div>
 
                 <div className="w-1/3">
-                  à¤¬) à¤†à¤œà¤¾à¤°à¤¾à¤šà¥‡ à¤¸à¥à¤µà¤°à¥‚à¤ª
+                  ब) आजाराचे स्वरूप
                   <input
                     name="illnessNature"
                     value={form.illnessNature}
@@ -377,7 +377,7 @@ export default function UserForm({ role }) {
               </div>
 
               <div>
-                à¤•) à¤†à¤œà¤¾à¤°à¤¾à¤šà¤¾ à¤•à¤¾à¤²à¤¾à¤µà¤§à¥€
+                क) आजाराचा कालावधी
                 <input
                   name="illnessDuration"
                   disabled={role !== 'user'}
@@ -395,7 +395,7 @@ export default function UserForm({ role }) {
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
               <div className="flex gap-3 items-center">
-                <div className="w-1/3">à¥ª à¤…) à¤”à¤·à¤§à¥‡ à¤°à¥.</div>
+                <div className="w-1/3">४ अ) औषधे रु.</div>
                 <div className="w-1/3">
                   <input
                     name="medicineBill"
@@ -407,7 +407,7 @@ export default function UserForm({ role }) {
                   />
                 </div>
 
-                <div className="w-1/3">à¤¬) à¤¡à¥‰à¤•à¥à¤Ÿà¤°à¤¾à¤‚à¤šà¥‡ à¤¬à¤¿à¤² à¤°à¥.</div>
+                <div className="w-1/3">ब) डॉक्टरांचे बिल रु.</div>
                 <div className="w-1/3">
                   <input
                     name="doctorBill"
@@ -421,7 +421,7 @@ export default function UserForm({ role }) {
               </div>
 
               <div className="flex gap-3 items-center">
-                <div className="w-1/3">à¤•) à¤‡à¤¤à¤° à¤–à¤°à¥à¤š à¤°à¥.</div>
+                <div className="w-1/3">क) इतर खर्च रु.</div>
                 <div className="w-1/3">
                   <input
                     name="otherExpenses"
@@ -433,7 +433,7 @@ export default function UserForm({ role }) {
                   />
                 </div>
 
-                <div className="w-1/3">à¤¡) à¤à¤•à¥‚à¤£ à¤à¤¾à¤²à¥‡à¤²à¤¾ à¤–à¤°à¥à¤š à¤°à¥.</div>
+                <div className="w-1/3">ड) एकूण झालेला खर्च रु.</div>
                 <div className="w-1/3">
                   <input
                     name="totalExpenses"
@@ -453,14 +453,14 @@ export default function UserForm({ role }) {
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
               <div>
-                à¥«. à¤µà¤°à¥€à¤² à¤ªà¥à¤°à¤®à¤¾à¤£à¥‡ à¤à¤¾à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤–à¤°à¥à¤šà¤¾à¤šà¥€ à¤¬à¤¿à¤²à¥‡ à¤µ à¤ªà¤¾à¤µà¤¤à¥à¤¯à¤¾ à¤•à¥à¤°à¤®à¤¾à¤‚à¤• à¥¦à¥§ à¤¤à¥‡
-                ___ à¤¸à¥‹à¤¬à¤¤ à¤œà¥‹à¤¡à¤²à¥‡à¤²à¥€ à¤†à¤¹à¥‡à¤¤.
+                ५. वरील प्रमाणे झालेल्या खर्चाची बिले व पावत्या क्रमांक ०१ ते
+                ___ सोबत जोडलेली आहेत.
               </div>
 
               <div className="flex gap-3 items-center">
                 <div className="w-1/2">
-                  à¥¬. à¤µà¤° à¤¨à¤®à¥‚à¤¦ à¤•à¥‡à¤²à¥‡à¤²à¥à¤¯à¤¾ à¤†à¤œà¤¾à¤°à¤¾à¤‚à¤¬à¤¾à¤¬à¤¤ à¤¡à¥‰à¤•à¥à¤Ÿà¤°à¤¾à¤‚à¤šà¥‡ à¤¸à¤°à¥à¤Ÿà¤¿à¤«à¤¿à¤•à¥‡à¤Ÿ à¤œà¥‹à¤¡à¤²à¥‡
-                  à¤†à¤¹à¥‡.
+                  ६. वर नमूद केलेल्या आजारांबाबत डॉक्टरांचे सर्टिफिकेट जोडले
+                  आहे.
                 </div>
                 <div className="w-1/2">
                   <select
@@ -469,16 +469,16 @@ export default function UserForm({ role }) {
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
                   >
-                    <option value="">-- à¤¨à¤¿à¤µà¤¡à¤¾ --</option>
-                    <option value="à¤¹à¥‹à¤¯">à¤¹à¥‹à¤¯</option>
-                    <option value="à¤¨à¤¾à¤¹à¥€">à¤¨à¤¾à¤¹à¥€</option>
+                    <option value="">-- निवडा --</option>
+                    <option value="होय">होय</option>
+                    <option value="नाही">नाही</option>
                   </select>
                 </div>
               </div>
 
               <div className="flex gap-3 items-start">
                 <div className="w-1/3">
-                  à¥­. à¤¯à¤¾à¤ªà¥‚à¤°à¥à¤µà¥€ à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤®à¤¦à¤¤ à¤˜à¥‡à¤¤à¤²à¥€ à¤†à¤¹à¥‡ / à¤¨à¤¾à¤¹à¥€
+                  ७. यापूर्वी फंडातून मदत घेतली आहे / नाही
                 </div>
                 <div className="w-2/3">
                   <select
@@ -488,9 +488,9 @@ export default function UserForm({ role }) {
                     disabled={role !== 'user'}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
                   >
-                    <option value="">-- à¤¨à¤¿à¤µà¤¡à¤¾ --</option>
-                    <option value="à¤¹à¥‹à¤¯">à¤¹à¥‹à¤¯</option>
-                    <option value="à¤¨à¤¾à¤¹à¥€">à¤¨à¤¾à¤¹à¥€</option>
+                    <option value="">-- निवडा --</option>
+                    <option value="होय">होय</option>
+                    <option value="नाही">नाही</option>
                   </select>
                   <textarea
                     name="previousHelpDetails"
@@ -511,8 +511,8 @@ export default function UserForm({ role }) {
             >
               <div className="flex gap-3 items-center">
                 <div className="w-1/2">
-                  à¥® à¤…) à¤ªà¥à¤°à¤¤à¥à¤¯à¥‡à¤• à¤µà¤°à¥à¤·à¤¾à¤¸à¤¾à¤ à¥€ à¤¸à¥‡à¤µà¤• à¤µà¥‡à¤²à¤«à¥‡à¤…à¤° à¤«à¤‚à¤¡à¤¾à¤šà¥€ à¤µà¤—à¤£à¥€ à¤¦à¤¿à¤²à¥‡à¤²à¥€ à¤†à¤¹à¥‡
-                  à¤•à¤¾à¤¯
+                  ८ अ) प्रत्येक वर्षासा� ी सेवक वेलफेअर फंडाची वगणी दिलेली आहे
+                  काय
                 </div>
                 <div className="w-1/2">
                   <select
@@ -528,7 +528,7 @@ export default function UserForm({ role }) {
 
               <div className="flex gap-3 items-center">
                 <div className="w-1/3">
-                  à¥¯ à¤…) à¤†à¤¤à¤¾ à¤•à¤¿à¤¤à¥€ à¤®à¤¦à¤¤à¥€à¤šà¥€ à¤†à¤µà¤¶à¥à¤¯à¤•à¤¤à¤¾ à¤†à¤¹à¥‡ à¤¤à¥€ à¤°à¤•à¥à¤•à¤® à¤°à¥. à¤…à¤‚à¤•à¥€ à¤µ à¤…à¤•à¥à¤·à¤°à¥€
+                  ९ अ) आता किती मदतीची आवश्यकता आहे ती रक्कम रु. अंकी व अक्षरी
                 </div>
                 <div className="w-2/3">
                   <input
@@ -537,7 +537,7 @@ export default function UserForm({ role }) {
                     onChange={handleChange}
                     disabled={role !== 'user'}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base mb-1"
-                    placeholder="(à¤…à¤‚à¤•à¥€) ___________________"
+                    placeholder="(अंकी) ___________________"
                   />
                   <input
                     name="requestedAmountWords"
@@ -545,17 +545,17 @@ export default function UserForm({ role }) {
                     onChange={handleChange}
                     disabled={role !== 'user'}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
-                    placeholder="(à¤…à¤•à¥à¤·à¤°à¥€) ____________________________________"
+                    placeholder="(अक्षरी) ____________________________________"
                   />
                 </div>
               </div>
 
               <div className="mt-2">
-                à¤¬) à¤•à¤¿à¤®à¤¤à¥€à¤¨à¥‡ à¤®à¤‚à¤œà¥‚à¤° à¤•à¥‡à¤²à¥‡à¤²à¥€ à¤®à¤¦à¤¤ à¤œà¤®à¤¾ à¤°à¤¯à¤¤ à¤¸à¥‡à¤µà¤• à¤•à¥‹-à¤‘à¤ªà¤°à¥‡à¤Ÿà¤¿à¤µà¥à¤¹ à¤¬à¤à¤•
-                à¤²à¤¿à¤®à¤¿à¤Ÿà¥‡à¤¡ à¤¸à¤¾à¤¤à¤¾à¤°à¤¾ à¤¶à¤¾à¤–à¤¾
+                ब) किमतीने मंजूर केलेली मदत जमा रयत सेवक को-ऑपरेटिव्ह बँक
+                लिमिटेड सातारा शाखा
                 <div className="flex gap-3 mt-2">
                   <div className="w-1/2">
-                    à¤¶à¤¾à¤–à¤¾
+                    शाखा
                     <input
                       name="branchNameForDeposit"
                       value={form.branchNameForDeposit}
@@ -566,7 +566,7 @@ export default function UserForm({ role }) {
                     />
                   </div>
                   <div className="w-1/2">
-                    à¤¸à¥‡à¤µà¤¿à¤‚à¤— à¤ à¥‡à¤µ à¤–à¤¾à¤¤à¥‡ à¤•à¥à¤°.
+                    सेविंग à¤ ेव खाते क्र.
                     <input
                       name="savingsAccountNo"
                       value={form.savingsAccountNo}
@@ -586,11 +586,11 @@ export default function UserForm({ role }) {
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
               <p>
-                à¤…à¤°à¥à¤œà¤¾à¤¤ à¤µà¤° à¤¦à¤¿à¤²à¥‡à¤²à¥€ à¤®à¤¾à¤¹à¤¿à¤¤à¥€ à¤–à¤°à¥€ à¤µ à¤ªà¤°à¤¿à¤¸à¥à¤¥à¤¿à¤¤à¥€à¤¤ à¤§à¤°à¥‚à¤¨ à¤†à¤¹à¥‡. à¤¤à¥à¤¯à¤¾à¤®à¤§à¥à¤¯à¥‡
-                à¤•à¤¾à¤¹à¥€ à¤šà¥‚à¤• à¤…à¤—à¤° à¤µà¤¿à¤¸à¤‚à¤—à¤¤à¥€ à¤†à¤¢à¤³à¤²à¥à¤¯à¤¾à¤¸ à¤¤à¥à¤¯à¤¾à¤¬à¤¾à¤¬à¤¤ à¤¸à¤‚à¤¸à¥à¤¥à¥‡à¤•à¤¡à¥‚à¤¨ à¤®à¤¾à¤à¥à¤¯à¤¾à¤µà¤¿à¤°à¥à¤¦à¥à¤§
-                à¤¹à¥‹à¤£à¤¾à¤±à¥à¤¯à¤¾ à¤•à¤¾à¤°à¤µà¤¾à¤ˆà¤¸ à¤®à¥€ à¤œà¤¬à¤¾à¤¬à¤¦à¤¾à¤° à¤°à¤¾à¤¹à¥€à¤² à¤¯à¤¾à¤šà¥€ à¤®à¤²à¤¾ à¤ªà¥‚à¤°à¥à¤£ à¤œà¤¾à¤£à¥€à¤µ à¤†à¤¹à¥‡ à¤¤à¤°à¥€
-                à¤®à¤¾à¤à¥à¤¯à¤¾ à¤…à¤°à¥à¤œà¤¾à¤šà¤¾ à¤¸à¤¹à¤¾à¤¨à¥à¤­à¥‚à¤¤à¥€à¤ªà¥‚à¤°à¥à¤µà¤• à¤µà¤¿à¤šà¤¾à¤° à¤•à¤°à¥‚à¤¨ à¤«à¤‚à¤¡à¤¾à¤¤à¥‚à¤¨ à¤®à¤²à¤¾ à¤®à¤¦à¤¤ à¤®à¤¿à¤³à¤¾à¤µà¥€
-                à¤…à¤¶à¥€ à¤µà¤¿à¤¨à¤‚à¤¤à¥€ à¤†à¤¹à¥‡
+                अर्जात वर दिलेली माहिती खरी व परिस्थितीत धरून आहे. त्यामध्ये
+                काही चूक अगर विसंगती आढळल्यास त्याबाबत संस्थेकडून माझ्याविरुद्ध
+                होणाऱ्या कारवाईस मी जबाबदार राहील याची मला पूर्ण जाणीव आहे तरी
+                माझ्या अर्जाचा सहानुभूतीपूर्वक विचार करून फंडातून मला मदत मिळावी
+                अशी विनंती आहे
               </p>
             </div>
 
@@ -600,7 +600,7 @@ export default function UserForm({ role }) {
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
               <div className="text-right">
-                <p className="mb-2">à¤…à¤°à¥à¤œà¤¦à¤¾à¤°à¤¾à¤šà¥€ à¤¸à¤¹à¥€ :</p>
+                <p className="mb-2">अर्जदाराची सही :</p>
                 <div className="mb-3">
                   <input
                     type="file"
