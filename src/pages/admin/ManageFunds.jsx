@@ -66,8 +66,9 @@ const ManageFunds = () => {
 
       return withComputedFundStatus({
         ...u,
+        retirementDateFormatted: u.retirementDate
           ? retirement.format('DD/MM/YYYY')
-          : '—',
+          : '\u2014',
         status:
           retirement.isValid() && retirement.isAfter(today)
             ? 'Active'
