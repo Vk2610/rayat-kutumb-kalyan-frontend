@@ -27,7 +27,7 @@ import { toast } from 'react-toastify';
 
 /* --------------------------- Date Formatter --------------------------- */
 const formatDate = (date) => {
-  if (!date) return '\u2014';
+  if (!date) return '—';
   return dayjs(date).format('DD/MM/YYYY');
 };
 
@@ -352,7 +352,7 @@ export default function ViewProfile() {
                 {data.employeeName}
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                {data.designation} \u2022 {data.department}
+                {data.designation} • {data.department}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 HRMS No: {data.hrmsNo}
@@ -552,7 +552,7 @@ export default function ViewProfile() {
 
                             <TableCell align="center">
                               {inst.paid ? (
-                                <span>\u20B9 {inst.amount}</span>
+                                <span>₹ {inst.amount}</span>
                               ) : (
                                 <input
                                   type="number"
@@ -618,7 +618,7 @@ export default function ViewProfile() {
                             <b>Total Paid</b>
                           </TableCell>
                           <TableCell align="center">
-                            <b style={{ color: '#16a34a' }}>\u20B9 {totalPaid}</b>
+                            <b style={{ color: '#16a34a' }}>₹ {totalPaid}</b>
                           </TableCell>
                           <TableCell align="center" colSpan={2}></TableCell>
                         </TableRow>
@@ -630,7 +630,7 @@ export default function ViewProfile() {
                           </TableCell>
                           <TableCell align="center">
                             <b style={{ color: '#d32f2f' }}>
-                              \u20B9 {remainingAmount}
+                              ₹ {remainingAmount}
                             </b>
                           </TableCell>
                           <TableCell align="center" colSpan={2}></TableCell>
@@ -688,7 +688,7 @@ const Section = ({ title, children }) => (
 const InfoItem = ({ label, value, full }) => (
   <Grid item xs={12} sm={full ? 12 : 6}>
     <Typography sx={{ fontWeight: 600, fontSize: 14 }}>{label}</Typography>
-    <Typography sx={{ color: 'text.secondary' }}>{value || '\u2014'}</Typography>
+    <Typography sx={{ color: 'text.secondary' }}>{value || '—'}</Typography>
   </Grid>
 );
 

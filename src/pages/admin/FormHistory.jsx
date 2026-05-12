@@ -436,19 +436,19 @@ export default function FormHistory() {
                   <SectionHeader title="Expenses Details" />
                   <DetailRow
                     label="Medicine Bill"
-                    value={`\u20B9${selectedForm.medicineBill}`}
+                    value={`₹${selectedForm.medicineBill}`}
                   />
                   <DetailRow
                     label="Doctor Bill"
-                    value={`\u20B9${selectedForm.doctorBill}`}
+                    value={`₹${selectedForm.doctorBill}`}
                   />
                   <DetailRow
                     label="Other Expenses"
-                    value={`\u20B9${selectedForm.otherExpenses}`}
+                    value={`₹${selectedForm.otherExpenses}`}
                   />
                   <DetailRow
                     label="Total Expenses"
-                    value={`\u20B9${selectedForm.totalExpenses}`}
+                    value={`₹${selectedForm.totalExpenses}`}
                     isBold={true}
                   />
                   <DetailRow
@@ -487,7 +487,7 @@ export default function FormHistory() {
                   />
                   <DetailRow
                     label="Requested Amount (Num)"
-                    value={`\u20B9${selectedForm.requestedAmountNumbers}`}
+                    value={`₹${selectedForm.requestedAmountNumbers}`}
                     isBold={true}
                   />
                   <DetailRow
@@ -496,7 +496,7 @@ export default function FormHistory() {
                   />
                   <DetailRow
                     label="Approved Amount"
-                    value={`\u20B9${selectedForm.approvedAmount}`}
+                    value={`₹${selectedForm.approvedAmount}`}
                     isBold={true}
                   />
 
