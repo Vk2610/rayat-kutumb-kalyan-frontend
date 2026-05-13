@@ -205,13 +205,13 @@ export default function UserForm({ role }) {
               className="mb-6 text-base"
               style={{ fontFamily: "'Noto Sans Devanagari', sans-serif" }}
             >
-              <p>
-                महाशय, <br />
-                <p className="ml-5">
-                  मी खालील कारणाकरिता आपल्या सेवक वेल्फेअर फंडातून आर्थिक मदत
-                  मिळावी म्हणून हा अर्ज करीत आहे. त्यासाठी मी माझी पुढीलप्रमाणे
-                  माहिती देत आहे.
-                </p>
+              <div className="flex">
+                <span className="mr-2">महाशय,</span>
+              </div>
+              <p className="ml-10">
+                मी खालील कारणाकरिता आपल्या सेवक वेल्फेअर फंडातून आर्थिक मदत
+                मिळावी म्हणून हा अर्ज करीत आहे. त्यासाठी मी माझी पुढीलप्रमाणे
+                माहिती देत आहे.
               </p>
             </div>
 
@@ -336,7 +336,7 @@ export default function UserForm({ role }) {
             >
               <div className="flex gap-3 items-start">
                 <div className="w-1/3">
-                  ३. अ) ज्याचे आजारासाठी मदत हवी आहे त्याचे संपूर्ण नाव
+                  ३. अ) ज्याच्या आजारासाठी मदत हवी आहे त्याचे संपूर्ण नाव
                 </div>
                 <div className="flex-1">
                   <input
@@ -351,16 +351,22 @@ export default function UserForm({ role }) {
               </div>
 
               <div className="flex gap-3 items-start">
-                <div className="w-1/3">सेवकाशी नाते</div>
                 <div className="w-1/3">
-                  <input
+                  सेवकाशी नाते
+                  <select
                     name="relation"
                     value={form.relation}
                     disabled={role !== "user"}
                     onChange={handleChange}
-                    className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
-                    placeholder="________________"
-                  />
+                    className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent mt-1"
+                  >
+                    <option value="Self">Self</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Son">Son</option>
+                    <option value="Daughter">Daughter</option>
+                    <option value="Mother">Mother</option>
+                    <option value="Father">Father</option>
+                  </select>
                 </div>
 
                 <div className="w-1/3">
@@ -511,7 +517,7 @@ export default function UserForm({ role }) {
             >
               <div className="flex gap-3 items-center">
                 <div className="w-1/2">
-                  ८ अ) प्रत्येक वर्षासाठी सेवक वेलफेअर फंडाची वगणी दिलेली आहे
+                  ८ अ) प्रत्येक वर्षासाठी सेवक वेलफेअर फंडाची वर्गणी दिलेली आहे
                   काय
                 </div>
                 <div className="w-1/2">
@@ -521,8 +527,11 @@ export default function UserForm({ role }) {
                     disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
-                    // placeholder="____________________________"
-                  />
+                  >
+                    <option value="">-- निवडा --</option>
+                    <option value="होय">होय</option>
+                    <option value="नाही">नाही</option>
+                  </select>
                 </div>
               </div>
 
@@ -590,7 +599,7 @@ export default function UserForm({ role }) {
                 काही चूक अगर विसंगती आढळल्यास त्याबाबत संस्थेकडून माझ्याविरुद्ध
                 होणाऱ्या कारवाईस मी जबाबदार राहील याची मला पूर्ण जाणीव आहे तरी
                 माझ्या अर्जाचा सहानुभूतीपूर्वक विचार करून फंडातून मला मदत मिळावी
-                अशी विनंती आहे
+                अशी विनंती आहे.
               </p>
             </div>
 
@@ -621,7 +630,7 @@ export default function UserForm({ role }) {
                 )}
                 {form.applicantSignature && (
                   <p className="text-base text-gray-600">
-                    � {form.applicantSignature.name}
+                    📎 {form.applicantSignature.name}
                   </p>
                 )}
                 <p className="text-base text-gray-500 mt-1">
@@ -661,8 +670,8 @@ export default function UserForm({ role }) {
         {/* Print styles */}
         <style>
           {`
-          /* Print pdesignation settings */
-          @pdesignation {
+          /* Print page settings */
+          @page {
             size: A4 portrait;
             margin: 12mm;
           }
@@ -706,8 +715,8 @@ export default function UserForm({ role }) {
             .max-w-3xl input, .max-w-3xl textarea { font-size: 18pt !important; }
             .max-w-3xl { font-size: 18pt !important; }
 
-            /* Avoid pdesignation-break inside important blocks */
-            form, form > * { pdesignation-break-inside: avoid; }
+            /* Avoid page-break inside important blocks */
+            form, form > * { page-break-inside: avoid; }
 
             /* Hide the print button */
             button { display: none !important; }
