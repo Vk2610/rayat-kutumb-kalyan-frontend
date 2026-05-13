@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { jwtDecode } from "jwt-decode";
 
 export default function SevakWelfareForm() {
+  const role = localStorage.getItem('role') || 'user';
 
   const [form, setForm] = useState({
     hrmsNo: "",
