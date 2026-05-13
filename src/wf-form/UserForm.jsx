@@ -1,36 +1,36 @@
 // SevakWelfareForm.jsx
-import React, { useState } from 'react';
-import axios from 'axios';
-import UploadFile from '../components/UploadFile';
+import React, { useState } from "react";
+import axios from "axios";
+import UploadFile from "../components/UploadFile";
 
 export default function UserForm({ role }) {
   const [form, setForm] = useState({
-    applicantName: '',
-    branchName: '',
-    joiningDate: '',
-    designation: '',
-    totalService: '',
-    monthlySalary: '',
-    mobile: '',
-    patientName: '',
-    relation: '',
-    illnessNature: '',
-    illnessDuration: '',
-    medicineBill: '',
-    doctorBill: '',
-    otherExpenses: '',
-    totalExpenses: '',
-    certificatesAttached: '',
-    sanctionLetter: '',
-    previousHelp: '',
-    previousHelpDetails: '',
-    annualDeductions: '',
-    currentDeductionMonth: '',
-    requestedAmountNumbers: '',
-    requestedAmountWords: '',
-    branchNameForDeposit: '',
-    savingsAccountNo: '',
-    officerRecommendation: '',
+    applicantName: "",
+    branchName: "",
+    joiningDate: "",
+    designation: "",
+    totalService: "",
+    monthlySalary: "",
+    mobile: "",
+    patientName: "",
+    relation: "",
+    illnessNature: "",
+    illnessDuration: "",
+    medicineBill: "",
+    doctorBill: "",
+    otherExpenses: "",
+    totalExpenses: "",
+    certificatesAttached: "",
+    sanctionLetter: "",
+    previousHelp: "",
+    previousHelpDetails: "",
+    annualDeductions: "",
+    currentDeductionMonth: "",
+    requestedAmountNumbers: "",
+    requestedAmountWords: "",
+    branchNameForDeposit: "",
+    savingsAccountNo: "",
+    officerRecommendation: "",
     applicantSignature: null,
   });
 
@@ -38,7 +38,7 @@ export default function UserForm({ role }) {
   const [files, setFiles] = useState([]);
 
   const handleDocsUpload = (uploadedFiles) => {
-    console.log('handleDocsUpload called');
+    console.log("handleDocsUpload called");
     setFiles(uploadedFiles);
   };
 
@@ -51,19 +51,19 @@ export default function UserForm({ role }) {
     const file = e.target.files[0];
     if (file) {
       // Validate file type
-      if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
-        alert('Please upload a valid image or PDF file');
+      if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+        alert("Please upload a valid image or PDF file");
         return;
       }
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        alert('File size should not exceed 5MB');
+        alert("File size should not exceed 5MB");
         return;
       }
       setForm((p) => ({ ...p, applicantSignature: file }));
 
       // Create preview for images
-      if (file.type.startsWith('image/')) {
+      if (file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = (event) => {
           setSignaturePreview(event.target.result);
@@ -85,12 +85,12 @@ export default function UserForm({ role }) {
 
     // Validate required fields
     if (!form.applicantName || !form.branchName || !form.mobile) {
-      alert('Please fill in all required fields (Name, Branch, Mobile)');
+      alert("Please fill in all required fields (Name, Branch, Mobile)");
       return;
     }
 
     if (!files || !files.isUploaded) {
-      alert('Please upload all required documents first');
+      alert("Please upload all required documents first");
       return;
     }
 
@@ -108,53 +108,53 @@ export default function UserForm({ role }) {
         `${import.meta.env.VITE_BASE_URL}/user/submit-welfare-form`,
         formDataToSend,
         {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         },
       );
 
-      alert('Form submitted successfully!');
-      console.log('Response:', response.data);
+      alert("Form submitted successfully!");
+      console.log("Response:", response.data);
 
       // Reset form after successful submission
       setForm({
-        applicantName: '',
-        branchName: '',
-        joiningDate: '',
-        designation: '',
-        totalService: '',
-        monthlySalary: '',
-        mobile: '',
-        patientName: '',
-        relation: '',
-        illnessNature: '',
-        illnessDuration: '',
-        medicineBill: '',
-        doctorBill: '',
-        otherExpenses: '',
-        totalExpenses: '',
-        certificatesAttached: '',
-        sanctionLetter: '',
-        previousHelp: '',
-        previousHelpDetails: '',
-        annualDeductions: '',
-        currentDeductionMonth: '',
-        requestedAmountNumbers: '',
-        requestedAmountWords: '',
-        branchNameForDeposit: '',
-        savingsAccountNo: '',
-        officerRecommendation: '',
+        applicantName: "",
+        branchName: "",
+        joiningDate: "",
+        designation: "",
+        totalService: "",
+        monthlySalary: "",
+        mobile: "",
+        patientName: "",
+        relation: "",
+        illnessNature: "",
+        illnessDuration: "",
+        medicineBill: "",
+        doctorBill: "",
+        otherExpenses: "",
+        totalExpenses: "",
+        certificatesAttached: "",
+        sanctionLetter: "",
+        previousHelp: "",
+        previousHelpDetails: "",
+        annualDeductions: "",
+        currentDeductionMonth: "",
+        requestedAmountNumbers: "",
+        requestedAmountWords: "",
+        branchNameForDeposit: "",
+        savingsAccountNo: "",
+        officerRecommendation: "",
         applicantSignature: null,
       });
       setSignaturePreview(null);
       setFiles([]);
     } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Error submitting form. Please try again.');
+      console.error("Error submitting form:", error);
+      alert("Error submitting form. Please try again.");
     }
   };
 
   return (
-    <div className={role !== 'user' ? 'pointer-events-none opacity-70' : ''}>
+    <div className={role !== "user" ? "pointer-events-none opacity-70" : ""}>
       <div className="min-h-screen bg-neutral-100 py-6 px-4 sm:px-6 lg:px-8">
         {/* Import Noto Sans Devanagari for Marathi */}
         <style>
@@ -163,7 +163,7 @@ export default function UserForm({ role }) {
 
         <div
           className="max-w-6xl mx-auto bg-white shadow-md rounded-md p-8 print:p-4 print:shadow-none print:rounded-none"
-          style={{ fontSize: '1.5rem', lineHeight: '1.6' }}
+          style={{ fontSize: "1.5rem", lineHeight: "1.6" }}
         >
           {/* Form area */}
           <form className="text-gray-900">
@@ -209,7 +209,7 @@ export default function UserForm({ role }) {
                 महाशय, <br />
                 <p className="ml-5">
                   मी खालील कारणाकरिता आपल्या सेवक वेल्फेअर फंडातून आर्थिक मदत
-                  मिळावी म्हणून हा अर्ज करीत आहे. त्यासा� ी मी माझी पुढीलप्रमाणे
+                  मिळावी म्हणून हा अर्ज करीत आहे. त्यासाठी मी माझी पुढीलप्रमाणे
                   माहिती देत आहे.
                 </p>
               </p>
@@ -228,7 +228,7 @@ export default function UserForm({ role }) {
                   <input
                     name="applicantName"
                     value={form.applicantName}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="_______________________________________"
@@ -241,7 +241,7 @@ export default function UserForm({ role }) {
                 <div className="flex-1">
                   <input
                     name="branchName"
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     value={form.branchName}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
@@ -256,7 +256,7 @@ export default function UserForm({ role }) {
                   <div>
                     <input
                       name="joiningDate"
-                      disabled={role !== 'user'}
+                      disabled={role !== "user"}
                       value={form.joiningDate}
                       onChange={handleChange}
                       type="date"
@@ -271,7 +271,7 @@ export default function UserForm({ role }) {
                     <input
                       name="designation"
                       value={form.designation}
-                      disabled={role !== 'user'}
+                      disabled={role !== "user"}
                       onChange={handleChange}
                       className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                       placeholder="____"
@@ -285,7 +285,7 @@ export default function UserForm({ role }) {
                     <input
                       name="totalService"
                       value={form.totalService}
-                      disabled={role !== 'user'}
+                      disabled={role !== "user"}
                       onChange={handleChange}
                       className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                       placeholder="______________"
@@ -306,7 +306,7 @@ export default function UserForm({ role }) {
                   <input
                     name="monthlySalary"
                     value={form.monthlySalary}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="__________________"
@@ -321,7 +321,7 @@ export default function UserForm({ role }) {
                     name="mobile"
                     value={form.mobile}
                     onChange={handleChange}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="________________________"
                   />
@@ -336,14 +336,14 @@ export default function UserForm({ role }) {
             >
               <div className="flex gap-3 items-start">
                 <div className="w-1/3">
-                  ३. अ) ज्याचे आजारासा� ी मदत हवी आहे त्याचे संपूर्ण नाव
+                  ३. अ) ज्याचे आजारासाठी मदत हवी आहे त्याचे संपूर्ण नाव
                 </div>
                 <div className="flex-1">
                   <input
                     name="patientName"
                     value={form.patientName}
                     onChange={handleChange}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="______________________________________"
                   />
@@ -356,7 +356,7 @@ export default function UserForm({ role }) {
                   <input
                     name="relation"
                     value={form.relation}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="________________"
@@ -368,7 +368,7 @@ export default function UserForm({ role }) {
                   <input
                     name="illnessNature"
                     value={form.illnessNature}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base mt-1"
                     placeholder="_________________________"
@@ -380,7 +380,7 @@ export default function UserForm({ role }) {
                 क) आजाराचा कालावधी
                 <input
                   name="illnessDuration"
-                  disabled={role !== 'user'}
+                  disabled={role !== "user"}
                   value={form.illnessDuration}
                   onChange={handleChange}
                   className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base mt-1"
@@ -400,7 +400,7 @@ export default function UserForm({ role }) {
                   <input
                     name="medicineBill"
                     value={form.medicineBill}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="____________________"
@@ -412,7 +412,7 @@ export default function UserForm({ role }) {
                   <input
                     name="doctorBill"
                     value={form.doctorBill}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="____________________"
@@ -427,7 +427,7 @@ export default function UserForm({ role }) {
                     name="otherExpenses"
                     value={form.otherExpenses}
                     onChange={handleChange}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="____________________"
                   />
@@ -438,7 +438,7 @@ export default function UserForm({ role }) {
                   <input
                     name="totalExpenses"
                     value={form.totalExpenses}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="___________________"
@@ -485,7 +485,7 @@ export default function UserForm({ role }) {
                     name="previousHelp"
                     value={form.previousHelp}
                     onChange={handleChange}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
                   >
                     <option value="">-- निवडा --</option>
@@ -495,7 +495,7 @@ export default function UserForm({ role }) {
                   <textarea
                     name="previousHelpDetails"
                     value={form.previousHelpDetails}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     rows="3"
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
@@ -511,17 +511,17 @@ export default function UserForm({ role }) {
             >
               <div className="flex gap-3 items-center">
                 <div className="w-1/2">
-                  ८ अ) प्रत्येक वर्षासा� ी सेवक वेलफेअर फंडाची वगणी दिलेली आहे
+                  ८ अ) प्रत्येक वर्षासाठी सेवक वेलफेअर फंडाची वगणी दिलेली आहे
                   काय
                 </div>
                 <div className="w-1/2">
                   <select
                     name="annualDeductions"
                     value={form.annualDeductions}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleChange}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base bg-transparent"
-                  // placeholder="____________________________"
+                    // placeholder="____________________________"
                   />
                 </div>
               </div>
@@ -535,7 +535,7 @@ export default function UserForm({ role }) {
                     name="requestedAmountNumbers"
                     value={form.requestedAmountNumbers}
                     onChange={handleChange}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base mb-1"
                     placeholder="(अंकी) ___________________"
                   />
@@ -543,7 +543,7 @@ export default function UserForm({ role }) {
                     name="requestedAmountWords"
                     value={form.requestedAmountWords}
                     onChange={handleChange}
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                     placeholder="(अक्षरी) ____________________________________"
                   />
@@ -560,7 +560,7 @@ export default function UserForm({ role }) {
                       name="branchNameForDeposit"
                       value={form.branchNameForDeposit}
                       onChange={handleChange}
-                      disabled={role !== 'user'}
+                      disabled={role !== "user"}
                       className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                       placeholder="__________"
                     />
@@ -571,7 +571,7 @@ export default function UserForm({ role }) {
                       name="savingsAccountNo"
                       value={form.savingsAccountNo}
                       onChange={handleChange}
-                      disabled={role !== 'user'}
+                      disabled={role !== "user"}
                       className="w-full border-b-2 border-gray-700 focus:outline-none py-1 text-base"
                       placeholder="___________________"
                     />
@@ -605,7 +605,7 @@ export default function UserForm({ role }) {
                   <input
                     type="file"
                     accept="image/*,.pdf"
-                    disabled={role !== 'user'}
+                    disabled={role !== "user"}
                     onChange={handleSignatureUpload}
                     className="text-base"
                   />
@@ -621,7 +621,7 @@ export default function UserForm({ role }) {
                 )}
                 {form.applicantSignature && (
                   <p className="text-base text-gray-600">
-                    📌 {form.applicantSignature.name}
+                    � {form.applicantSignature.name}
                   </p>
                 )}
                 <p className="text-base text-gray-500 mt-1">
@@ -630,7 +630,7 @@ export default function UserForm({ role }) {
               </div>
             </div>
 
-            {role === 'user' ? (
+            {role === "user" ? (
               <UploadFile onUpload={handleDocsUpload} />
             ) : (
               <p className="text-lg mt-4 text-blue-800">
@@ -721,4 +721,3 @@ export default function UserForm({ role }) {
     </div>
   );
 }
-
