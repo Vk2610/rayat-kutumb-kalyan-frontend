@@ -149,7 +149,7 @@ const NewUser = () => {
   };
 
   return (
-    <div className="relative pb-24 max-w-full mx-40">
+    <div className="relative pb-24 px-4 md:px-10 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-slate-800">Add New User</h1>
       </div>

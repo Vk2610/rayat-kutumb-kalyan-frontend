@@ -76,7 +76,7 @@ const HomePage = () => {
             p: 3,
             minHeight: "calc(100vh - 64px)",
             transition: "margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
-            marginLeft: sidebarOpen ? "250px" : 0,
+            marginLeft: { xs: 0, md: sidebarOpen ? "250px" : 0 },
           }}
         >
           {/* Content will be rendered here through nested routes */}

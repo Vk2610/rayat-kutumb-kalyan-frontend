@@ -252,7 +252,7 @@ export default function FormHistory() {
         alignItems={'center'}
       >
         {statsArr.map((stat, i) => (
-          <Grid item xs={3} key={i}>
+          <Grid item xs={12} sm={6} md={3} key={i}>
             <Card
               sx={{
                 borderRadius: 2,
@@ -293,6 +293,7 @@ export default function FormHistory() {
           mt: 1,
           boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
           borderRadius: 2,
+          overflowX: 'auto'
         }}
       >
         <Table>

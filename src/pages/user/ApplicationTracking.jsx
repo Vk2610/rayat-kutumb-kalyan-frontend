@@ -93,7 +93,7 @@ export default function ApplicationTracking({
           { label: "Pending", value: pending, color: "rgb(255,152,0)" },
           { label: "Rejected", value: rejected, color: "rgb(211,47,47)" },
         ].map((stat, i) => (
-          <Grid item xs={3} key={i}>
+          <Grid item xs={12} sm={6} md={3} key={i}>
             <Card
               sx={{
                 borderRadius: 2,

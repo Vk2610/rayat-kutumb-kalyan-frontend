@@ -527,7 +527,7 @@ export default function ViewProfile() {
                   }}
                 >
                   <TableContainer
-                    sx={{ flex: 1, minWidth: 600, overflowX: 'visible' }}
+                    sx={{ flex: 1, overflowX: 'auto' }}
                   >
                     <Table sx={{ minWidth: 600, width: '100%' }}>
                       <TableHead>

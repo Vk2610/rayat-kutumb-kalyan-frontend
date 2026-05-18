@@ -10,10 +10,14 @@ import ListItemText from "@mui/material/ListItemText";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { handleLogout } from "../utils/Links";
 import { getSchemeTheme } from "../utils/schemeTheme";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const formType = localStorage.getItem('formType') || "welfare";
   const schemeTheme = getSchemeTheme(formType);
 
@@ -120,15 +124,20 @@ export default function Sidebar({ open = false, toggleDrawer, links = [] }) {
 
   return (
     <Drawer
-      variant="persistent"
+      variant={isMobile ? "temporary" : "persistent"}
       anchor="left"
       open={open}
+      onClose={toggleDrawer}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
       sx={{
         "& .MuiDrawer-paper": {
           top: "64px", // Height of AppBar
           height: "calc(100% - 64px)",
           boxSizing: "border-box",
           border: "none",
+          width: 250,
         },
       }}
     >

@@ -420,7 +420,7 @@ const ManageFunds = () => {
           )}
 
           {/* 🔹 USERS TABLE */}
-          <TableContainer sx={{ width: '100%', overflowX: 'hidden' }}>
+          <TableContainer sx={{ width: '100%', overflowX: 'auto' }}>
             <Table
               size="small"
               sx={{

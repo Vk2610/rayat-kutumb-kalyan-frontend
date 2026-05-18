@@ -267,7 +267,7 @@ export default function UpdateUser() {
   /* ----------------------- UI ----------------------- */
 
   return (
-    <div className="px-10 py-10 max-w-6xl mx-auto">
+    <div className="px-4 md:px-10 py-10 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold text-slate-800 mb-10">Update User</h1>
 
       {/* Search */}
