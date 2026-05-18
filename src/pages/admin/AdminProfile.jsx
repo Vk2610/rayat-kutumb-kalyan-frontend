@@ -10,6 +10,7 @@ import {
   Grid,
   Stack,
   Typography,
+  Skeleton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -127,13 +128,186 @@ const AdminProfile = () => {
     return (
       <Box
         sx={{
-          minHeight: "80vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          minHeight: "100%",
+          p: { xs: 2, md: 4 },
+          background: schemeTheme.shellBackground,
         }}
       >
-        <CircularProgress />
+        <Box sx={{ maxWidth: 1280, mx: "auto" }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2, gap: 2, mb: 3 }}>
+            <CircularProgress size={30} sx={{ color: schemeTheme.primary }} />
+            <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 600 }}>Loading control center...</Typography>
+          </Box>
+
+          {/* Header Card Skeleton */}
+          <Card
+            sx={{
+              mb: 4,
+              borderRadius: 5,
+              overflow: "hidden",
+              boxShadow: "0 24px 60px rgba(15, 23, 42, 0.12)",
+              background: schemeTheme.topbarBackground,
+            }}
+          >
+            <CardContent sx={{ p: { xs: 3, md: 5 }, color: "#fff" }}>
+              <Grid container spacing={4} alignItems="center">
+                <Grid item xs={12} lg={8}>
+                  <Stack spacing={2}>
+                    <Skeleton variant="rectangular" width={160} height={28} sx={{ borderRadius: 999, bgcolor: "rgba(255,255,255,0.12)" }} />
+                    <Skeleton variant="text" width="80%" height={60} sx={{ bgcolor: "rgba(255,255,255,0.15)" }} />
+                    <Skeleton variant="text" width="95%" height={24} sx={{ bgcolor: "rgba(255,255,255,0.1)" }} />
+                    <Skeleton variant="text" width="70%" height={24} sx={{ bgcolor: "rgba(255,255,255,0.1)" }} />
+                  </Stack>
+                </Grid>
+
+                <Grid item xs={12} lg={4}>
+                  <Card
+                    sx={{
+                      borderRadius: 4,
+                      bgcolor: "rgba(255,255,255,0.12)",
+                      border: "1px solid rgba(255,255,255,0.18)",
+                      boxShadow: "none",
+                      color: "#fff",
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    <CardContent sx={{ p: 3 }}>
+                      <Stack spacing={2}>
+                        <Skeleton variant="text" width="50%" sx={{ bgcolor: "rgba(255,255,255,0.2)" }} />
+                        <Skeleton variant="text" width="90%" sx={{ bgcolor: "rgba(255,255,255,0.1)" }} />
+                        <Skeleton variant="text" width="80%" sx={{ bgcolor: "rgba(255,255,255,0.1)" }} />
+                        <Skeleton variant="text" width="85%" sx={{ bgcolor: "rgba(255,255,255,0.1)" }} />
+                        <Skeleton variant="text" width="70%" sx={{ bgcolor: "rgba(255,255,255,0.1)" }} />
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+
+          {/* Stat Cards Skeleton */}
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            {[1, 2, 3].map((item, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <Card
+                  sx={{
+                    height: "100%",
+                    borderRadius: 4,
+                    color: "#fff",
+                    background: dashboardGradients[index],
+                    boxShadow: "0 18px 40px rgba(15, 23, 42, 0.1)",
+                  }}
+                >
+                  <CardContent sx={{ p: 3.25 }}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                      <Stack spacing={1} sx={{ width: "70%" }}>
+                        <Skeleton variant="text" width="80%" sx={{ bgcolor: "rgba(255,255,255,0.2)" }} />
+                        <Skeleton variant="rectangular" width="40%" height={38} sx={{ bgcolor: "rgba(255,255,255,0.25)" }} />
+                      </Stack>
+                      <Skeleton variant="rectangular" width={48} height={48} sx={{ borderRadius: 3, bgcolor: "rgba(255,255,255,0.2)" }} />
+                    </Stack>
+                    <Skeleton variant="text" width="90%" sx={{ mt: 2.2, bgcolor: "rgba(255,255,255,0.15)" }} />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
+          {/* Bottom Cards Skeleton */}
+          <Grid container spacing={3}>
+            {/* Quick Actions Skeleton */}
+            <Grid item xs={12} lg={7}>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  boxShadow: "0 16px 40px rgba(15, 23, 42, 0.08)",
+                  height: "100%",
+                }}
+              >
+                <CardContent sx={{ p: 3.5 }}>
+                  <Skeleton variant="text" width="30%" height={32} sx={{ mb: 2 }} />
+                  <Stack spacing={2}>
+                    {[1, 2, 3].map((act) => (
+                      <Box
+                        key={act}
+                        sx={{
+                          p: 2.2,
+                          borderRadius: 3,
+                          border: `1px solid ${schemeTheme.sidebarBorder}`,
+                          background: schemeTheme.softBackground,
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: { xs: "flex-start", sm: "center" },
+                          gap: 2,
+                          flexDirection: { xs: "column", sm: "row" },
+                        }}
+                      >
+                        <Stack spacing={0.5} sx={{ width: "70%" }}>
+                          <Skeleton variant="text" width="40%" height={24} />
+                          <Skeleton variant="text" width="90%" />
+                        </Stack>
+                        <Skeleton variant="rectangular" width={100} height={36} sx={{ borderRadius: 999 }} />
+                      </Box>
+                    ))}
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            {/* Admin Snapshot Skeleton */}
+            <Grid item xs={12} lg={5}>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  boxShadow: "0 16px 40px rgba(15, 23, 42, 0.08)",
+                  height: "100%",
+                }}
+              >
+                <CardContent sx={{ p: 3.5 }}>
+                  <Skeleton variant="text" width="40%" height={32} sx={{ mb: 2 }} />
+                  <Stack spacing={2}>
+                    <Box
+                      sx={{
+                        p: 2.2,
+                        borderRadius: 3,
+                        background: schemeTheme.softBackground,
+                        border: `1px solid ${schemeTheme.softBorder}`,
+                      }}
+                    >
+                      <Skeleton variant="text" width="30%" height={24} sx={{ mb: 0.5 }} />
+                      <Skeleton variant="text" width="90%" />
+                    </Box>
+
+                    <Box
+                      sx={{
+                        p: 2.2,
+                        borderRadius: 3,
+                        background: "#fff7ed",
+                        border: "1px solid #fed7aa",
+                      }}
+                    >
+                      <Skeleton variant="text" width="40%" height={24} sx={{ mb: 0.5 }} />
+                      <Skeleton variant="text" width="90%" />
+                    </Box>
+
+                    <Box
+                      sx={{
+                        p: 2.2,
+                        borderRadius: 3,
+                        background: schemeTheme.softBackground,
+                        border: `1px solid ${schemeTheme.softBorder}`,
+                      }}
+                    >
+                      <Skeleton variant="text" width="35%" height={24} sx={{ mb: 0.5 }} />
+                      <Skeleton variant="text" width="90%" />
+                    </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Box>
       </Box>
     );
   }

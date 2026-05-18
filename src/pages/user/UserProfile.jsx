@@ -11,6 +11,8 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import IconButton from "@mui/material/IconButton";
+import Skeleton from "@mui/material/Skeleton";
+import CircularProgress from "@mui/material/CircularProgress";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { getSchemeTheme } from "../../utils/schemeTheme";
 
@@ -26,6 +28,7 @@ const UserProfile = () => {
   });
 
   const [user, setUser] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const [editFields, setEditFields] = useState({});
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -35,6 +38,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      setIsLoading(true);
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -102,6 +106,8 @@ const UserProfile = () => {
           message: "Failed to load user details.",
           severity: "error",
         });
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -192,7 +198,9 @@ const UserProfile = () => {
         {label}:
       </Typography>
       <Box sx={{ width: "55%", display: "flex", alignItems: "center" }}>
-        {editFields[field] ? (
+        {isLoading ? (
+          <Skeleton variant="text" width="60%" height={24} />
+        ) : editFields[field] ? (
           <TextField
             type={type}
             value={user[field] || ""}
@@ -219,23 +227,27 @@ const UserProfile = () => {
           </Typography>
         )}
       </Box>
-      <IconButton
-        onClick={() => toggleEdit(field)}
-        sx={{
-          color: "white",
-          backgroundColor: schemeTheme.primary,
-          "&:hover": {
-            filter: "brightness(0.92)",
+      {isLoading ? (
+        <Skeleton variant="circular" width={36} height={36} />
+      ) : (
+        <IconButton
+          onClick={() => toggleEdit(field)}
+          sx={{
+            color: "white",
             backgroundColor: schemeTheme.primary,
-          },
-          transition: "all 0.2s",
-          width: 36,
-          height: 36,
-        }}
-        size="small"
-      >
-        {editFields[field] ? <MdCheck /> : <MdEdit />}
-      </IconButton>
+            "&:hover": {
+              filter: "brightness(0.92)",
+              backgroundColor: schemeTheme.primary,
+            },
+            transition: "all 0.2s",
+            width: 36,
+            height: 36,
+          }}
+          size="small"
+        >
+          {editFields[field] ? <MdCheck /> : <MdEdit />}
+        </IconButton>
+      )}
     </Box>
   );
 
@@ -269,6 +281,13 @@ const UserProfile = () => {
               Manage and update your personal details
             </Typography>
           </Box>
+
+          {isLoading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3, gap: 2, mb: 4 }}>
+              <CircularProgress size={30} sx={{ color: schemeTheme.primary }} />
+              <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 600 }}>Loading profile details...</Typography>
+            </Box>
+          )}
 
           {/* Profile Fields */}
           <Box>

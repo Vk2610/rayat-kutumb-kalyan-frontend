@@ -18,6 +18,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
 } from '@mui/material';
 import { deepPurple } from '@mui/material/colors';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -335,7 +336,14 @@ export default function ViewProfile() {
     }
   }, [user]);
 
-  if (!user) return <p>Loading...</p>;
+  if (!user) {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', gap: 2 }}>
+        <CircularProgress size={50} />
+        <Typography variant="h6" color="text.secondary">Loading Profile...</Typography>
+      </Box>
+    );
+  }
 
   const data = user;
   const totalPaid = installments.reduce(

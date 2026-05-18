@@ -15,6 +15,7 @@ import {
     TableRow,
     TextField,
     Typography,
+    Skeleton,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { FaInbox, FaSearch } from "react-icons/fa";
@@ -209,11 +210,26 @@ function FormApproval() {
                 />
             </Box>
 
-            {isLoading ? (
-                <Box display="flex" justifyContent="center" py={8}>
-                    <CircularProgress />
+            {isLoading && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3, gap: 2, mb: 2 }}>
+                    <CircularProgress size={30} />
+                    <Typography variant="body1" color="text.secondary">Fetching pending applications...</Typography>
                 </Box>
-            ) : displayedForms.length !== 0 ? (
+            )}
+
+            {!isLoading && displayedForms.length === 0 ? (
+                <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{ mt: 10, mb: 10 }}>
+                    <FaInbox size={80} color="#cbd5e1" />
+                    <Typography variant="h5" sx={{ mt: 2, fontWeight: 600, color: "#64748b" }}>
+                        {isSearchActive ? "No Matching Applications" : "No Pending Applications"}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mt: 1, color: "#94a3b8", textAlign: "center" }}>
+                        {isSearchActive
+                            ? "Try a different search term to find the application you are looking for."
+                            : "There are currently no welfare forms waiting for your approval."}
+                    </Typography>
+                </Box>
+            ) : (
                 <>
                     <TableContainer
                         component={Paper}
@@ -236,118 +252,132 @@ function FormApproval() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {displayedForms.map((form) => (
-                                    <TableRow
-                                        key={form.requestId}
-                                        hover
-                                        sx={{
-                                            "&:last-child td, &:last-child th": { border: 0 },
-                                        }}
-                                    >
-                                        <TableCell>
-                                            <Typography sx={{ fontWeight: 600, color: "#0f172a" }}>
-                                                {form.applicantName || "-"}
-                                            </Typography>
-                                            <Typography variant="body2" sx={{ color: "#64748b" }}>
-                                                {form.hrmsNo || form.requestId}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>{form.patientName || "-"}</TableCell>
-                                        <TableCell>{form.relation || "-"}</TableCell>
-                                        <TableCell>{form.illnessNature || "-"}</TableCell>
-                                        <TableCell>{form.formDate || "-"}</TableCell>
-                                        <TableCell>{form.requestedAmountNumbers || "-"}</TableCell>
-                                        <TableCell>
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    flexWrap: "wrap",
-                                                    gap: 1,
-                                                }}
-                                            >
-                                                <Button
-                                                    variant="contained"
-                                                    color="success"
-                                                    size="small"
-                                                    onClick={() => handleStatusChange("Approved", form.requestId)}
+                                {isLoading ? (
+                                    Array.from(new Array(5)).map((_, rowIndex) => (
+                                        <TableRow key={rowIndex}>
+                                            <TableCell>
+                                                <Skeleton variant="text" width="60%" />
+                                                <Skeleton variant="text" width="40%" />
+                                            </TableCell>
+                                            <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                                            <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                                            <TableCell><Skeleton variant="text" width="80%" /></TableCell>
+                                            <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                                            <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                                            <TableCell>
+                                                <Box sx={{ display: "flex", gap: 1 }}>
+                                                    <Skeleton variant="rectangular" width={70} height={30} sx={{ borderRadius: 1 }} />
+                                                    <Skeleton variant="rectangular" width={60} height={30} sx={{ borderRadius: 1 }} />
+                                                    <Skeleton variant="rectangular" width={90} height={30} sx={{ borderRadius: 1 }} />
+                                                    <Skeleton variant="rectangular" width={60} height={30} sx={{ borderRadius: 1 }} />
+                                                </Box>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    displayedForms.map((form) => (
+                                        <TableRow
+                                            key={form.requestId}
+                                            hover
+                                            sx={{
+                                                "&:last-child td, &:last-child th": { border: 0 },
+                                            }}
+                                        >
+                                            <TableCell>
+                                                <Typography sx={{ fontWeight: 600, color: "#0f172a" }}>
+                                                    {form.applicantName || "-"}
+                                                </Typography>
+                                                <Typography variant="body2" sx={{ color: "#64748b" }}>
+                                                    {form.hrmsNo || form.requestId}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>{form.patientName || "-"}</TableCell>
+                                            <TableCell>{form.relation || "-"}</TableCell>
+                                            <TableCell>{form.illnessNature || "-"}</TableCell>
+                                            <TableCell>{form.formDate || "-"}</TableCell>
+                                            <TableCell>{form.requestedAmountNumbers || "-"}</TableCell>
+                                            <TableCell>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        flexWrap: "wrap",
+                                                        gap: 1,
+                                                    }}
                                                 >
-                                                    Approve
-                                                </Button>
-                                                <Button
-                                                    variant="contained"
-                                                    color="error"
-                                                    size="small"
-                                                    onClick={() => handleStatusChange("Rejected", form.requestId)}
-                                                >
-                                                    Reject
-                                                </Button>
-                                                <Button
-                                                    variant="outlined"
-                                                    size="small"
-                                                    onClick={() =>
-                                                        navigate("/admin/form-approval-details", {
-                                                            state: {
-                                                                requestId: form.requestId,
-                                                                form,
-                                                                returnTo: "/admin/form-approval",
-                                                            }
-                                                        })
-                                                    }
-                                                >
-                                                    Show Details
-                                                </Button>
-                                                <Button
-                                                    variant="outlined"
-                                                    color="error"
-                                                    size="small"
-                                                    onClick={() => handleDelete(form.requestId)}
-                                                >
-                                                    Delete
-                                                </Button>
-                                            </Box>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                                    <Button
+                                                        variant="contained"
+                                                        color="success"
+                                                        size="small"
+                                                        onClick={() => handleStatusChange("Approved", form.requestId)}
+                                                    >
+                                                        Approve
+                                                    </Button>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="error"
+                                                        size="small"
+                                                        onClick={() => handleStatusChange("Rejected", form.requestId)}
+                                                    >
+                                                        Reject
+                                                    </Button>
+                                                    <Button
+                                                        variant="outlined"
+                                                        size="small"
+                                                        onClick={() =>
+                                                            navigate("/admin/form-approval-details", {
+                                                                state: {
+                                                                    requestId: form.requestId,
+                                                                    form,
+                                                                    returnTo: "/admin/form-approval",
+                                                                }
+                                                            })
+                                                        }
+                                                    >
+                                                        Show Details
+                                                    </Button>
+                                                    <Button
+                                                        variant="outlined"
+                                                        color="error"
+                                                        size="small"
+                                                        onClick={() => handleDelete(form.requestId)}
+                                                    >
+                                                        Delete
+                                                    </Button>
+                                                </Box>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
                             </TableBody>
                         </Table>
                     </TableContainer>
 
-                    <Box
-                        sx={{
-                            mt: 2,
-                            display: "flex",
-                            flexDirection: { xs: "column", sm: "row" },
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            gap: 2,
-                        }}
-                    >
-                        <Typography variant="body2" sx={{ color: "#64748b" }}>
-                            {isSearchActive
-                                ? `Showing ${displayedForms.length} of ${filteredForms.length} matching applications`
-                                : `Showing page ${page} of ${totalPages} pending applications`}
-                        </Typography>
+                    {!isLoading && (
+                        <Box
+                            sx={{
+                                mt: 2,
+                                display: "flex",
+                                flexDirection: { xs: "column", sm: "row" },
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                gap: 2,
+                            }}
+                        >
+                            <Typography variant="body2" sx={{ color: "#64748b" }}>
+                                {isSearchActive
+                                    ? `Showing ${displayedForms.length} of ${filteredForms.length} matching applications`
+                                    : `Showing page ${page} of ${totalPages} pending applications`}
+                            </Typography>
 
-                        <Pagination
-                            count={totalPages}
-                            page={page}
-                            onChange={handlePageChange}
-                            color="primary"
-                        />
-                    </Box>
+                            <Pagination
+                                count={totalPages}
+                                page={page}
+                                onChange={handlePageChange}
+                                color="primary"
+                            />
+                        </Box>
+                    )}
                 </>
-            ) : (
-                <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" sx={{ mt: 10, mb: 10 }}>
-                    <FaInbox size={80} color="#cbd5e1" />
-                    <Typography variant="h5" sx={{ mt: 2, fontWeight: 600, color: "#64748b" }}>
-                        {isSearchActive ? "No Matching Applications" : "No Pending Applications"}
-                    </Typography>
-                    <Typography variant="body1" sx={{ mt: 1, color: "#94a3b8", textAlign: "center" }}>
-                        {isSearchActive
-                            ? "Try a different search term to find the application you are looking for."
-                            : "There are currently no welfare forms waiting for your approval."}
-                    </Typography>
-                </Box>
             )}
         </Box>
     );

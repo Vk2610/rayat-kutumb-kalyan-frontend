@@ -17,6 +17,8 @@ import {
   IconButton,
   ToggleButton,
   ToggleButtonGroup,
+  CircularProgress,
+  Skeleton,
 } from '@mui/material';
 import { FaSearch, FaFilePdf, FaFileExcel } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -213,13 +215,7 @@ const ManageFunds = () => {
     return matchesSearch;
   });
 
-  if (loading) {
-    return (
-      <Typography variant="h5" sx={{ textAlign: 'center', mt: 5 }}>
-        Loading users...
-      </Typography>
-    );
-  }
+
 
   return (
     <Box sx={{ px: { xs: 1, sm: 2, md: 3 }, py: 3, overflowX: 'hidden' }}>
@@ -416,6 +412,13 @@ const ManageFunds = () => {
             )}
           </Box>
 
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3, gap: 2, mb: 2 }}>
+              <CircularProgress size={30} sx={{ color: schemeTheme.primary }} />
+              <Typography variant="body1" color="text.secondary">Fetching users...</Typography>
+            </Box>
+          )}
+
           {/* 🔹 USERS TABLE */}
           <TableContainer sx={{ width: '100%', overflowX: 'hidden' }}>
             <Table
@@ -463,49 +466,62 @@ const ManageFunds = () => {
               </TableHead>
 
               <TableBody>
-                {filteredUsers
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((user) => (
-                    <TableRow key={user.hrmsNo}>
-                      <TableCell>{user.hrmsNo}</TableCell>
-                      <TableCell>{user.employeeName}</TableCell>
-                      <TableCell>{user.branchName}</TableCell>
-                      {/* New status based on retirement date */}
-                      <TableCell>{user.mobileNo}</TableCell>
-                      {/* Converted date */}
-                      <TableCell>{user.retirementDateFormatted}</TableCell>
-                      <TableCell>
-                        {user.claimedFullAmount ? 'Yes' : 'No'}
-                      </TableCell>
-                      <TableCell>{getUserSchemeType(user)}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          size="small"
-                          sx={{
-                            background: schemeTheme.primary,
-                            minWidth: 0,
-                            px: { xs: 0.75, sm: 1 },
-                            py: 0.75,
-                            fontSize: { xs: '0.66rem', sm: '0.72rem' },
-                            lineHeight: 1.1,
-                            whiteSpace: 'normal',
-                            '&:hover': {
-                              background: schemeTheme.primary,
-                              filter: 'brightness(0.92)',
-                            },
-                          }}
-                          onClick={() =>
-                            navigate(`/admin/view-profile`, { state: { user } })
-                          }
-                        >
-                          View Profile
-                        </Button>
-                      </TableCell>
+                {loading ? (
+                  Array.from(new Array(5)).map((_, rowIndex) => (
+                    <TableRow key={rowIndex}>
+                      <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="80%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="40%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                      <TableCell><Skeleton variant="rectangular" width={80} height={30} sx={{ borderRadius: 1 }} /></TableCell>
                     </TableRow>
-                  ))}
-
-                {filteredUsers.length === 0 && (
+                  ))
+                ) : filteredUsers.length > 0 ? (
+                  filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((user) => (
+                      <TableRow key={user.hrmsNo}>
+                        <TableCell>{user.hrmsNo}</TableCell>
+                        <TableCell>{user.employeeName}</TableCell>
+                        <TableCell>{user.branchName}</TableCell>
+                        {/* New status based on retirement date */}
+                        <TableCell>{user.mobileNo}</TableCell>
+                        {/* Converted date */}
+                        <TableCell>{user.retirementDateFormatted}</TableCell>
+                        <TableCell>
+                          {user.claimedFullAmount ? 'Yes' : 'No'}
+                        </TableCell>
+                        <TableCell>{getUserSchemeType(user)}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            sx={{
+                              background: schemeTheme.primary,
+                              minWidth: 0,
+                              px: { xs: 0.75, sm: 1 },
+                              py: 0.75,
+                              fontSize: { xs: '0.66rem', sm: '0.72rem' },
+                              lineHeight: 1.1,
+                              whiteSpace: 'normal',
+                              '&:hover': {
+                                background: schemeTheme.primary,
+                                filter: 'brightness(0.92)',
+                              },
+                            }}
+                            onClick={() =>
+                              navigate(`/admin/view-profile`, { state: { user } })
+                            }
+                          >
+                            View Profile
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                ) : (
                   <TableRow>
                     <TableCell colSpan={8} align="center">
                       No users found

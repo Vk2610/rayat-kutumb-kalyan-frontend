@@ -20,6 +20,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Skeleton,
 } from "@mui/material";
 import {
   FaDownload,
@@ -572,106 +573,124 @@ export default function ReportGenerationPage() {
           </Alert>
         ) : null}
 
-        {isLoading ? (
-          <Box display="flex" justifyContent="center" py={8}>
-            <CircularProgress />
+        {isLoading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3, gap: 2, mb: 2 }}>
+            <CircularProgress size={30} />
+            <Typography variant="body1" color="text.secondary">Fetching reports...</Typography>
           </Box>
-        ) : applications.length === 0 ? (
-          <Alert severity="info">
-            No approved applications found for the selected filters.
-          </Alert>
-        ) : (
-          <>
-            <TableContainer
-              component={Paper}
-              sx={{
-                borderRadius: 2,
-                overflow: "auto",
-                border: "1px solid #e2e8f0",
-              }}
-            >
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: 700 }}>Sr. No</TableCell>
-                    <TableCell
-                      sx={{ fontWeight: 700, cursor: "pointer" }}
-                      onClick={() => handleSort("hrmsNo")}
-                    >
-                      HRMS No {sortConfig.sortBy === "hrmsNo" ? sortIcon : null}
-                    </TableCell>
-                    <TableCell
-                      sx={{ fontWeight: 700, cursor: "pointer" }}
-                      onClick={() => handleSort("username")}
-                    >
-                      Username {sortConfig.sortBy === "username" ? sortIcon : null}
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Phone No</TableCell>
-                    <TableCell
-                      sx={{ fontWeight: 700, cursor: "pointer" }}
-                      onClick={() => handleSort("requestedAmount")}
-                    >
-                      Requested Amount{" "}
-                      {sortConfig.sortBy === "requestedAmount" ? sortIcon : null}
-                    </TableCell>
-                    <TableCell
-                      sx={{ fontWeight: 700, cursor: "pointer" }}
-                      onClick={() => handleSort("approvedAmount")}
-                    >
-                      Approved Amount{" "}
-                      {sortConfig.sortBy === "approvedAmount" ? sortIcon : null}
-                    </TableCell>
-                    <TableCell
-                      sx={{ fontWeight: 700, cursor: "pointer" }}
-                      onClick={() => handleSort("approvedAmountDate")}
-                    >
-                      Approved Amount Date{" "}
-                      {sortConfig.sortBy === "approvedAmountDate" ? sortIcon : null}
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>
-                      Bank Account No.
-                    </TableCell>
+        )}
+
+        <TableContainer
+          component={Paper}
+          sx={{
+            borderRadius: 2,
+            overflow: "auto",
+            border: "1px solid #e2e8f0",
+          }}
+        >
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 700 }}>Sr. No</TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: "pointer" }}
+                  onClick={() => handleSort("hrmsNo")}
+                >
+                  HRMS No {sortConfig.sortBy === "hrmsNo" ? sortIcon : null}
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: "pointer" }}
+                  onClick={() => handleSort("username")}
+                >
+                  Username {sortConfig.sortBy === "username" ? sortIcon : null}
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Phone No</TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: "pointer" }}
+                  onClick={() => handleSort("requestedAmount")}
+                >
+                  Requested Amount{" "}
+                  {sortConfig.sortBy === "requestedAmount" ? sortIcon : null}
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: "pointer" }}
+                  onClick={() => handleSort("approvedAmount")}
+                >
+                  Approved Amount{" "}
+                  {sortConfig.sortBy === "approvedAmount" ? sortIcon : null}
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: "pointer" }}
+                  onClick={() => handleSort("approvedAmountDate")}
+                >
+                  Approved Amount Date{" "}
+                  {sortConfig.sortBy === "approvedAmountDate" ? sortIcon : null}
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>
+                  Bank Account No.
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                Array.from(new Array(5)).map((_, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    <TableCell><Skeleton variant="text" width="40%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="80%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="70%" /></TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {applications.map((application, index) => (
-                    <TableRow key={application.id} hover>
-                      <TableCell>{(page - 1) * limit + index + 1}</TableCell>
-                      <TableCell>{application.hrmsNo}</TableCell>
-                      <TableCell>{application.username}</TableCell>
-                      <TableCell>{application.phoneNo || "-"}</TableCell>
-                      <TableCell>{formatCurrency(application.requestedAmount)}</TableCell>
-                      <TableCell>{formatCurrency(application.approvedAmount)}</TableCell>
-                      <TableCell>{formatDate(application.approvedAmountDate)}</TableCell>
-                      <TableCell>{application.savingsAccountNo || "-"}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                ))
+              ) : applications.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
+                    No approved applications found for the selected filters.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                applications.map((application, index) => (
+                  <TableRow key={application.id} hover>
+                    <TableCell>{(page - 1) * limit + index + 1}</TableCell>
+                    <TableCell>{application.hrmsNo}</TableCell>
+                    <TableCell>{application.username}</TableCell>
+                    <TableCell>{application.phoneNo || "-"}</TableCell>
+                    <TableCell>{formatCurrency(application.requestedAmount)}</TableCell>
+                    <TableCell>{formatCurrency(application.approvedAmount)}</TableCell>
+                    <TableCell>{formatDate(application.approvedAmountDate)}</TableCell>
+                    <TableCell>{application.savingsAccountNo || "-"}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-            <Box
-              sx={{
-                mt: 2,
-                display: "flex",
-                flexDirection: { xs: "column", sm: "row" },
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <Typography variant="body2" sx={{ color: "#64748b" }}>
-                Showing page {page} of {totalPages}
-              </Typography>
+        {!isLoading && applications.length > 0 && (
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "#64748b" }}>
+              Showing page {page} of {totalPages}
+            </Typography>
 
-              <Pagination
-                count={totalPages}
-                page={page}
-                onChange={(_, value) => setPage(value)}
-                color="primary"
-              />
-            </Box>
-          </>
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={(_, value) => setPage(value)}
+              color="primary"
+            />
+          </Box>
         )}
       </Paper>
     </Box>

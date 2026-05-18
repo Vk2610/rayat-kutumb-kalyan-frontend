@@ -10,6 +10,7 @@ import {
   CircularProgress,
   InputAdornment,
   Paper,
+  Skeleton,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
@@ -169,9 +170,38 @@ const History = () => {
 
       <Box sx={{ px: { xs: 0, md: 1 } }}>
         {isLoading ? (
-          <Box display="flex" justifyContent="center" py={8}>
-            <CircularProgress />
-          </Box>
+          <Stack spacing={2}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 2, gap: 2, mb: 1 }}>
+              <CircularProgress size={30} sx={{ color: schemeTheme.primary }} />
+              <Typography variant="body1" color="text.secondary">Fetching history...</Typography>
+            </Box>
+            {Array.from(new Array(3)).map((_, cardIndex) => (
+              <Card
+                key={cardIndex}
+                sx={{
+                  borderRadius: 3,
+                  boxShadow: '0 12px 28px rgba(15, 23, 42, 0.07)',
+                  p: 2.5,
+                  border: `1px solid ${schemeTheme.panelBorder}`,
+                  background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+                }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems={{ xs: 'flex-start', md: 'center' }}
+                  flexDirection={{ xs: 'column', md: 'row' }}
+                  gap={2}
+                >
+                  <Stack spacing={1} sx={{ width: '100%' }}>
+                    <Skeleton variant="text" width="40%" height={28} />
+                    <Skeleton variant="text" width="20%" height={20} />
+                  </Stack>
+                  <Skeleton variant="rectangular" width={190} height={42} sx={{ borderRadius: 999 }} />
+                </Box>
+              </Card>
+            ))}
+          </Stack>
         ) : users.length !== 0 ? (
           <Stack spacing={2}>
             {users.map((user) => (

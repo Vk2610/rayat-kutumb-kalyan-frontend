@@ -18,6 +18,7 @@ import {
   DialogActions,
   Divider,
   Stack,
+  Skeleton,
 } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -234,119 +235,152 @@ export default function FormHistory() {
         {username}'s Application History
       </Typography>
 
-      {isLoading ? (
-        <CircularProgress />
-      ) : (
-        <>
-          {/* Stats Section */}
-          <Grid
-            container
-            spacing={2}
-            sx={{ mb: 4 }}
-            display={'flex'}
-            justifyContent={'center'}
-            alignItems={'center'}
-          >
-            {statsArr.map((stat, i) => (
-              <Grid item xs={3} key={i}>
-                <Card
-                  sx={{
-                    borderRadius: 2,
-                    p: 2,
-                    textAlign: 'center',
-                    bgcolor: '#f7fff9',
-                    border: '1px solid rgba(7,170,23,0.2)',
-                  }}
-                >
-                  <Typography
-                    sx={{ fontSize: 14, fontWeight: 600, color: '#333333ff' }}
-                  >
-                    {stat.label}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      mt: 1,
-                      fontSize: 22,
-                      fontWeight: 700,
-                      color: stat.color,
-                    }}
-                  >
-                    {stat.value}
-                  </Typography>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+      {isLoading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3, gap: 2, mb: 2 }}>
+          <CircularProgress size={30} />
+          <Typography variant="body1" color="text.secondary">Fetching history...</Typography>
+        </Box>
+      )}
 
-          {/* Table Section */}
-          <TableContainer
-            component={Paper}
-            sx={{
-              mt: 1,
-              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-              borderRadius: 2,
-            }}
-          >
-            <Table>
-              <TableHead sx={{ backgroundColor: '#f3f4f6' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: 'bold' }}>
-                    Patient Name
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Relation</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Disease</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Req Amt</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Appr Amt</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: 'bold', minWidth: '350px' }}>
-                    Actions
+      {/* Stats Section */}
+      <Grid
+        container
+        spacing={2}
+        sx={{ mb: 4 }}
+        display={'flex'}
+        justifyContent={'center'}
+        alignItems={'center'}
+      >
+        {statsArr.map((stat, i) => (
+          <Grid item xs={3} key={i}>
+            <Card
+              sx={{
+                borderRadius: 2,
+                p: 2,
+                textAlign: 'center',
+                bgcolor: '#f7fff9',
+                border: '1px solid rgba(7,170,23,0.2)',
+              }}
+            >
+              <Typography
+                sx={{ fontSize: 14, fontWeight: 600, color: '#333333ff' }}
+              >
+                {stat.label}
+              </Typography>
+              <Typography
+                sx={{
+                  mt: 1,
+                  fontSize: 22,
+                  fontWeight: 700,
+                  color: stat.color,
+                }}
+              >
+                {isLoading ? (
+                  <Skeleton variant="text" width="60%" height={32} sx={{ mx: 'auto' }} />
+                ) : (
+                  stat.value
+                )}
+              </Typography>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Table Section */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          mt: 1,
+          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+          borderRadius: 2,
+        }}
+      >
+        <Table>
+          <TableHead sx={{ backgroundColor: '#f3f4f6' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 'bold' }}>
+                Patient Name
+              </TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Relation</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Disease</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Req Amt</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Appr Amt</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', minWidth: '350px' }}>
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {isLoading ? (
+              Array.from(new Array(3)).map((_, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="80%" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                  <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Skeleton variant="rectangular" width={90} height={30} sx={{ borderRadius: 1 }} />
+                      <Skeleton variant="rectangular" width={80} height={30} sx={{ borderRadius: 1 }} />
+                      <Skeleton variant="rectangular" width={80} height={30} sx={{ borderRadius: 1 }} />
+                      <Skeleton variant="rectangular" width={60} height={30} sx={{ borderRadius: 1 }} />
+                    </Box>
                   </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {forms.map((form) => (
-                  <TableRow key={form.requestId}>
-                    <TableCell>{form.patientName}</TableCell>
-                    <TableCell>{form.relation}</TableCell>
-                    <TableCell>{form.formDate}</TableCell>
-                    <TableCell>{form.illnessNature}</TableCell>
-                    <TableCell>{form.requestedAmountNumbers}</TableCell>
-                    <TableCell>{form.approvedAmount}</TableCell>
-                    <TableCell
-                      sx={{
-                        color: getStatusColor(form.formStatus),
-                        fontWeight: 600,
-                      }}
-                    >
-                      {form.formStatus}
-                    </TableCell>
-                    <TableCell>
-                      <Stack direction="row" spacing={1}>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => setSelectedForm(form)}
-                        >
-                          View Details
-                        </Button>
-                        <FormDialog
-                          handleUpdate={handleUpdate}
-                          data={{
-                            requestId: form.requestId,
-                            title: 'Status',
-                            type: 'dropdown',
-                            options: ['Approved', 'Rejected', 'Pending'],
-                          }}
-                          isDisabled={form.formStatus !== 'Pending'}
-                        />
-                        <FormDialog
-                          data={{
-                            requestId: form.requestId,
-                            title: 'Approved Amount',
-                            type: 'number',
-                          }}
-                          handleUpdate={handleUpdate}
+              ))
+            ) : forms.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} align="center" sx={{ py: 3 }}>
+                  No application history found.
+                </TableCell>
+              </TableRow>
+            ) : forms.map((form) => (
+                <TableRow key={form.requestId}>
+                  <TableCell>{form.patientName}</TableCell>
+                  <TableCell>{form.relation}</TableCell>
+                  <TableCell>{form.formDate}</TableCell>
+                  <TableCell>{form.illnessNature}</TableCell>
+                  <TableCell>{form.requestedAmountNumbers}</TableCell>
+                  <TableCell>{form.approvedAmount}</TableCell>
+                  <TableCell
+                    sx={{
+                      color: getStatusColor(form.formStatus),
+                      fontWeight: 600,
+                    }}
+                  >
+                    {form.formStatus}
+                  </TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => setSelectedForm(form)}
+                      >
+                        View Details
+                      </Button>
+                      <FormDialog
+                        handleUpdate={handleUpdate}
+                        data={{
+                          requestId: form.requestId,
+                          title: 'Status',
+                          type: 'dropdown',
+                          options: ['Approved', 'Rejected', 'Pending'],
+                        }}
+                        isDisabled={form.formStatus !== 'Pending'}
+                      />
+                      <FormDialog
+                        data={{
+                          requestId: form.requestId,
+                          title: 'Approved Amount',
+                          type: 'number',
+                        }}
+                        handleUpdate={handleUpdate}
                           isDisabled={form.formStatus !== 'Pending'}
                         />
                         <Button
@@ -612,8 +646,6 @@ export default function FormHistory() {
               )}
             </DialogContent>
           </Dialog>
-        </>
-      )}
     </Box>
   );
 }

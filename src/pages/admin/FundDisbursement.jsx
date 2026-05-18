@@ -304,85 +304,100 @@ const FundDisbursement = () => {
             </Box>
           </Box>
 
-          {loading ? (
-            <Typography variant="body1" sx={{ textAlign: 'center', py: 3 }}>
-              Loading users...
-            </Typography>
-          ) : (
-            <TableContainer sx={{ width: '100%', overflowX: 'auto' }}>
-              <Table
-                size="small"
-                sx={{
-                  minWidth: 1000,
-                  '& .MuiTableCell-root': {
-                    px: { xs: 1, sm: 1.5 },
-                    py: 1.5,
-                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                    lineHeight: 1.25,
-                  },
-                }}
-              >
-                <TableHead>
-                  <TableRow sx={{ background: '#f3f4f6' }}>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '5%' }}><b>Sr.No</b></TableCell>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '10%' }}><b>HRMS No</b></TableCell>
-                    <TableCell sx={{ minWidth: 150 }}><b>Name</b></TableCell>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Mobile No</b></TableCell>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Joining Date</b></TableCell>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Retirement Date</b></TableCell>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>SchemeType</b></TableCell>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Total Amount</b></TableCell>
-                    <TableCell sx={{ whiteSpace: 'nowrap', width: '10%' }}><b>Actions</b></TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  {filteredUsers.length > 0 ? (
-                    filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => {
-                      const joinDateStr = user.joiningDate ? dayjs(user.joiningDate).format('DD/MM/YYYY') : '—';
-                      const retDateStr = user.retirementDate ? dayjs(user.retirementDate).format('DD/MM/YYYY') : '—';
-
-                      return (
-                        <TableRow key={user.hrmsNo} hover>
-                          <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.hrmsNo}</TableCell>
-                          <TableCell>{user.employeeName}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.mobileNo}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>{joinDateStr}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>{retDateStr}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.schemeType}</TableCell>
-                          <TableCell sx={{ whiteSpace: 'nowrap' }}>₹{user.computedTotal}</TableCell>
-                          <TableCell>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              sx={{
-                                color: schemeTheme.primary,
-                                borderColor: schemeTheme.primary,
-                                '&:hover': {
-                                  background: 'rgba(0,0,0,0.04)',
-                                  borderColor: schemeTheme.primary,
-                                },
-                              }}
-                              onClick={() => handleViewDetails(user)}
-                            >
-                              View Bill
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={9} align="center" sx={{ py: 3 }}>
-                        No retired users found awaiting benefits.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
+          {loading && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3, gap: 2, mb: 2 }}>
+              <CircularProgress size={30} sx={{ color: schemeTheme.primary }} />
+              <Typography variant="body1" color="text.secondary">Fetching users...</Typography>
+            </Box>
           )}
+
+          <TableContainer sx={{ width: '100%', overflowX: 'auto' }}>
+            <Table
+              size="small"
+              sx={{
+                minWidth: 1000,
+                '& .MuiTableCell-root': {
+                  px: { xs: 1, sm: 1.5 },
+                  py: 1.5,
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                  lineHeight: 1.25,
+                },
+              }}
+            >
+              <TableHead>
+                <TableRow sx={{ background: '#f3f4f6' }}>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '5%' }}><b>Sr.No</b></TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '10%' }}><b>HRMS No</b></TableCell>
+                  <TableCell sx={{ minWidth: 150 }}><b>Name</b></TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Mobile No</b></TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Joining Date</b></TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Retirement Date</b></TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>SchemeType</b></TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '12%' }}><b>Total Amount</b></TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap', width: '10%' }}><b>Actions</b></TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {loading ? (
+                  Array.from(new Array(5)).map((_, rowIndex) => (
+                    <TableRow key={rowIndex}>
+                      <TableCell><Skeleton variant="text" width="40%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="80%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                      <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                      <TableCell><Skeleton variant="rectangular" width={80} height={30} sx={{ borderRadius: 1 }} /></TableCell>
+                    </TableRow>
+                  ))
+                ) : filteredUsers.length > 0 ? (
+                  filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => {
+                    const joinDateStr = user.joiningDate ? dayjs(user.joiningDate).format('DD/MM/YYYY') : '—';
+                    const retDateStr = user.retirementDate ? dayjs(user.retirementDate).format('DD/MM/YYYY') : '—';
+
+                    return (
+                      <TableRow key={user.hrmsNo} hover>
+                        <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.hrmsNo}</TableCell>
+                        <TableCell>{user.employeeName}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.mobileNo}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{joinDateStr}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{retDateStr}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>{user.schemeType}</TableCell>
+                        <TableCell sx={{ whiteSpace: 'nowrap' }}>₹{user.computedTotal}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            sx={{
+                              color: schemeTheme.primary,
+                              borderColor: schemeTheme.primary,
+                              '&:hover': {
+                                background: 'rgba(0,0,0,0.04)',
+                                borderColor: schemeTheme.primary,
+                              },
+                            }}
+                            onClick={() => handleViewDetails(user)}
+                          >
+                            View Bill
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={9} align="center" sx={{ py: 3 }}>
+                      No retired users found awaiting benefits.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
           {!loading && filteredUsers.length > 0 && (
             <TablePagination

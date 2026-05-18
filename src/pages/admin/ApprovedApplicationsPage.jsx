@@ -18,6 +18,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Skeleton,
 } from '@mui/material';
 import {
   FaDownload,
@@ -603,64 +604,83 @@ export default function ApprovedApplicationsPage() {
           </Alert>
         ) : null}
 
-        {isLoading ? (
-          <Box display="flex" justifyContent="center" py={8}>
-            <CircularProgress />
+        {isLoading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3, gap: 2, mb: 2 }}>
+            <CircularProgress size={30} />
+            <Typography variant="body1" color="text.secondary">Fetching approved applications...</Typography>
           </Box>
-        ) : applications.length === 0 ? (
-          <Alert severity="info">
-            No approved applications found for the selected filters.
-          </Alert>
-        ) : (
-          <TableContainer
-            component={Paper}
-            sx={{
-              borderRadius: 2,
-              maxHeight: '70vh',
-              overflow: 'auto',
-              border: '1px solid #e2e8f0',
-            }}
-          >
-            <Table stickyHeader>
-              <TableHead>
+        )}
+
+        <TableContainer
+          component={Paper}
+          sx={{
+            borderRadius: 2,
+            maxHeight: '70vh',
+            overflow: 'auto',
+            border: '1px solid #e2e8f0',
+          }}
+        >
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 700 }}>Sr. No</TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: 'pointer' }}
+                  onClick={() => handleSort('hrmsNo')}
+                >
+                  HRMS No {sortConfig.sortBy === 'hrmsNo' ? sortIcon : null}
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: 'pointer' }}
+                  onClick={() => handleSort('username')}
+                >
+                  Username{' '}
+                  {sortConfig.sortBy === 'username' ? sortIcon : null}
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>Mobile No</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>
+                  Total Expenditure
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>
+                  Requested Amount
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700, minWidth: 180 }}>
+                  Approved Amount
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700, minWidth: 160 }}>
+                  Approved Date
+                </TableCell>
+                <TableCell
+                  sx={{ fontWeight: 700, cursor: 'pointer' }}
+                  onClick={() => handleSort('formDate')}
+                >
+                  Form Date {sortConfig.sortBy === 'formDate' ? sortIcon : null}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {isLoading ? (
+                Array.from(new Array(5)).map((_, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    <TableCell><Skeleton variant="text" width="40%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="80%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="70%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                    <TableCell><Skeleton variant="text" width="60%" /></TableCell>
+                    <TableCell><Skeleton variant="rectangular" width="90%" height={38} sx={{ borderRadius: 1 }} /></TableCell>
+                    <TableCell><Skeleton variant="rectangular" width="90%" height={38} sx={{ borderRadius: 1 }} /></TableCell>
+                    <TableCell><Skeleton variant="text" width="50%" /></TableCell>
+                  </TableRow>
+                ))
+              ) : applications.length === 0 ? (
                 <TableRow>
-                  <TableCell sx={{ fontWeight: 700 }}>Sr. No</TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 700, cursor: 'pointer' }}
-                    onClick={() => handleSort('hrmsNo')}
-                  >
-                    HRMS No {sortConfig.sortBy === 'hrmsNo' ? sortIcon : null}
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 700, cursor: 'pointer' }}
-                    onClick={() => handleSort('username')}
-                  >
-                    Username{' '}
-                    {sortConfig.sortBy === 'username' ? sortIcon : null}
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Mobile No</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>
-                    Total Expenditure
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>
-                    Requested Amount
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700, minWidth: 180 }}>
-                    Approved Amount
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700, minWidth: 160 }}>
-                    Approved Date
-                  </TableCell>
-                  <TableCell
-                    sx={{ fontWeight: 700, cursor: 'pointer' }}
-                    onClick={() => handleSort('formDate')}
-                  >
-                    Form Date {sortConfig.sortBy === 'formDate' ? sortIcon : null}
+                  <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
+                    No approved applications found for the selected filters.
                   </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {applications.map((application, index) => (
+              ) : (
+                applications.map((application, index) => (
                   <TableRow key={application.id} hover>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{application.hrmsNo}</TableCell>
@@ -736,11 +756,11 @@ export default function ApprovedApplicationsPage() {
                     </TableCell>
                     <TableCell>{formatDate(application.formDate)}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
     </Box>
   );
