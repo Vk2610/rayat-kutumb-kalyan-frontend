@@ -52,6 +52,11 @@ export default function ViewProfile() {
     { date: null, dateInput: '', amount: 0, paid: false, amountInput: '' },
     { date: null, dateInput: '', amount: 0, paid: false, amountInput: '' },
   ]);
+  const [disbursement, setDisbursement] = useState({
+    meetingNo: '',
+    meetingDate: '',
+    checqueNo: ''
+  });
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -112,6 +117,12 @@ export default function ViewProfile() {
         amountInput: fund.installment5 ? String(fund.installment5) : '',
       },
     ]);
+
+    setDisbursement({
+      meetingNo: fund.meetingNo || '',
+      meetingDate: fund.meetingDate ? dayjs(fund.meetingDate).format('YYYY-MM-DD') : '',
+      checqueNo: fund.checqueNo || ''
+    });
 
     setUser((prevUser) =>
       prevUser
@@ -260,6 +271,24 @@ export default function ViewProfile() {
 
       return updated;
     });
+  };
+
+  const handleUpdateDisbursement = async () => {
+    try {
+      const payload = {
+        meetingNo: disbursement.meetingNo,
+        meetingDate: disbursement.meetingDate ? dayjs(disbursement.meetingDate).format('YYYY-MM-DD') : null,
+        checqueNo: disbursement.checqueNo
+      };
+      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/funds/upd-disbursement/${hrmsNo}`, payload);
+      toast.success('Disbursement details updated successfully.');
+      if (res.data?.fund) {
+        syncInstallmentsFromFund(res.data.fund);
+      }
+    } catch (err) {
+      console.error('Failed to update disbursement details:', err);
+      toast.error('Failed to update disbursement details.');
+    }
   };
 
   /* -------------------------- Fetch User If Needed -------------------------- */
@@ -655,6 +684,66 @@ export default function ViewProfile() {
                   </FormControl>
                 </Box>
               </Card>
+            </Grid>
+          </Section>
+
+          {/* SECTION 9 — FUND DISBURSEMENT */}
+          <Section title="Fund Disbursement">
+            <Grid item xs={12} sm={3}>
+              <Typography sx={{ fontWeight: 600, fontSize: 14, mb: 1 }}>Meeting No.</Typography>
+              <input
+                type="text"
+                placeholder="Meeting No."
+                value={disbursement.meetingNo}
+                onChange={(e) => setDisbursement({ ...disbursement, meetingNo: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Typography sx={{ fontWeight: 600, fontSize: 14, mb: 1 }}>Date</Typography>
+              <input
+                type="date"
+                value={disbursement.meetingDate}
+                onChange={(e) => setDisbursement({ ...disbursement, meetingDate: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Typography sx={{ fontWeight: 600, fontSize: 14, mb: 1 }}>Cheque No.</Typography>
+              <input
+                type="text"
+                placeholder="Cheque No."
+                value={disbursement.checqueNo}
+                onChange={(e) => setDisbursement({ ...disbursement, checqueNo: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  border: '1px solid #ccc',
+                  borderRadius: '6px',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3} sx={{ display: 'flex', alignItems: 'flex-end' }}>
+              <Button 
+                variant="contained" 
+                sx={{ background: '#1976d2', height: '35px', width: '100%' }} 
+                onClick={handleUpdateDisbursement}
+              >
+                Save
+              </Button>
             </Grid>
           </Section>
 

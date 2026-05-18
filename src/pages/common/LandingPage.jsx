@@ -58,13 +58,13 @@ This scheme reflects the institution's commitment to supporting the families of 
 
   const handleRKYClick = () => {
     navigate("/login", {
-        state: "rkky"
+      state: "rkky"
     });
   };
 
   const handleWelfareFormClick = () => {
     navigate("/login", {
-        state: "welfare"
+      state: "welfare"
     });
   };
 
@@ -77,7 +77,7 @@ This scheme reflects the institution's commitment to supporting the families of 
 
       <div className="cards-container">
         <div className="card-stack">
-          {/* Card 1: Rayat Kutumbh Kalyan Yojana */}
+          {/* Card 1: Rayat Kutumb Kalyan Yojana */}
           <div className="card" onClick={handleRKYClick}>
             <div className="card-icon">
               <svg
@@ -96,9 +96,9 @@ This scheme reflects the institution's commitment to supporting the families of 
                 />
               </svg>
             </div>
-            <h2>Rayat Kutumbh Kalyan Yojana</h2>
+            <h2>Rayat Kutumb Kalyan Yojana</h2>
             <p>
-              Explore and manage welfare schemes under the Rayat Kutumbh Kalyan Yojana program. 
+              Explore and manage welfare schemes under the Rayat Kutumb Kalyan Yojana program.
               Access benefits, eligibility criteria, and application status.
             </p>
             <button className="card-button">Learn More</button>
@@ -166,7 +166,7 @@ This scheme reflects the institution's commitment to supporting the families of 
           </div>
           <h2>Welfare Form</h2>
           <p>
-            Submit your welfare form application. Fill out the required information 
+            Submit your welfare form application. Fill out the required information
             to apply for welfare benefits and track your application status.
           </p>
           <button className="card-button">Apply Now</button>
