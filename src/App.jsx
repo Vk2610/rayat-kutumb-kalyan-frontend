@@ -29,6 +29,7 @@ import ViewProfile from "./pages/admin/ViewProfile.jsx";
 import ApprovedApplications from "./pages/admin/ApprovedApplicationsPage.jsx";
 import ReportGenerationPage from "./pages/admin/ReportGenerationPage.jsx";
 import FundDisbursement from "./pages/admin/FundDisbursement.jsx";
+import DisbursementHistory from "./pages/admin/DisbursementHistory.jsx";
 
 import { jwtDecode } from "jwt-decode";
 
@@ -120,6 +121,10 @@ const App = () => {
             <Route
               path="fund-disbursement"
               element={<FundDisbursement />}
+            />
+            <Route
+              path="disbursement-history"
+              element={<DisbursementHistory />}
             />
           </Route>
 

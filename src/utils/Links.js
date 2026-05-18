@@ -134,6 +134,13 @@ export const ADMIN_LINKS = [
         formType: "rkky",
     },
     {
+        key: "Disbursement History",
+        label: "Disbursement History",
+        Path: "/admin/disbursement-history",
+        icon: MdHistory,
+        formType: "rkky",
+    },
+    {
         key: "History",
         label: "History",
         Path: "/admin/history",
