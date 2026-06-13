@@ -3,48 +3,109 @@ import axios from "axios";
 import UploadFile from "../../components/UploadFile";
 import { v4 as uuidv4 } from 'uuid';
 import { jwtDecode } from "jwt-decode";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function SevakWelfareForm() {
   const role = localStorage.getItem('role') || 'user';
+  const location = useLocation();
+  const navigate = useNavigate();
+  const editForm = location.state?.form;
 
-  const [form, setForm] = useState({
-    hrmsNo: "",
-    applicantName: "",
-    branchName: "",
-    joiningDate: "",
-    designation: "",
-    totalService: "",
-    monthlySalary: "",
-    mobileNo: "",
-    patientName: "",
-    relation: "Self",
-    illnessNature: "",
-    illnessDuration: "",
-    medicineBill: 0,
-    doctorBill: 0,
-    otherExpenses: 0,
-    totalExpenses: 0,
-    certificatesAttached: 'होय',
-    sanctionLetter: "",
-    previousHelp: "होय",
-    previousHelpDetails: "",
-    annualDeductions: "होय",
-    requestedAmountNumbers: 0,
-    requestedAmountWords: "",
-    branchNameForDeposit: "",
-    savingsAccountNo: "",
-    officerRecommendation: "",
-    applicantSignature: null,
+  const [form, setForm] = useState(() => {
+    if (editForm) {
+      return {
+        hrmsNo: editForm.hrmsNo || "",
+        applicantName: editForm.applicantName || "",
+        branchName: editForm.branchName || "",
+        joiningDate: editForm.joiningDate ? new Date(editForm.joiningDate).toISOString().split('T')[0] : "",
+        designation: editForm.designation || "",
+        totalService: editForm.totalService || "",
+        monthlySalary: editForm.monthlySalary || "",
+        mobileNo: editForm.mobile || editForm.mobileNo || "",
+        patientName: editForm.patientName || "",
+        relation: editForm.relation || "Self",
+        illnessNature: editForm.illnessNature || "",
+        illnessDuration: editForm.illnessDuration || "",
+        medicineBill: editForm.medicineBill || 0,
+        doctorBill: editForm.doctorBill || 0,
+        otherExpenses: editForm.otherExpenses || 0,
+        totalExpenses: editForm.totalExpenses || 0,
+        certificatesAttached: editForm.certificatesAttached || 'होय',
+        sanctionLetter: editForm.sanctionLetter || "",
+        previousHelp: editForm.previousHelp || "होय",
+        previousHelpDetails: editForm.previousHelpDetails || "",
+        annualDeductions: editForm.annualDeductions || "होय",
+        requestedAmountNumbers: editForm.requestedAmountNumbers || 0,
+        requestedAmountWords: editForm.requestedAmountWords || "",
+        branchNameForDeposit: editForm.branchNameForDeposit || "",
+        savingsAccountNo: editForm.savingsAccountNo || "",
+        officerRecommendation: editForm.officerRecommendation || "",
+        applicantSignature: editForm.applicantSignature || null,
+      };
+    }
+    return {
+      hrmsNo: "",
+      applicantName: "",
+      branchName: "",
+      joiningDate: "",
+      designation: "",
+      totalService: "",
+      monthlySalary: "",
+      mobileNo: "",
+      patientName: "",
+      relation: "Self",
+      illnessNature: "",
+      illnessDuration: "",
+      medicineBill: 0,
+      doctorBill: 0,
+      otherExpenses: 0,
+      totalExpenses: 0,
+      certificatesAttached: 'होय',
+      sanctionLetter: "",
+      previousHelp: "होय",
+      previousHelpDetails: "",
+      annualDeductions: "होय",
+      requestedAmountNumbers: 0,
+      requestedAmountWords: "",
+      branchNameForDeposit: "",
+      savingsAccountNo: "",
+      officerRecommendation: "",
+      applicantSignature: null,
+    };
   });
 
-  const [uploads, setUploads] = useState({
-    id: '',
-    isUploaded: false,
-    applicantSignature: '',
-    urls: {},
-    length: 0
+  const [uploads, setUploads] = useState(() => {
+    if (editForm) {
+      return {
+        id: editForm.requestId,
+        isUploaded: true,
+        applicantSignature: editForm.applicantSignature || '',
+        urls: {
+          dischargeCertificate: editForm.dischargeCertificate || '',
+          doctorPrescription: editForm.doctorPrescription || '',
+          medicineBills: editForm.docsMedicineBills || editForm.medicineBills || '',
+          diagnosticReports: editForm.diagnosticReports || '',
+          otherDoc1: editForm.otherDoc1 || '',
+          otherDoc2: editForm.otherDoc2 || '',
+          otherDoc3: editForm.otherDoc3 || '',
+          otherDoc4: editForm.otherDoc4 || '',
+          otherDoc5: editForm.otherDoc5 || '',
+        },
+        length: 4,
+      };
+    }
+    return {
+      id: '',
+      isUploaded: false,
+      applicantSignature: '',
+      urls: {},
+      length: 0
+    };
   });
-  const [signaturePreview, setSignaturePreview] = useState(null);
+
+  const [signaturePreview, setSignaturePreview] = useState(() => {
+    return editForm?.applicantSignature || null;
+  });
   // const [files, setFiles] = useState([]);
 
   const handleDocsUpload = (upds) => {
@@ -121,43 +182,58 @@ export default function SevakWelfareForm() {
     }
 
     try {
-
       const today = new Date();
-
       const dd = String(today.getDate()).padStart(2, '0');
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const yyyy = today.getFullYear();
-
       const formattedDate = `${dd}/${mm}/${yyyy}`;
 
       const token = localStorage.getItem('token');
       const decoded = jwtDecode(token);
+      
       const formData = {
         ...form,
         ...uploads.urls,
         formDate: formattedDate,
         applicantSignature: uploads.applicantSignature,
         hrmsNo: decoded.hrmsNo,
-        patientId: uuidv4(),
-        expensesId: uuidv4(),
+        patientId: editForm?.patientId || uuidv4(),
+        expensesId: editForm?.expenseId || uuidv4(),
         requestId: uploads.id,
-        previousId: uuidv4(),
+        previousId: editForm?.previousId || uuidv4(),
       };
 
       console.log(`request id: ${formData.requestId}`);
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/user/submit-welfare-form`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      let response;
+      if (editForm) {
+        response = await axios.put(
+          `${import.meta.env.VITE_BASE_URL}/user/resubmit-welfare-form/${editForm.requestId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      } else {
+        response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/user/submit-welfare-form`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
 
-      if (response.status === 201) {
-        alert("Form submitted successfully!");
+      if (response.status === 200 || response.status === 201) {
+        alert(editForm ? "Form updated and reapplied successfully!" : "Form submitted successfully!");
+        if (editForm) {
+          navigate("/user/my-applications");
+          return;
+        }
       } else {
         alert(`status code: ${response.status}`);
       }
@@ -681,7 +757,23 @@ export default function SevakWelfareForm() {
             </div>
           </div>
 
-          <UploadFile applicantSignature={form.applicantSignature} hrmsNo={'123456'} onUpload={handleDocsUpload} />
+          <UploadFile 
+            applicantSignature={form.applicantSignature} 
+            hrmsNo={form.hrmsNo || '123456'} 
+            onUpload={handleDocsUpload} 
+            existingDocs={editForm ? {
+              id: editForm.requestId,
+              dischargeCertificate: editForm.dischargeCertificate,
+              doctorPrescription: editForm.doctorPrescription,
+              medicineBills: editForm.docsMedicineBills || editForm.medicineBills,
+              diagnosticReports: editForm.diagnosticReports,
+              otherDoc1: editForm.otherDoc1,
+              otherDoc2: editForm.otherDoc2,
+              otherDoc3: editForm.otherDoc3,
+              otherDoc4: editForm.otherDoc4,
+              otherDoc5: editForm.otherDoc5,
+            } : null}
+          />
           {/* Print / Submit button */}
           <div className="flex justify-end gap-3">
             <button

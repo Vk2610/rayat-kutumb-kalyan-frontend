@@ -27,39 +27,60 @@ export default function UploadComponent({
   applicantSignature,
   hrmsNo,
   onUpload,
+  existingDocs = null,
 }) {
-  const [documents, setDocuments] = useState([
-    {
-      id: 1,
-      name: 'dischargeCertificate',
-      file: null,
-      previewUrl: null,
-      isMandatory: true,
-    },
-    {
-      id: 2,
-      name: 'doctorPrescription',
-      file: null,
-      previewUrl: null,
-      isMandatory: true,
-    },
-    {
-      id: 3,
-      name: 'medicineBills',
-      file: null,
-      previewUrl: null,
-      isMandatory: true,
-    },
-    {
-      id: 4,
-      name: 'diagnosticReports',
-      file: null,
-      previewUrl: null,
-      isMandatory: true,
-    },
-  ]);
+  const [documents, setDocuments] = useState(() => {
+    const defaultDocs = [
+      {
+        id: 1,
+        name: 'dischargeCertificate',
+        file: null,
+        previewUrl: existingDocs?.dischargeCertificate || null,
+        isMandatory: true,
+      },
+      {
+        id: 2,
+        name: 'doctorPrescription',
+        file: null,
+        previewUrl: existingDocs?.doctorPrescription || null,
+        isMandatory: true,
+      },
+      {
+        id: 3,
+        name: 'medicineBills',
+        file: null,
+        previewUrl: existingDocs?.medicineBills || null,
+        isMandatory: true,
+      },
+      {
+        id: 4,
+        name: 'diagnosticReports',
+        file: null,
+        previewUrl: existingDocs?.diagnosticReports || null,
+        isMandatory: true,
+      },
+    ];
+    return defaultDocs;
+  });
 
-  const [dynamicRows, setDynamicRows] = useState([]);
+  const [dynamicRows, setDynamicRows] = useState(() => {
+    if (!existingDocs) return [];
+    const rows = [];
+    let idCounter = 5;
+    for (let i = 1; i <= 5; i++) {
+      const key = `otherDoc${i}`;
+      if (existingDocs[key]) {
+        rows.push({
+          id: idCounter++,
+          name: key,
+          file: null,
+          previewUrl: existingDocs[key],
+          isMandatory: false,
+        });
+      }
+    }
+    return rows;
+  });
   const [alert, setAlert] = useState({
     show: false,
     message: '',
@@ -182,7 +203,7 @@ export default function UploadComponent({
   const handleSubmit = async () => {
     // ensure mandatory docs
     for (let doc of documents) {
-      if (doc.isMandatory && !doc.file) {
+      if (doc.isMandatory && !doc.file && !doc.previewUrl) {
         showAlert(`Please upload ${doc.name}`, 'warning');
         return;
       }
@@ -193,27 +214,32 @@ export default function UploadComponent({
       return;
     }
 
-    const id = uuidv4();
+    const id = existingDocs?.id || uuidv4();
     let urls = {};
-
-    const allDocs = [...documents, ...dynamicRows].filter((doc) => doc.file);
 
     try {
       // upload signature
-      const signPath = `welfare_uploads/${hrmsNo}/${id}`;
-      const applicantSignatureUrl = await uploadToCloudinary(
-        applicantSignature,
-        signPath,
-        'applicantSignature',
-      );
+      let applicantSignatureUrl = applicantSignature;
+      if (applicantSignature instanceof File) {
+        const signPath = `welfare_uploads/${hrmsNo}/${id}`;
+        applicantSignatureUrl = await uploadToCloudinary(
+          applicantSignature,
+          signPath,
+          'applicantSignature',
+        );
+      }
 
       // upload other docs
-      for (let doc of allDocs) {
-        const path = `welfare_uploads/${hrmsNo}/${id}`;
-        const publicId = doc.name.replace(/\s+/g, '_');
+      for (let doc of [...documents, ...dynamicRows]) {
+        if (doc.file) {
+          const path = `welfare_uploads/${hrmsNo}/${id}`;
+          const publicId = doc.name.replace(/\s+/g, '_');
 
-        const url = await uploadToCloudinary(doc.file, path, publicId);
-        urls[doc.name] = url;
+          const url = await uploadToCloudinary(doc.file, path, publicId);
+          urls[doc.name] = url;
+        } else if (doc.previewUrl) {
+          urls[doc.name] = doc.previewUrl;
+        }
       }
 
       toast.success(
@@ -221,13 +247,11 @@ export default function UploadComponent({
       );
 
       const tempUpload = {
-        ...{
-          id,
-          isUploaded: true,
-          applicantSignature: applicantSignatureUrl,
-          urls,
-          length: allDocs.length,
-        },
+        id,
+        isUploaded: true,
+        applicantSignature: applicantSignatureUrl,
+        urls,
+        length: [...documents, ...dynamicRows].filter(d => d.file || d.previewUrl).length,
       };
 
       onUpload(tempUpload);
@@ -245,7 +269,7 @@ export default function UploadComponent({
         boxShadow: 'none',
         border: '1px solid #e2e8f0',
         borderRadius: 2,
-        backgroundColor: doc.file ? '#f0fdf4' : '#f8fafc',
+        backgroundColor: (doc.file || doc.previewUrl) ? '#f0fdf4' : '#f8fafc',
       }}
     >
       <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
@@ -257,7 +281,7 @@ export default function UploadComponent({
           gap={2}
         >
           <Box display="flex" alignItems="center" gap={2}>
-            <DescriptionIcon sx={{ color: doc.file ? '#22c55e' : '#94a3b8' }} />
+            <DescriptionIcon sx={{ color: (doc.file || doc.previewUrl) ? '#22c55e' : '#94a3b8' }} />
             <Box>
               <Typography
                 variant="subtitle1"
@@ -282,10 +306,10 @@ export default function UploadComponent({
           </Box>
 
           <Box display="flex" alignItems="center" gap={2}>
-            {doc.file ? (
+            {doc.file || doc.previewUrl ? (
               <Chip
                 icon={<CheckCircleIcon />}
-                label={doc.file.name}
+                label={doc.file ? doc.file.name : 'Existing Document'}
                 color="success"
                 variant="outlined"
                 onDelete={() => onFileRemove(doc.id)}

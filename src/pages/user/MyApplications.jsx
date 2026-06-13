@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -99,6 +100,7 @@ const getStatusColor = (status) => {
 };
 
 export default function MyApplications() {
+  const navigate = useNavigate();
   const [isLoading, setLoading] = useState(true);
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
@@ -260,6 +262,17 @@ export default function MyApplications() {
                           <Button variant="outlined" size="small" onClick={() => setSelectedForm(form)}>
                             View Details
                           </Button>
+                          {form.formStatus === "Rejected" && (
+                            <Button
+                              variant="contained"
+                              color="warning"
+                              size="small"
+                              onClick={() => navigate("/user/wf-form", { state: { form } })}
+                              sx={{ textTransform: "none" }}
+                            >
+                              Edit & Reapply
+                            </Button>
+                          )}
                         </Stack>
                       </TableCell>
                     </TableRow>
@@ -367,7 +380,7 @@ export default function MyApplications() {
                     )}
                   </Box>
                 </DialogContent>
-                <DialogActions sx={{ p: 2, backgroundColor: "#f1f5f9" }}>
+                <DialogActions sx={{ p: 2, backgroundColor: "#f1f5f9", justifyContent: "space-between" }}>
                   <Button
                     onClick={() => setSelectedForm(null)}
                     variant="outlined"
@@ -375,6 +388,19 @@ export default function MyApplications() {
                   >
                     Close
                   </Button>
+                  {selectedForm.formStatus === "Rejected" && (
+                    <Button
+                      variant="contained"
+                      color="warning"
+                      onClick={() => {
+                        setSelectedForm(null);
+                        navigate("/user/wf-form", { state: { form: selectedForm } });
+                      }}
+                      sx={{ textTransform: "none" }}
+                    >
+                      Edit & Reapply
+                    </Button>
+                  )}
                 </DialogActions>
               </>
             )}
