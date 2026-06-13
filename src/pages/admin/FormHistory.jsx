@@ -534,6 +534,13 @@ export default function FormHistory() {
                     value={`₹${selectedForm.approvedAmount}`}
                     isBold={true}
                   />
+                  {selectedForm.formStatus === 'Rejected' && (
+                    <DetailRow
+                      label="Rejection Reason"
+                      value={selectedForm.rejectionReason}
+                      isBold={true}
+                    />
+                  )}
 
                   <SectionHeader title="Uploaded Documents" />
                   {[

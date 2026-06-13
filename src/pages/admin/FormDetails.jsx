@@ -1,6 +1,6 @@
 import {
     Box, Typography, Stack, Divider, Button, Dialog,
-    CircularProgress, Chip, Paper
+    CircularProgress, Chip, Paper, TextField
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -55,6 +55,9 @@ export default function FormDetails() {
 
     const { requestId, form, returnTo = "/admin/form-approval" } = location.state || {};
 
+    const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState("");
+
     if (!requestId || !form) {
         return (
             <Box sx={{ p: 4, textAlign: "center" }}>
@@ -71,8 +74,14 @@ export default function FormDetails() {
         if (res) navigate(returnTo, { replace: true });
     };
 
-    const handleReject = async () => {
-        await updateFormStatus("Rejected", requestId);
+    const handleRejectClick = () => {
+        setRejectionReason("");
+        setRejectDialogOpen(true);
+    };
+
+    const handleConfirmReject = async () => {
+        setRejectDialogOpen(false);
+        await updateFormStatus("Rejected", requestId, rejectionReason);
         navigate(returnTo, { replace: true });
     };
 
@@ -205,6 +214,16 @@ export default function FormDetails() {
                     )}
                 </Box>
 
+                {/* ── Rejection Details (if rejected) ── */}
+                {form.formStatus === "Rejected" && (
+                    <>
+                        <SectionHeader title="Rejection Reason" />
+                        <Stack>
+                            <DetailRow label="Reason" value={form.rejectionReason} />
+                        </Stack>
+                    </>
+                )}
+
             </Paper>
 
             {/* ── Action Buttons ── */}
@@ -217,7 +236,7 @@ export default function FormDetails() {
                     {approving ? <CircularProgress size={20} color="inherit" /> : "✓ Approve"}
                 </Button>
                 <Button
-                    variant="contained" color="error" onClick={handleReject}
+                    variant="contained" color="error" onClick={handleRejectClick}
                     disabled={form.formStatus === "Rejected"}
                     sx={{ minWidth: 140, fontWeight: 700, py: 1.2 }}
                 >
@@ -241,6 +260,39 @@ export default function FormDetails() {
                             : <iframe src={previewUrl} title="Document" style={{ width: "100%", height: "80vh", border: "none", marginTop: 36 }} />
                     )}
                 </Box>
+            </Dialog>
+
+            {/* ── Rejection Reason Dialogue ── */}
+            <Dialog open={rejectDialogOpen} onClose={() => setRejectDialogOpen(false)} maxWidth="sm" fullWidth>
+                <DialogTitle sx={{ fontWeight: 'bold' }}>Reason for Rejection</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        label="Rejection Reason"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        multiline
+                        rows={3}
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        placeholder="Please enter the reason why you are rejecting this form..."
+                        sx={{ mt: 1 }}
+                    />
+                </DialogContent>
+                <DialogActions sx={{ p: 2 }}>
+                    <Button onClick={() => setRejectDialogOpen(false)} variant="outlined">Cancel</Button>
+                    <Button 
+                        onClick={handleConfirmReject} 
+                        variant="contained" 
+                        color="error" 
+                        disabled={!rejectionReason.trim()}
+                    >
+                        Confirm Reject
+                    </Button>
+                </DialogActions>
             </Dialog>
 
         </Box>

@@ -1,11 +1,12 @@
 import axios from "axios";
 import axiosInstance from "../pages/admin/axiosInstance";
 
-export const updateFormStatus = async (status, id) => {
+export const updateFormStatus = async (status, id, rejectionReason = null) => {
     try {
         const payload = {
             status: status,
-            id: id
+            id: id,
+            rejectionReason: rejectionReason
         };
         await axios.patch(`${import.meta.env.VITE_BASE_URL}/admin/update-form-status`, payload);
         alert(`Form Status changed to ${status}`);

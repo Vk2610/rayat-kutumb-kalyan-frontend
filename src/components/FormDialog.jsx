@@ -31,7 +31,8 @@ export default function FormDialog({ data, isDisabled, handleUpdate }) {
       if (data.title === "Status") {
         await axios.patch(`${import.meta.env.VITE_BASE_URL}/admin/update-form-status`, {
           id: data.requestId,
-          status: value
+          status: value,
+          rejectionReason: formJson.rejectionReason || null
         });
         alert("Form status updated!");
       }
@@ -64,21 +65,35 @@ export default function FormDialog({ data, isDisabled, handleUpdate }) {
         <DialogContent>
           <form onSubmit={handleSubmit} id="dialog-form">
             {data.type === 'dropdown' ? (
-              <FormControl fullWidth margin="dense">
-                <InputLabel>{data.title}</InputLabel>
-                <Select
-                  name="text"
-                  value={selectedValue}
-                  onChange={(e) => setSelectedValue(e.target.value)}
-                  label={data.title}
-                >
-                  {data.options?.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '8px' }}>
+                <FormControl fullWidth>
+                  <InputLabel>{data.title}</InputLabel>
+                  <Select
+                    name="text"
+                    value={selectedValue}
+                    onChange={(e) => setSelectedValue(e.target.value)}
+                    label={data.title}
+                  >
+                    {data.options?.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {selectedValue === 'Rejected' && (
+                  <TextField
+                    required
+                    name="rejectionReason"
+                    label="Rejection Reason"
+                    placeholder="Enter reason for rejection"
+                    fullWidth
+                    variant="outlined"
+                    multiline
+                    rows={3}
+                  />
+                )}
+              </div>
             ) : (
               <TextField
                 autoFocus

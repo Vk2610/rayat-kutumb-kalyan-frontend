@@ -16,6 +16,10 @@ import {
     TextField,
     Typography,
     Skeleton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { FaInbox, FaSearch } from "react-icons/fa";
@@ -30,6 +34,9 @@ function FormApproval() {
     const [limit] = useState(10);
     const [totalForms, setTotalForms] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
+    const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+    const [rejectRequestId, setRejectRequestId] = useState(null);
+    const [rejectionReason, setRejectionReason] = useState("");
 
     const trimmedSearchTerm = searchTerm.trim().toLowerCase();
     const isSearchActive = trimmedSearchTerm.length > 0;
@@ -122,6 +129,21 @@ function FormApproval() {
 
     const handleStatusChange = async (status, requestId) => {
         const isUpdated = await updateFormStatus(status, requestId);
+        if (isUpdated) {
+            await handleRefresh();
+        }
+    };
+
+    const handleRejectClick = (requestId) => {
+        setRejectRequestId(requestId);
+        setRejectionReason("");
+        setRejectDialogOpen(true);
+    };
+
+    const handleConfirmReject = async () => {
+        if (!rejectRequestId) return;
+        setRejectDialogOpen(false);
+        const isUpdated = await updateFormStatus("Rejected", rejectRequestId, rejectionReason);
         if (isUpdated) {
             await handleRefresh();
         }
@@ -312,14 +334,14 @@ function FormApproval() {
                                                     >
                                                         Approve
                                                     </Button>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="error"
-                                                        size="small"
-                                                        onClick={() => handleStatusChange("Rejected", form.requestId)}
-                                                    >
-                                                        Reject
-                                                    </Button>
+                                                     <Button
+                                                         variant="contained"
+                                                         color="error"
+                                                         size="small"
+                                                         onClick={() => handleRejectClick(form.requestId)}
+                                                     >
+                                                         Reject
+                                                     </Button>
                                                     <Button
                                                         variant="outlined"
                                                         size="small"
@@ -379,6 +401,40 @@ function FormApproval() {
                     )}
                 </>
             )}
+
+            {/* ── Rejection Reason Dialogue ── */}
+            <Dialog open={rejectDialogOpen} onClose={() => setRejectDialogOpen(false)} maxWidth="sm" fullWidth>
+                <DialogTitle sx={{ fontWeight: 'bold' }}>Reason for Rejection</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        required
+                        margin="dense"
+                        label="Rejection Reason"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        multiline
+                        rows={3}
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        placeholder="Please enter the reason why you are rejecting this form..."
+                        sx={{ mt: 1 }}
+                    />
+                </DialogContent>
+                <DialogActions sx={{ p: 2 }}>
+                    <Button onClick={() => setRejectDialogOpen(false)} variant="outlined">Cancel</Button>
+                    <Button 
+                        onClick={handleConfirmReject} 
+                        variant="contained" 
+                        color="error" 
+                        disabled={!rejectionReason.trim()}
+                    >
+                        Confirm Reject
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
         </Box>
     );
 }

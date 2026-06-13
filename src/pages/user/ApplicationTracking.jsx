@@ -184,6 +184,19 @@ export default function ApplicationTracking({
                   {item.status}
                 </Typography>
 
+                {item.status === "Rejected" && item.rejectionReason && (
+                  <Typography
+                    sx={{
+                      fontSize: 13,
+                      mt: 0.5,
+                      color: "rgb(211,47,47)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Reason: {item.rejectionReason}
+                  </Typography>
+                )}
+
                 <Divider sx={{ my: 1 }} />
 
                 <Typography sx={{ fontSize: 12, color: "gray" }}>

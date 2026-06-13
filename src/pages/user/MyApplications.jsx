@@ -318,6 +318,9 @@ export default function MyApplications() {
                   <DetailRow label="Requested Amount" value={formatCurrency(selectedForm.requestedAmountNumbers)} isBold />
                   <DetailRow label="Approved Amount" value={formatCurrency(selectedForm.approvedAmount)} isBold />
                   <DetailRow label="Status" value={selectedForm.formStatus} isBold />
+                  {selectedForm.formStatus === "Rejected" && (
+                    <DetailRow label="Rejection Reason" value={selectedForm.rejectionReason} isBold />
+                  )}
                   <DetailRow label="Form Date" value={selectedForm.formDate} />
 
                   <SectionHeader title="Uploaded Documents" />
