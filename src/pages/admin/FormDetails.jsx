@@ -1,6 +1,7 @@
 import {
     Box, Typography, Stack, Divider, Button, Dialog,
-    CircularProgress, Chip, Paper, TextField
+    CircularProgress, Chip, Paper, TextField, DialogTitle,
+    DialogContent, DialogActions
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
