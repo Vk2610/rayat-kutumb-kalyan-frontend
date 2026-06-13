@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import {
@@ -94,6 +94,7 @@ export default function ApprovedApplicationsPage() {
   const [isPrinting, setIsPrinting] = useState(false);
   const [error, setError] = useState('');
   const [savingId, setSavingId] = useState('');
+  const savingRef = useRef(new Set());
   const [zone, setZone] = useState('');
   const [isMoreThan50KRequired, setIsMoreThan50KRequired] = useState(false);
 
@@ -167,7 +168,7 @@ export default function ApprovedApplicationsPage() {
     });
   };
 
-  const validateApprovedAmount = (value, requestedAmount) => {
+  const validateApprovedAmount = (value, requestedAmount, userTotalApproved) => {
     if (value === '') {
       return 'Approved amount is required.';
     }
@@ -184,6 +185,11 @@ export default function ApprovedApplicationsPage() {
 
     if (numericValue > Number(requestedAmount || 0)) {
       return 'Approved amount cannot exceed requested amount.';
+    }
+
+    const remainingLimit = Math.max(0, 100000 - Number(userTotalApproved || 0));
+    if (numericValue > remainingLimit) {
+      return `Amount cannot exceed remaining limit of ${formatCurrency(remainingLimit)}.`;
     }
 
     return '';
@@ -206,10 +212,16 @@ export default function ApprovedApplicationsPage() {
   };
 
   const handleApprovedAmountSave = async (application) => {
+    // Prevent double submit and blur race conditions
+    if (savingRef.current.has(application.id)) {
+      return;
+    }
+
     const nextValue = draftAmounts[application.id] ?? '';
     const validationMessage = validateApprovedAmount(
       nextValue,
       application.requestedAmount,
+      application.userTotalApproved,
     );
 
     if (validationMessage) {
@@ -217,6 +229,7 @@ export default function ApprovedApplicationsPage() {
       return;
     }
 
+    savingRef.current.add(application.id);
     setSavingId(application.id);
     setError('');
 
@@ -268,6 +281,7 @@ export default function ApprovedApplicationsPage() {
           'Failed to update approved amount. Please try again.',
       );
     } finally {
+      savingRef.current.delete(application.id);
       setSavingId('');
     }
   };
@@ -693,51 +707,70 @@ export default function ApprovedApplicationsPage() {
                       {formatCurrency(application.requestedAmount)}
                     </TableCell>
                     <TableCell>
-                      <TextField
-                        value={draftAmounts[application.id] ?? ''}
-                        onChange={(event) =>
-                          handleApprovedAmountChange(
-                            application.id,
-                            event.target.value,
-                          )
-                        }
-                        onBlur={() => handleAmountBlur(application)}
-                        onKeyDown={async (event) => {
-                          if (event.key === 'Enter') {
-                            event.preventDefault();
-                            await handleApprovedAmountSave(application);
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                        <TextField
+                          value={draftAmounts[application.id] ?? ''}
+                          onChange={(event) =>
+                            handleApprovedAmountChange(
+                              application.id,
+                              event.target.value,
+                            )
                           }
-                        }}
-                        size="small"
-                        disabled={savingId === application.id}
-                        error={
-                          !!validateApprovedAmount(
-                            draftAmounts[application.id] ?? '',
-                            application.requestedAmount,
-                          ) &&
-                          draftAmounts[application.id] !==
-                            String(application.approvedAmount ?? '')
-                        }
-                        helperText={
-                          savingId === application.id
-                            ? 'Saving...'
-                            : validateApprovedAmount(
-                                  draftAmounts[application.id] ?? '',
-                                  application.requestedAmount,
-                                ) &&
-                                draftAmounts[application.id] !==
-                                  String(application.approvedAmount ?? '')
-                              ? validateApprovedAmount(
-                                  draftAmounts[application.id] ?? '',
-                                  application.requestedAmount,
-                                )
-                              : 'Press Enter or click outside to save'
-                        }
-                        inputProps={{
-                          inputMode: 'decimal',
-                          min: 0,
-                        }}
-                      />
+                          onBlur={() => handleAmountBlur(application)}
+                          onKeyDown={async (event) => {
+                            if (event.key === 'Enter') {
+                              event.preventDefault();
+                              await handleApprovedAmountSave(application);
+                            }
+                          }}
+                          size="small"
+                          disabled={savingId === application.id}
+                          error={
+                            !!validateApprovedAmount(
+                              draftAmounts[application.id] ?? '',
+                              application.requestedAmount,
+                              application.userTotalApproved,
+                            ) &&
+                            draftAmounts[application.id] !==
+                              String(application.approvedAmount ?? '')
+                          }
+                          helperText={
+                            savingId === application.id
+                              ? 'Saving...'
+                              : validateApprovedAmount(
+                                    draftAmounts[application.id] ?? '',
+                                    application.requestedAmount,
+                                    application.userTotalApproved,
+                                  ) &&
+                                  draftAmounts[application.id] !==
+                                    String(application.approvedAmount ?? '')
+                                ? validateApprovedAmount(
+                                    draftAmounts[application.id] ?? '',
+                                    application.requestedAmount,
+                                    application.userTotalApproved,
+                                  )
+                                : 'Press Enter or click outside to save'
+                          }
+                          inputProps={{
+                            inputMode: 'decimal',
+                            min: 0,
+                          }}
+                        />
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: Number(application.userTotalApproved || 0) >= 100000 ? '#ef4444' : '#475569',
+                            fontWeight: Number(application.userTotalApproved || 0) > 0 ? 600 : 400,
+                            lineHeight: 1.1,
+                            mt: 0.5,
+                            display: 'block'
+                          }}
+                        >
+                          Already Benefited: {formatCurrency(application.userTotalApproved)}
+                          <br />
+                          Max Aid Allowed: {formatCurrency(Math.max(0, 100000 - Number(application.userTotalApproved || 0)))}
+                        </Typography>
+                      </Box>
                     </TableCell>
                     <TableCell>
                       <TextField

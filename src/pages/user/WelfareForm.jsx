@@ -114,6 +114,10 @@ export default function SevakWelfareForm() {
     setUploads(upds);
   };
 
+  const handleFileChange = () => {
+    setUploads((prev) => ({ ...prev, isUploaded: false }));
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((p) => ({ ...p, [name]: value }));
@@ -144,6 +148,7 @@ export default function SevakWelfareForm() {
         return;
       }
       setForm((p) => ({ ...p, applicantSignature: file }));
+      setUploads((prev) => ({ ...prev, isUploaded: false }));
 
       // Create preview for images
       if (file.type.startsWith("image/")) {
@@ -761,6 +766,7 @@ export default function SevakWelfareForm() {
             applicantSignature={form.applicantSignature} 
             hrmsNo={form.hrmsNo || '123456'} 
             onUpload={handleDocsUpload} 
+            onFileChange={handleFileChange}
             existingDocs={editForm ? {
               id: editForm.requestId,
               dischargeCertificate: editForm.dischargeCertificate,

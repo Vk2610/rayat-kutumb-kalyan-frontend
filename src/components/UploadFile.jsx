@@ -27,6 +27,7 @@ export default function UploadComponent({
   applicantSignature,
   hrmsNo,
   onUpload,
+  onFileChange,
   existingDocs = null,
 }) {
   const [documents, setDocuments] = useState(() => {
@@ -131,10 +132,14 @@ export default function UploadComponent({
       ),
     );
 
+    if (onFileChange) onFileChange();
+
     if (docRecord) {
-      const formattedName = docRecord.name
-        .replace(/([A-Z])/g, ' $1')
-        .replace(/^./, (str) => str.toUpperCase());
+      const formattedName = docRecord.name.startsWith('otherDoc')
+        ? `Other Document ${docRecord.name.replace('otherDoc', '')}`
+        : docRecord.name
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, (str) => str.toUpperCase());
       toast.success(`${formattedName} uploaded successfully.`);
     }
   };
@@ -150,6 +155,7 @@ export default function UploadComponent({
         row.id === docId ? { ...row, file: null, previewUrl: null } : row,
       ),
     );
+    if (onFileChange) onFileChange();
     toast.info('Document removed successfully.');
   };
 
@@ -167,20 +173,30 @@ export default function UploadComponent({
         0,
       ) + 1;
 
+    // Find next available otherDoc key from otherDoc1 to otherDoc5
+    let nextIndex = 1;
+    while (dynamicRows.some((row) => row.name === `otherDoc${nextIndex}`)) {
+      nextIndex++;
+    }
+    const newName = `otherDoc${nextIndex}`;
+
     setDynamicRows((prev) => [
       ...prev,
       {
         id: newId,
-        name: `Document ${dynamicRows.length + 1}`,
+        name: newName,
         file: null,
         previewUrl: null,
         isMandatory: false,
       },
     ]);
+
+    if (onFileChange) onFileChange();
   };
 
   const removeDynamicRow = (id) => {
     setDynamicRows((prev) => prev.filter((row) => row.id !== id));
+    if (onFileChange) onFileChange();
   };
 
   // ------------------------ CLOUDINARY UPLOAD --------------------------
@@ -204,7 +220,10 @@ export default function UploadComponent({
     // ensure mandatory docs
     for (let doc of documents) {
       if (doc.isMandatory && !doc.file && !doc.previewUrl) {
-        showAlert(`Please upload ${doc.name}`, 'warning');
+        const formattedName = doc.name
+          .replace(/([A-Z])/g, ' $1')
+          .replace(/^./, (str) => str.toUpperCase());
+        showAlert(`Please upload ${formattedName}`, 'warning');
         return;
       }
     }
@@ -215,7 +234,13 @@ export default function UploadComponent({
     }
 
     const id = existingDocs?.id || uuidv4();
-    let urls = {};
+    let urls = {
+      otherDoc1: null,
+      otherDoc2: null,
+      otherDoc3: null,
+      otherDoc4: null,
+      otherDoc5: null,
+    };
 
     try {
       // upload signature
@@ -287,7 +312,9 @@ export default function UploadComponent({
                 variant="subtitle1"
                 sx={{ fontWeight: 600, color: '#334155', lineHeight: 1.2 }}
               >
-                {doc.name}
+                {doc.name.startsWith('otherDoc') 
+                  ? `Other Document ${doc.name.replace('otherDoc', '')}`
+                  : doc.name.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
               </Typography>
               {doc.isMandatory && (
                 <Chip
@@ -474,7 +501,9 @@ export default function UploadComponent({
                   flexShrink: 0,
                 }}
               >
-                {doc.name} Attachment
+                {doc.name.startsWith('otherDoc') 
+                  ? `Other Document ${doc.name.replace('otherDoc', '')}`
+                  : doc.name.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())} Attachment
               </Typography>
 
               <Box
